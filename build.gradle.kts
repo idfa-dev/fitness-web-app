@@ -30,6 +30,6 @@ dependencies {
     // Database dependencies
     implementation("org.jetbrains.exposed:exposed-core:1.1.1")
     implementation("org.jetbrains.exposed:exposed-jdbc:1.1.1")
-    implementation("org.jetbrains.exposed:exposed-dao:1.1.1")
-    implementation("com.h2database:h2:2.4.240")
+    implementation("org.jetbrains.exposed:exposed-dao:1.1.1") // DAO
+    implementation("com.h2database:h2:2.4.240") // H2 database dependencies
 }
