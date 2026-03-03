@@ -14,6 +14,10 @@ kotlin {
     jvmToolchain(21)
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
@@ -22,4 +26,9 @@ dependencies {
     implementation(libs.ktor.server.config.yaml)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
+
+    // Database dependencies
+    implementation("org.jetbrains.exposed:exposed-core:1.1.1")
+    implementation("org.jetbrains.exposed:exposed-jdbc:1.1.1")
+    implementation("org.jetbrains.exposed:exposed-dao:1.1.1")
 }
