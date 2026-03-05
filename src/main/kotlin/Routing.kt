@@ -11,5 +11,3 @@ fun Application.configureRouting() {
         }
     }
 }
-
-/**/
