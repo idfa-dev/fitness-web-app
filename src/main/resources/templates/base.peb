@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Fitness App{% endblock %}</title>
+    <link rel="stylesheet" href="/static/stylesheet.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <a href="/" class="tab {% if currentPage == 'home' %}active{% endif %}">Home</a>
+    <a href="/workouts" class="tab {% if currentPage == 'workouts' %}active{% endif %}">Workouts</a>
+    <a href="/exercises" class="tab {% if currentPage == 'exercises' %}active{% endif %}">Exercises</a>
+    <a href="/calendar" class="tab {% if currentPage == 'calendar' %}active{% endif %}">Calendar</a>
+    <a href="/profile" class="tab {% if currentPage == 'profile' %}active{% endif %}">Profile</a>
+</div>
+
+<!-- PAGE TITLE -->
+<div class="page-title-container">
+    <div class="page-title">
+        {% block header %}{% endblock %}
+    </div>
+    {% if block("action") is not empty %}
+    <div class="page-action">
+        {% block header %}{% endblock %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- PAGE CONTENT -->
+<div class="content">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

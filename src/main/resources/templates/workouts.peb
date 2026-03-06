@@ -1,0 +1,7 @@
+{% extends "base.peb" %}
+
+{% block title %}Workouts{% endblock %}
+
+{% block header %}
+Your workouts
+{% endblock %}

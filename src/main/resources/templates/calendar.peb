@@ -1,0 +1,7 @@
+{% extends "base.peb" %}
+
+{% block title %}Calendar{% endblock %}
+
+{% block header %}
+Your calendar
+{% endblock %}
