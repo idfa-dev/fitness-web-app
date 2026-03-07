@@ -69,3 +69,31 @@ body {
 .content {
     padding: 30px;
 }
+
+/* IMAGES */
+.icon {
+    display: inline-block;
+    margin-left: 165px;
+}
+
+@media (max-width: 1250px) {
+    .icon {
+        margin-left: 50px;
+    }
+}
+
+@media (max-width: 675px) {
+    .icon {
+        margin-left: 25px;
+        width: 150px;
+        height: 150px;
+    }
+}
+
+@media (max-width: 450px) {
+    .icon {
+        margin-left: auto;
+        width: 125px;
+        height: 125px;
+    }
+}
