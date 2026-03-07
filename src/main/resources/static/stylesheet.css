@@ -77,6 +77,14 @@ body {
     margin-left: 165px;
 }
 
+.icon {
+    transition-duration: 0.4s;
+}
+
+.icon:hover {
+    opacity: 0.7;
+}
+
 @media (max-width: 1250px) {
     .img-container {
         margin-left: 50px;
@@ -103,7 +111,23 @@ body {
 }
 
 /* BUTTONS */
+.button-container {
+    display: inline-block;
+    text-align: center;
+    margin-left: 165px;
+}
+
 button {
     background-color: #b73fec;
     font-size: 30px;
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #b73fec;
+    transition-duration: 0.4s;
+}
+
+button:hover {
+    cursor: pointer;
+    background-color: #722891;
 }

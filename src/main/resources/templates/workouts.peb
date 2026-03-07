@@ -20,7 +20,11 @@
     <p>Mixed</p>
 </div>
 <br><br>
-<button> Saved Workouts </button>
-<button> Create a Workout </button>
+<div class="button-container">
+    <button> Saved Workouts </button>
+</div>
+<div class="button-container">
+    <button> Create a Workout </button>
+</div>
 
 {% endblock %}

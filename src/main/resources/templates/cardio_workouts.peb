@@ -1,0 +1,13 @@
+{% extends "base.peb" %}
+
+{% block title %}Workouts{% endblock %}
+
+{% block header %}
+
+<h1> CARDIO WORKOUTS </h1>
+<div class="img-container">
+    <input type="image" class="icon" src="static/images/bodyweight_icon.png" alt="blue person doing a push-up">
+    <p>Body Weight</p>
+</div>
+
+{% endblock %}
