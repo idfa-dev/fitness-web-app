@@ -1,11 +1,11 @@
 {% extends "base.peb" %}
 
-{% block title %}Cardio Workouts{% endblock %}
+{% block title %}Mixed Workouts{% endblock %}
 
 {% block header %}
 
 <div class="center">
-    <h1><span style="color: #D4213E">CARDIO</span> WORKOUTS</h1>
+    <h1><span style="color: #E8AF02">MIXED</span> WORKOUTS</h1>
 </div>
 <div class="img-container">
     <img class="workout-img" src="/static/images/placeholder_1.png" alt="placeholder image of a number 1">

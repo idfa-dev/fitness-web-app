@@ -11,15 +11,21 @@
         <p>Cardio</p>
     </div>
     <div class="img-container">
-        <img class="icon" src="static/images/bodyweight_icon.png" alt="blue person doing a push-up">
+        <a href="/workouts/bodyweight">
+            <img class="icon" src="static/images/bodyweight_icon.png" alt="blue person doing a push-up">
+        </a>
         <p>Bodyweight</p>
     </div>
     <div class="img-container">
-        <img class="icon" src="static/images/resistance_icon.png" alt="green dumbbell">
+        <a href="/workouts/resistance">
+            <img class="icon" src="static/images/resistance_icon.png" alt="green dumbbell">
+        </a>
         <p>Resistance</p>
     </div>
     <div class="img-container">
-        <img class="icon" src="static/images/mixed_icon.png" alt="yellow two arrows intertwined facing to the right">
+        <a href="/workouts/mixed">
+            <img class="icon" src="static/images/mixed_icon.png" alt="yellow two arrows intertwined facing to the right">
+        </a>
         <p>Mixed</p>
     </div>
     <br><br>
