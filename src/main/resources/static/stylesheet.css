@@ -70,21 +70,25 @@ body {
     padding: 30px;
 }
 
-/* IMAGES */
-.icon {
+/* IMAGES (responsive) */
+.img-container {
     display: inline-block;
+    text-align: center;
     margin-left: 165px;
 }
 
 @media (max-width: 1250px) {
-    .icon {
+    .img-container {
         margin-left: 50px;
     }
 }
 
 @media (max-width: 675px) {
-    .icon {
+    .img-container {
         margin-left: 25px;
+    }
+
+    .icon {
         width: 150px;
         height: 150px;
     }
@@ -96,4 +100,10 @@ body {
         width: 125px;
         height: 125px;
     }
+}
+
+/* BUTTONS */
+button {
+    background-color: #b73fec;
+    font-size: 30px;
 }
