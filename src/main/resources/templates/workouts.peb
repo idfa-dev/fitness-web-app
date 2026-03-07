@@ -3,28 +3,34 @@
 {% block title %}Workouts{% endblock %}
 
 {% block header %}
-<div class="img-container">
-    <input type="image" class="icon" src="static/images/cardio_icon.png" alt="red heart">
-    <p>Cardio</p>
+<div class="center">
+    <div class="img-container">
+        <a href="/workouts/cardio">
+            <img class="icon" src="static/images/cardio_icon.png" alt="red heart">
+        </a>
+        <p>Cardio</p>
+    </div>
+    <div class="img-container">
+        <img class="icon" src="static/images/bodyweight_icon.png" alt="blue person doing a push-up">
+        <p>Bodyweight</p>
+    </div>
+    <div class="img-container">
+        <img class="icon" src="static/images/resistance_icon.png" alt="green dumbbell">
+        <p>Resistance</p>
+    </div>
+    <div class="img-container">
+        <img class="icon" src="static/images/mixed_icon.png" alt="yellow two arrows intertwined facing to the right">
+        <p>Mixed</p>
+    </div>
+    <br><br>
 </div>
-<div class="img-container">
-    <input type="image" class="icon" src="static/images/bodyweight_icon.png" alt="blue person doing a push-up">
-    <p>Body Weight</p>
-</div>
-<div class="img-container">
-    <input type="image" class="icon" src="static/images/resistance_icon.png" alt="green dumbbell">
-    <p>Resistance</p>
-</div>
-<div class="img-container">
-    <input type="image" class="icon" src="static/images/mixed_icon.png" alt="yellow two arrows intertwined facing to the right">
-    <p>Mixed</p>
-</div>
-<br><br>
-<div class="button-container">
-    <button> Saved Workouts </button>
-</div>
-<div class="button-container">
-    <button> Create a Workout </button>
+<div class="center">
+    <div class="button-container">
+        <button> Saved Workouts </button>
+    </div>
+    <div class="button-container">
+        <button> Create a Workout </button>
+    </div>
 </div>
 
 {% endblock %}
