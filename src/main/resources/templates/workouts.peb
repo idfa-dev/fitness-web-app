@@ -4,4 +4,5 @@
 
 {% block header %}
 Your workouts
+<input type="image" src=
 {% endblock %}
