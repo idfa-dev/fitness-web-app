@@ -1,0 +1,9 @@
+{% extends "base.peb" %}
+
+{% block title %}Create a cardio workout{% endblock %}
+
+{% block header %}
+<div class="center">
+    <h1>CARDIO EXERCISES</h1>
+</div>
+{% endblock %}
