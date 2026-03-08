@@ -48,6 +48,18 @@ fun Application.configureRouting() {
             call.respond(PebbleContent("create_cardio_workout.peb", mapOf("currentPage" to "workouts")))
         }
 
+        get("/workouts/create/bodyweight") {
+            call.respond(PebbleContent("create_bodyweight_workout.peb", mapOf("currentPage" to "workouts")))
+        }
+
+        get("/workouts/create/resistance") {
+            call.respond(PebbleContent("create_resistance_workout.peb", mapOf("currentPage" to "workouts")))
+        }
+
+        get("/workouts/create/mixed") {
+            call.respond(PebbleContent("create_mixed_workout.peb", mapOf("currentPage" to "workouts")))
+        }
+
         get("/exercises") {
             call.respond(PebbleContent("exercises.peb", mapOf("currentPage" to "exercises")))
         }
