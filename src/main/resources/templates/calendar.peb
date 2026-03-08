@@ -2,6 +2,104 @@
 
 {% block title %}Calendar{% endblock %}
 
-{% block header %}
-Your calendar
+{% block header %}{% endblock %}
+
+{% block content %}
+<div class="calendar-container">
+    <div class="month-year">{{ month }} {{ year }}</div>
+    <div class="add-button">+</div>
+    {{ calendarTable | raw }}
+</div>
+
+<style>
+html, body {
+    margin:0;
+    padding:0;
+    height:100%;
+    background-color:#131313;
+    font-family:"Agency FB", sans-serif;
+    color:white;
+}
+
+.page-title-container {
+    display: none;
+}
+
+.calendar-container {
+    width:100%;
+    position:relative;
+    padding-bottom:0.5rem;
+}
+
+.month-year {
+    text-align:center;
+    font-size:6vh;
+    font-weight:bold;
+    margin:0.5rem 0;
+    line-height:6vh;
+    margin-top:-1rem;
+}
+
+.add-button {
+    position:absolute;
+    top:-0.7rem; 
+    right:1rem;
+    width:8vh;
+    height:8vh;
+    border-radius:50%;
+    border:2px solid transparent;
+    background-color:white !important;
+    color:#131313 !important;
+    font-size:4vh;
+    font-weight:bold;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    z-index:10;
+    box-sizing:border-box;
+    transition: all 0.2s ease;
+}
+
+.add-button:hover {
+    background-color:#131313 !important;
+    color:white !important;
+    border:2px solid white !important;
+}
+
+table.calendar {
+    border-collapse:collapse;
+    width:95%;
+    max-width:1200px;
+    text-align:center;
+    margin:0.5rem auto 0 auto;
+}
+
+table.calendar th, table.calendar td {
+    border:1px solid white;
+    padding:0.5rem;
+    height:3.5rem;
+    width:14.28%;
+    position:relative;
+}
+
+table.calendar th {
+    text-transform:uppercase;
+    font-weight:bold;
+    font-size:2rem;
+}
+
+table.calendar td {
+    vertical-align:top;
+    color:white;
+    font-size:1.5rem;
+}
+
+.day-number {
+    position:absolute;
+    top:0.2rem;
+    right:0.2rem;
+}
+</style>
 {% endblock %}
+
