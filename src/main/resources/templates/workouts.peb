@@ -32,7 +32,9 @@
 </div>
 <div class="center">
     <div class="button-container">
-        <button> Saved Workouts </button>
+        <a href="/workouts/saved">
+            <button> Saved Workouts </button>
+        </a>
     </div>
     <div class="button-container">
         <button> Create a Workout </button>

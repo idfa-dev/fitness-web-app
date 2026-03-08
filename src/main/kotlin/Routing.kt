@@ -36,6 +36,10 @@ fun Application.configureRouting() {
             call.respond(PebbleContent("mixed_workouts.peb", mapOf("currentPage" to "workouts")))
         }
 
+        get("/workouts/saved") {
+            call.respond(PebbleContent("saved_workouts.peb", mapOf("currentPage" to "workouts")))
+        }
+
         get("/exercises") {
             call.respond(PebbleContent("exercises.peb", mapOf("currentPage" to "exercises")))
         }
