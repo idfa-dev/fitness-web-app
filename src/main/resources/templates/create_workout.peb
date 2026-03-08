@@ -11,7 +11,7 @@
 </div>
 <div class="center">
     <div class="img-container">
-        <a href="workouts/create/cardio">
+        <a href="/workouts/create/cardio">
             <img class="icon" src="/static/images/cardio_icon.png" alt="red heart">
         </a>
         <p>Cardio</p>

@@ -4,6 +4,9 @@
 
 {% block header %}
 <div class="center">
-    <h1>CARDIO EXERCISES</h1>
+    <h1 style="margin-top:0px;margin-bottom:0px;">CARDIO EXERCISES</h1>
+</div>
+<div class="center">
+    <input type="text" class="search" placeholder="Search for an exercise...">
 </div>
 {% endblock %}

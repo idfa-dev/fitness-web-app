@@ -8,8 +8,6 @@ body {
 .center {
     width: 100vw;
     display: block;
-    justify-content: center;
-    align-items: center;
 }
 
 /* NAVBAR */
@@ -140,4 +138,20 @@ button {
 button:hover {
     cursor: pointer;
     background-color: #722891;
+}
+
+/* SEARCH BAR */
+.search {
+    width: 500px;
+    padding: 10px;
+    border-radius: 32px;
+    border: 2px solid white;
+    background-color: black;
+    font-size: 30px;
+    color: white;
+}
+
+.search::placeholder {
+    color: white;
+    opacity: 0.7;
 }
