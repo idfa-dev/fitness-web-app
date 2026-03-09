@@ -12,8 +12,19 @@
 
     <div id="popup-overlay">
         <div id="popup">
-            <button class="popup-btn">Add Competition</button>
-            <button class="popup-btn">Add Exercise</button>
+            <button class="popup-btn" id="add-competition-btn">Add Competition</button>
+            <button class="popup-btn" id="add-exercise-btn">Add Exercise</button>
+        </div>
+    </div>
+
+    <div id="form-overlay">
+        <div id="competition-form">
+            <h2>Add Competition</h2>
+            <input type="text" id="comp-name" placeholder="Competition Name">
+            <input type="date" id="comp-date">
+            <input type="time" id="comp-time">
+            <button id="comp-submit">Submit</button>
+            <button id="comp-cancel">Cancel</button>
         </div>
     </div>
 </div>
@@ -105,7 +116,7 @@ table.calendar td{
     left:0;
     width:100%;
     height:100%;
-    display:none;
+    display:flex;
     justify-content:center;
     align-items:center;
     background:rgba(0,0,0,0.4);
@@ -122,7 +133,7 @@ table.calendar td{
     flex-direction:row;
     justify-content:center;
     align-items:center;
-    gap:100px;
+    gap:70px;
     padding:20px;
 }
 
@@ -136,20 +147,86 @@ table.calendar td{
     font-size:24px;
     cursor:pointer;
 }
+
+#form-overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    background:rgba(0,0,0,0.5);
+    z-index:1100;
+}
+
+#competition-form{
+    width:50vw;
+    background:#131313;
+    border:2px solid white;
+    border-radius:20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:20px;
+    padding:30px;
+}
+
+#competition-form input{
+    width:70%;
+    padding:10px;
+    border-radius:15px;
+    border:none;
+    font-size:18px;
+    text-align:center;
+}
+
+#competition-form button{
+    width:50%;
+    padding:14px;
+    border-radius:25px;
+    border:none;
+    font-size:18px;
+    background:#9933FF;
+    color:white;
+    cursor:pointer;
+}
+
+#competition-form #comp-cancel{
+    background:#555555;
+}
 </style>
 
 <script>
-const plusBtn=document.getElementById("plus-btn");
-const popupOverlay=document.getElementById("popup-overlay");
+const plusBtn = document.getElementById("plus-btn");
+const popupOverlay = document.getElementById("popup-overlay");
+const addCompetitionBtn = document.getElementById("add-competition-btn");
+const formOverlay = document.getElementById("form-overlay");
+const compCancel = document.getElementById("comp-cancel");
+const compSubmit = document.getElementById("comp-submit");
 
-plusBtn.onclick=function(){
-    popupOverlay.style.display="flex";
+plusBtn.onclick = function() {
+    popupOverlay.style.display = "flex";
 };
 
-popupOverlay.onclick=function(e){
-    if(e.target===popupOverlay){
-        popupOverlay.style.display="none";
+popupOverlay.onclick = function(e) {
+    if (e.target === popupOverlay) {
+        popupOverlay.style.display = "none";
     }
+};
+
+addCompetitionBtn.onclick = function() {
+    popupOverlay.style.display = "none";
+    formOverlay.style.display = "flex";
+};
+
+compCancel.onclick = function() {
+    formOverlay.style.display = "none";
+};
+
+compSubmit.onclick = function() {
 };
 </script>
 {% endblock %}
+
