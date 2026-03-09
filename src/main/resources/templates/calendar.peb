@@ -7,24 +7,58 @@
 {% block content %}
 <div class="calendar-container">
     <div class="month-year">{{ month }} {{ year }}</div>
+    <div class="add-event-text">Add<br>Event</div>
     <button id="plus-btn">+</button>
     {{ calendarTable | raw }}
 
     <div id="popup-overlay">
         <div id="popup">
-            <button class="popup-btn" id="add-competition-btn">Add Competition</button>
-            <button class="popup-btn" id="add-exercise-btn">Add Exercise</button>
-        </div>
-    </div>
+            <div id="popup-selection">
+                <button id="add-comp-btn" class="popup-type-btn">Add Competition</button>
+                <button id="add-ex-btn" class="popup-type-btn">Add Exercise</button>
+            </div>
 
-    <div id="form-overlay">
-        <div id="competition-form">
-            <h2>Add Competition</h2>
-            <input type="text" id="comp-name" placeholder="Competition Name">
-            <input type="date" id="comp-date">
-            <input type="time" id="comp-time">
-            <button id="comp-submit">Submit</button>
-            <button id="comp-cancel">Cancel</button>
+            <div id="competition-form">
+                <div class="form-title">Add Competition</div>
+                <input type="text" id="comp-name" placeholder="Competition Name">
+                <input type="date" id="comp-date">
+                <input type="time" id="comp-time">
+                <button id="submit-competition">Submit</button>
+            </div>
+
+            <div id="exercise-form">
+                <div class="form-title">Add Exercise</div>
+                <input type="text" id="ex-name" placeholder="Exercise Name">
+                <input type="date" id="ex-date">
+                <div class="side-by-side">
+                    <input type="number" id="ex-distance" placeholder="Distance (km)" min="0">
+                    <input type="text" id="ex-time-taken" placeholder="Time Taken (hh:mm:ss)">
+                </div>
+                <div class="side-by-side">
+                    <input type="number" id="ex-weight" placeholder="Weight (kg)" min="0">
+                    <input type="text" id="ex-machine" placeholder="Machine">
+                </div>
+                <div id="exercise-types">
+                    <div class="ex-type">
+                        <div class="circle" data-color="#E32141"></div>
+                        <div class="type-label">Cardio</div>
+                    </div>
+                    <div class="ex-type">
+                        <div class="circle" data-color="#0F95CB"></div>
+                        <div class="type-label">Body Weight</div>
+                    </div>
+                    <div class="ex-type">
+                        <div class="circle" data-color="#196B24"></div>
+                        <div class="type-label">Resistance</div>
+                    </div>
+                    <div class="ex-type">
+                        <div class="circle" data-color="#FFC000"></div>
+                        <div class="type-label">Mixed</div>
+                    </div>
+                </div>
+                <input type="number" id="ex-calories" placeholder="Calories Burnt (kcal)">
+                <button id="submit-exercise">Submit</button>
+            </div>
         </div>
     </div>
 </div>
@@ -56,9 +90,20 @@ html, body{
     margin-left:3rem;
 }
 
+.add-event-text{
+    position:absolute;
+    top:1.3rem;
+    right: calc(1rem + 4rem + 10px);
+    text-align:center;
+    font-size:1.5rem;
+    line-height:1.4rem;
+    color:white;
+    cursor:default;
+}
+
 #plus-btn{
     position:absolute;
-    top:0.2rem;
+    top:0.5rem;
     right:1rem;
     width:4rem;
     height:4rem;
@@ -116,7 +161,7 @@ table.calendar td{
     left:0;
     width:100%;
     height:100%;
-    display:flex;
+    display:none;
     justify-content:center;
     align-items:center;
     background:rgba(0,0,0,0.4);
@@ -125,108 +170,164 @@ table.calendar td{
 
 #popup{
     width:60vw;
+    max-width:600px;
     height:60vh;
     background:#131313;
     border:2px solid white;
     border-radius:25px;
     display:flex;
-    flex-direction:row;
-    justify-content:center;
-    align-items:center;
-    gap:70px;
-    padding:20px;
-}
-
-.popup-btn{
-    background:#9933FF;
-    color:white;
-    border:none;
-    border-radius:25px;
-    width:280px;
-    height:100px;
-    font-size:24px;
-    cursor:pointer;
-}
-
-#form-overlay{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    display:none;
-    justify-content:center;
-    align-items:center;
-    background:rgba(0,0,0,0.5);
-    z-index:1100;
-}
-
-#competition-form{
-    width:50vw;
-    background:#131313;
-    border:2px solid white;
-    border-radius:20px;
-    display:flex;
     flex-direction:column;
     align-items:center;
     gap:20px;
-    padding:30px;
+    padding:20px;
+    overflow-y:auto;
 }
 
-#competition-form input{
-    width:70%;
-    padding:10px;
-    border-radius:15px;
+#popup-selection{
+    display:flex;
+    gap:30px;
+    justify-content:center;
+    margin-top:25%;
+    transition: all 0.3s;
+}
+
+.popup-type-btn{
+    background:#9933FF;
+    color:white;
     border:none;
-    font-size:18px;
+    border-radius:20px;
+    padding:30px 60px;
+    cursor:pointer;
+    font-size:22px;
+    min-width:200px;
+    min-height:80px;
+    transition: all 0.3s;
+}
+
+#popup-selection.top{
+    margin-top:10px;
+    justify-content:center;
+}
+
+#popup-selection.top .popup-type-btn{
+    padding:15px 35px;
+    font-size:16px;
+    min-width:120px;
+    min-height:50px;
+}
+
+#competition-form, #exercise-form{
+    display:none;
+    width:100%;
+}
+
+.form-title{
+    font-size:1.5rem;
+    font-weight:bold;
+    margin-bottom:10px;
     text-align:center;
 }
 
-#competition-form button{
-    width:50%;
-    padding:14px;
-    border-radius:25px;
-    border:none;
-    font-size:18px;
-    background:#9933FF;
-    color:white;
+.side-by-side{
+    display:flex;
+    gap:10px;
+    margin-bottom:10px;
+}
+
+#exercise-types{
+    display:flex;
+    justify-content:space-around;
+    margin:10px 0;
+}
+
+.ex-type{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+.circle{
+    width:40px;
+    height:40px;
+    border:2px solid white;
+    border-radius:50%;
+    background:#131313;
     cursor:pointer;
 }
 
-#competition-form #comp-cancel{
-    background:#555555;
+.type-label{
+    margin-top:5px;
+    font-size:0.85rem;
+    text-align:center;
+}
+
+input{
+    width:100%;
+    padding:8px;
+    font-size:1rem;
+    border-radius:8px;
+    border:1px solid #ccc;
+    margin-bottom:10px;
+    box-sizing:border-box;
+}
+
+button#submit-competition, button#submit-exercise{
+    margin-top:10px;
+    padding:10px 25px;
+    border:none;
+    border-radius:20px;
+    background:#9933FF;
+    color:white;
+    cursor:pointer;
+    font-size:18px;
 }
 </style>
 
 <script>
 const plusBtn = document.getElementById("plus-btn");
 const popupOverlay = document.getElementById("popup-overlay");
-const addCompetitionBtn = document.getElementById("add-competition-btn");
-const formOverlay = document.getElementById("form-overlay");
-const compCancel = document.getElementById("comp-cancel");
-const compSubmit = document.getElementById("comp-submit");
+const addCompBtn = document.getElementById("add-comp-btn");
+const addExBtn = document.getElementById("add-ex-btn");
+const compForm = document.getElementById("competition-form");
+const exForm = document.getElementById("exercise-form");
+const popupSelection = document.getElementById("popup-selection");
+const circles = document.querySelectorAll(".circle");
 
-plusBtn.onclick = function() {
+plusBtn.onclick = () => {
     popupOverlay.style.display = "flex";
+    compForm.style.display = "none";
+    exForm.style.display = "none";
+    popupSelection.classList.remove("top");
 };
 
-popupOverlay.onclick = function(e) {
-    if (e.target === popupOverlay) {
+popupOverlay.onclick = (e) => {
+    if(e.target === popupOverlay){
         popupOverlay.style.display = "none";
+        compForm.style.display = "none";
+        exForm.style.display = "none";
+        popupSelection.classList.remove("top");
     }
 };
 
-addCompetitionBtn.onclick = function() {
-    popupOverlay.style.display = "none";
-    formOverlay.style.display = "flex";
+addCompBtn.onclick = () => {
+    compForm.style.display = "block";
+    exForm.style.display = "none";
+    popupSelection.classList.add("top");
 };
 
-compCancel.onclick = function() {
-    formOverlay.style.display = "none";
+addExBtn.onclick = () => {
+    exForm.style.display = "block";
+    compForm.style.display = "none";
+    popupSelection.classList.add("top");
 };
 
-compSubmit.onclick = function() {
-};
+circles.forEach(circle => {
+    circle.onclick = () => {
+        circles.forEach(c => c.style.background = "#131313");
+        circle.style.background = circle.dataset.color;
+    };
+});
 </script>
 {% endblock %}
+
 
