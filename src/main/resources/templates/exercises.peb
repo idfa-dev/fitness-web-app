@@ -3,5 +3,14 @@
 {% block title %}Exercises{% endblock %}
 
 {% block header %}
-Your exercises
+Exercises
+{% endblock %}
+
+{% block content %}
+
+<div class="search-container">
+    <input type="text" class="search-bar" placeholder="Search exercises...">
+    <span class="search-icon">🔍</span>
+</div>
+
 {% endblock %}
