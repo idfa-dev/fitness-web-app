@@ -1,0 +1,11 @@
+{% extends "base.peb" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block header %}
+Profile
+{% endblock %}
+
+{% block action %}
+<button>Edit Profile</button>
+{% endblock %}
