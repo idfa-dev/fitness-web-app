@@ -6,6 +6,7 @@ body {
 }
 
 .center {
+    text-align: center;
     width: 100vw;
     display: block;
 }
@@ -211,3 +212,4 @@ button:hover {
 .selection-container input[type="checkbox"]:hover {
     accent-color: lightgrey;
 }
+

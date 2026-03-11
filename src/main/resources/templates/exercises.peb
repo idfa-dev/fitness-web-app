@@ -8,9 +8,14 @@ Exercises
 
 {% block content %}
 
-<div class="search-container">
-    <input type="text" class="search-bar" placeholder="Search exercises...">
-    <span class="search-icon">🔍</span>
+
+<div class="center">
+    <form class="search-container" action=#>
+        <input type="text" class="search" placeholder="Search for an exercise...">
+        <button type="submit" class="btn-reset search-btn">
+            <img src="/static/images/magnifying_glass_icon.png" alt="submit">
+        </button>
+    </form>
 </div>
 
 {% endblock %}
