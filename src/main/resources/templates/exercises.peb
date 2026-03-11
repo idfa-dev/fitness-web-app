@@ -2,12 +2,7 @@
 
 {% block title %}Exercises{% endblock %}
 
-{% block header %}
-Exercises
-{% endblock %}
-
 {% block content %}
-
 
 <div class="center">
     <form class="search-container" action=#>
@@ -16,6 +11,30 @@ Exercises
             <img src="/static/images/magnifying_glass_icon.png" alt="submit">
         </button>
     </form>
+</div>
+<div class="center" style="width: 100%;">
+    <a href="/exercises/view_exercise" class="cardio-exercise-selection-container">
+        Cardio Exercise 1
+    </a>
+
+    <a href="/exercise_2" class="resistance-exercise-selection-container">
+        Resistance Exercise 1
+    </a>
+    <a href="/exercise_3" class="bodyweight-exercise-selection-container">
+        Bodyweight Exercise 1
+    </a>
+
+    <a href="/exercise_4" class="cardio-exercise-selection-container">
+        Cardio Exercise 2
+    </a>
+        <a href="/exercise_5" class="resistance-exercise-selection-container">
+        Resistance Exercise 2
+    </a>
+    <a href="/exercise_6" class="bodyweight-exercise-selection-container">
+        Bodyweight Exercise 3
+    </a>
+
+
 </div>
 
 {% endblock %}

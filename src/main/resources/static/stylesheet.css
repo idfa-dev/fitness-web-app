@@ -213,3 +213,44 @@ button:hover {
     accent-color: lightgrey;
 }
 
+/*EXERCISE PAGE*/
+.cardio-exercise-selection-container {
+    text-align: left;
+    padding: 40px 20px;
+    display: block;
+    margin: 12px auto;
+    font-size: 24px;
+    border: 2px solid white;
+    width: 700px;
+    text-decoration: none;
+    color: red;          
+}
+
+.resistance-exercise-selection-container {
+    text-align: left;
+    padding: 40px 20px;
+    display: block;
+    margin: 12px auto;
+    font-size: 24px;
+    border: 2px solid white;
+    width: 700px;
+    text-decoration: none;
+    color: green;          
+}
+
+.bodyweight-exercise-selection-container {
+    text-align: left;
+    padding: 40px 20px;
+    display: block;
+    margin: 12px auto;
+    font-size: 24px;
+    border: 2px solid white;
+    width: 700px;
+    text-decoration: none;
+    color: lightskyblue;          
+}
+
+.exercise-selection-container:hover {
+    background-color: #2e2e2e;
+    cursor: pointer;
+}
