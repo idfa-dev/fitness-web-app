@@ -65,8 +65,45 @@ fun Application.configureRouting() {
         }
 
         get("/calendar") {
-            call.respond(PebbleContent("calendar.peb", mapOf("currentPage" to "calendar")))
+            val now = java.time.LocalDate.now()
+            val month = now.month.getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.ENGLISH).uppercase()
+            val year = now.year
+            val firstDay = now.withDayOfMonth(1)
+            val lastDay = now.withDayOfMonth(now.lengthOfMonth())
+            val startWeekday = (firstDay.dayOfWeek.value + 6) % 7 // Monday first
+
+            val days = mutableListOf<String>()
+            repeat(startWeekday) { days.add("") }
+            for (i in 1..lastDay.dayOfMonth) days.add(i.toString())
+
+            val remainder = days.size % 7
+            if (remainder != 0) repeat(7 - remainder) { days.add("") }
+
+            val weeks = days.chunked(7)
+
+            val calendarTable = buildString {
+                append("<div class='month-year'>$month $year</div>")
+                append("<table class='calendar'>")
+                append("<tr>")
+                listOf("MON","TUE","WED","THU","FRI","SAT","SUN").forEach { append("<th>$it</th>") }
+                append("</tr>")
+                weeks.forEach { week ->
+                    append("<tr>")
+                    week.forEach { day ->
+                        if(day.isEmpty()) append("<td></td>")
+                        else append("<td><span class='day-number'>$day</span></td>")
+                    }
+                    append("</tr>")
+                }
+                append("</table>")
+            }
+
+            call.respond(PebbleContent("calendar.peb", mapOf(
+                "currentPage" to "calendar",
+                "calendarTable" to calendarTable
+            )))
         }
+
 
         get("/profile") {
             call.respond(PebbleContent("profile.peb", mapOf("currentPage" to "profile")))
