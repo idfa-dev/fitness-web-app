@@ -5,7 +5,7 @@ import org.jetbrains.exposed.v1.core.ReferenceOption
 
 MAX_VARCHAR_LENGTH = 255
 
-class UserTable : IntIdTable {
+object UserTable : IntIdTable {
     val type = integer("type", 1)
     val username = varchar("username", MAX_VARCHAR_LENGTH)
     val password = varchar("password", MAX_VARCHAR_LENGTH)
