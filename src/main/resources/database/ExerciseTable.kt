@@ -1,4 +1,4 @@
-// Table schema for Exercises
+// Table schema for Exercise
 
 import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
 import org.jetbrains.exposed.v1.core.ReferenceOption

@@ -1,4 +1,4 @@
-// Table schema for Users
+// Table schema for User
 
 import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
 import org.jetbrains.exposed.v1.core.ReferenceOption
