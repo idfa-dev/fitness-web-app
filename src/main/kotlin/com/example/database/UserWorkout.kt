@@ -1,5 +1,7 @@
 // UserWorkout entity, mapping onto UserWorkout table
 
+package com.example.database
+
 import org.jetbrains.exposed.v1.dao.IntEntity
 import org.jetbrains.exposed.v1.dao.IntEntityClass
 import org.jetbrains.exposed.v1.core.dao.id.EntityID

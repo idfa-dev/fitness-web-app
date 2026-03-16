@@ -1,5 +1,7 @@
 // Exercise entity, mapping onto Exercise table
 
+package com.example.database
+
 import org.jetbrains.exposed.v1.dao.IntEntity
 import org.jetbrains.exposed.v1.dao.IntEntityClass
 import org.jetbrains.exposed.v1.core.dao.id.EntityID

@@ -7,5 +7,5 @@ import org.jetbrains.exposed.v1.core.ReferenceOption
 
 object UserWorkouts : IntIdTable("userworkouts") {
     val user = reference("user_id", Users, ReferenceOption.CASCADE)
-    val exercise = reference("exercise_id", Exercices, ReferenceOption.CASCADE)
+    val exercise = reference("exercise_id", Exercises, ReferenceOption.CASCADE)
 }
