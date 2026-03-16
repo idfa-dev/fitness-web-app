@@ -1,6 +1,6 @@
 {% extends "base.peb" %}
 
-{% block title %}Bodyweight com.example.database.Workouts{% endblock %}
+{% block title %}Bodyweight Workouts{% endblock %}
 
 {% block header %}
 

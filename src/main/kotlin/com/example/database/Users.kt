@@ -5,7 +5,7 @@ package com.example.database
 import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
 
 object Users : IntIdTable("users") {
-    val type = integer("type", 1)
+    val type = integer("type")
     val username = varchar("username", MAX_VARCHAR_LENGTH)
     val password = varchar("password", MAX_VARCHAR_LENGTH)
     val email = varchar("email", MAX_VARCHAR_LENGTH)

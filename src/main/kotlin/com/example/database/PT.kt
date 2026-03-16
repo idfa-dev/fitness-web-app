@@ -15,7 +15,7 @@ class PT(id: EntityID<Int>) : IntEntity(id) {
     var email by PTs.email
     var fname by PTs.fname
     var height by PTs.height
-    var weight by PTs.float
+    var weight by PTs.weight
     var dob by PTs.dob
     var sex by PTs.sex
 

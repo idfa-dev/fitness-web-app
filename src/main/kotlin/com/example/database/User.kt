@@ -15,7 +15,7 @@ class User(id: EntityID<Int>) : IntEntity(id) {
     var email by Users.email
     var fname by Users.fname
     var height by Users.height
-    var weight by Users.float
+    var weight by Users.weight
     var dob by Users.dob
     var sex by Users.sex
 

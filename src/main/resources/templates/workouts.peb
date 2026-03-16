@@ -33,12 +33,12 @@
 <div class="center">
     <div class="button-container">
         <a href="/workouts/saved">
-            <button> Saved com.example.database.Workouts </button>
+            <button> Saved Workouts </button>
         </a>
     </div>
     <div class="button-container">
         <a href="/workouts/create">
-            <button> Create a com.example.database.Workout </button>
+            <button> Create a Workout </button>
         </a>
     </div>
 </div>

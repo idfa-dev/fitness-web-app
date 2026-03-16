@@ -1,4 +1,4 @@
-package com.example.com.example
+package com.example
 
 import io.ktor.server.application.*
 import io.ktor.server.netty.EngineMain
@@ -21,8 +21,8 @@ fun main(args: Array<String>) {
             password = "regular"
             email = "regular@gmail.com"
             fname = "Reggie"
-            height = 176.50
-            weight = 76.25
+            height = 176.50f
+            weight = 76.20f
             dob = "03-03-2004"
             sex = "male"
         }

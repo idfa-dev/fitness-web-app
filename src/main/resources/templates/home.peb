@@ -19,8 +19,8 @@
     
     <div class="box" style =" width: 200px; height: auto; order: 2px transparent; background: transparent">
     
-    <p> com.example.database.Workout/com.example.database.Exercise: [ Name ] </p>
-    <p style = "margin-top: 2%"> com.example.database.Workout Time: </p>
+    <p> Workout/Exercise: [ Name ] </p>
+    <p style = "margin-top: 2%"> Workout Time: </p>
     <p style = "margin-top: 2%"> Calories Burnt: </p>
 
     </div>
