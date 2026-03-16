@@ -1,6 +1,6 @@
 {% extends "base.peb" %}
 
-{% block title %}com.example.database.Workouts{% endblock %}
+{% block title %}Workouts{% endblock %}
 
 {% block header %}
 <div class="center">

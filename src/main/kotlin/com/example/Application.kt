@@ -6,13 +6,14 @@ import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import com.example.database.*
+import org.jetbrains.exposed.v1.core.StdOutSqlLogger
 
-fun main(args: Array<String>) {
-    EngineMain.main(args)
-
+fun Application.module() {
     Database.connect("jdbc:h2:mem:fitness", driver = "org.h2.Driver") // Starts com.example.database connection (fitness = dbname)
 
     transaction {
+        addLogger(StdOutSqlLogger)
+
         SchemaUtils.create(Users)
 
         val user1 = User.new {
@@ -28,9 +29,7 @@ fun main(args: Array<String>) {
         }
         println("Created User 1 with id = ${user1.id} and username = ${user1.username}")
     }
-}
 
-fun Application.module() {
     configureRouting()
     configureTemplates()
 }
