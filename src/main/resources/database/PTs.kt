@@ -5,7 +5,7 @@ import org.jetbrains.exposed.v1.core.ReferenceOption
 
 MAX_VARCHAR_LENGTH = 255
 
-object PTs : IntIdTable {
+object PTs : IntIdTable("pts") {
     val client = reference("client_id", ClientTable, ReferenceOption.CASCADE)
     val username = varchar("username", MAX_VARCHAR_LENGTH)
     val password = varchar("password", MAX_VARCHAR_LENGTH)

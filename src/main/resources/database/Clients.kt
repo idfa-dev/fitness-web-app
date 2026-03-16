@@ -5,7 +5,7 @@ import org.jetbrains.exposed.v1.core.ReferenceOption
 
 MAX_VARCHAR_LENGTH = 255
 
-object Clients : IntIdTable {
+object Clients : IntIdTable("clients") {
     val user = reference("user_id", Users, ReferenceOption.CASCADE)
     val pt = reference("pt_id", PTs, ReferenceOption.CASCADE)
 }
