@@ -5,7 +5,7 @@ import org.jetbrains.exposed.v1.core.ReferenceOption
 
 MAX_VARCHAR_LENGTH = 255
 
-object ExerciseTable : IntIdTable {
+object Exercises : IntIdTable {
     val name = varchar("name", MAX_VARCHAR_LENGTH)
     val type = integer("type", 1)
     val url = varchar("url", MAX_VARCHAR_LENGTH)

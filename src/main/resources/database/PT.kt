@@ -5,17 +5,17 @@ import org.jetbrains.exposed.v1.dao.IntEntityClass
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 
 class PT(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<PT>(PTTable)
+    companion object : IntEntityClass<PT>(PTs)
 
-    var client by Client referencedOn PTTable.client
-    var username by UserTable.username
-    var password by UserTable.password
-    var email by UserTable.email
-    var fname by UserTable.fname
-    var height by UserTable.height
-    var weight by UserTable.float
-    var dob by UserTable.dob
-    var sex by UserTable.sex
+    var client by Client referencedOn PTs.client
+    var username by PTs.username
+    var password by PTs.password
+    var email by PTs.email
+    var fname by PTs.fname
+    var height by PTs.height
+    var weight by PTs.float
+    var dob by PTs.dob
+    var sex by PTs.sex
 
     override fun toString() = username
 }

@@ -5,8 +5,8 @@ import org.jetbrains.exposed.v1.dao.IntEntityClass
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 
 class UserWorkout(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<UserWorkout>(UserWorkoutTable)
+    companion object : IntEntityClass<UserWorkout>(UserWorkouts)
 
-    var user by User referencedOn UserWorkoutTable.user
-    var exercise by Exercise referencedOn UserWorkoutTable.exercise
+    var user by User referencedOn UserWorkouts.user
+    var exercise by Exercise referencedOn UserWorkouts.exercise
 }

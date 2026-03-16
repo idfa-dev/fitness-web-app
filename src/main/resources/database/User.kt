@@ -5,7 +5,7 @@ import org.jetbrains.exposed.v1.dao.IntEntityClass
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 
 class User(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<User>(UserTable)
+    companion object : IntEntityClass<User>(Users)
 
     var type by UserTable.type
     var username by UserTable.username
