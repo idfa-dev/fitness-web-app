@@ -15,7 +15,7 @@
         <div id="popup">
             <div id="popup-selection">
                 <button id="add-comp-btn" class="popup-type-btn">Add Competition</button>
-                <button id="add-ex-btn" class="popup-type-btn">Add Exercise</button>
+                <button id="add-ex-btn" class="popup-type-btn">Add com.example.database.Exercise</button>
             </div>
 
             <div id="competition-form">
@@ -27,8 +27,8 @@
             </div>
 
             <div id="exercise-form">
-                <div class="form-title">Add Exercise</div>
-                <input type="text" id="ex-name" placeholder="Exercise Name">
+                <div class="form-title">Add com.example.database.Exercise</div>
+                <input type="text" id="ex-name" placeholder="com.example.database.Exercise Name">
                 <input type="date" id="ex-date">
                 <div class="side-by-side">
                     <input type="number" id="ex-distance" placeholder="Distance (km)" min="0">

@@ -1,6 +1,6 @@
 {% extends "base.peb" %}
 
-{% block title %}Cardio Workouts{% endblock %}
+{% block title %}Cardio com.example.database.Workouts{% endblock %}
 
 {% block header %}
 

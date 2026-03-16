@@ -17,32 +17,32 @@
 <div class="center" style="width: 90%;">
     <form action=#">
         <label class="selection-container">
-            Exercise A
+            com.example.database.Exercise A
             <input type="checkbox">
             <span class="checkmark"></span>
         </label>
         <label class="selection-container">
-            Exercise B
+            com.example.database.Exercise B
             <input type="checkbox">
             <span class="checkmark"></span>
         </label>
         <label class="selection-container">
-            Exercise C
+            com.example.database.Exercise C
             <input type="checkbox">
             <span class="checkmark"></span>
         </label>
         <label class="selection-container">
-            Exercise D
+            com.example.database.Exercise D
             <input type="checkbox">
             <span class="checkmark"></span>
         </label>
         <label class="selection-container">
-            Exercise E
+            com.example.database.Exercise E
             <input type="checkbox">
             <span class="checkmark"></span>
         </label>
         <label class="selection-container">
-            Exercise F
+            com.example.database.Exercise F
             <input type="checkbox">
             <span class="checkmark"></span>
         </label>

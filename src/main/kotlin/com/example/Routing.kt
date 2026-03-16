@@ -1,10 +1,13 @@
-package com.example
+package com.example.com.example
 
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.http.content.*
 import io.ktor.server.pebble.PebbleContent
+import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
 
 
 fun Application.configureRouting() {
@@ -65,8 +68,8 @@ fun Application.configureRouting() {
         }
 
         get("/calendar") {
-            val now = java.time.LocalDate.now()
-            val month = now.month.getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.ENGLISH).uppercase()
+            val now = LocalDate.now()
+            val month = now.month.getDisplayName(TextStyle.FULL, Locale.ENGLISH).uppercase()
             val year = now.year
             val firstDay = now.withDayOfMonth(1)
             val lastDay = now.withDayOfMonth(now.lengthOfMonth())

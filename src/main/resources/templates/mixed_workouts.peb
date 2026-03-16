@@ -1,6 +1,6 @@
 {% extends "base.peb" %}
 
-{% block title %}Mixed Workouts{% endblock %}
+{% block title %}Mixed com.example.database.Workouts{% endblock %}
 
 {% block header %}
 

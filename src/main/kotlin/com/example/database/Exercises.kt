@@ -1,8 +1,8 @@
 // Table schema for Exercise
 
-import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
+package com.example.database
 
-MAX_VARCHAR_LENGTH = 255
+import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
 
 object Exercises : IntIdTable("exercises") {
     val name = varchar("name", MAX_VARCHAR_LENGTH)
