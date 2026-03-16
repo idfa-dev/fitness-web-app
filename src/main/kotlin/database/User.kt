@@ -17,5 +17,7 @@ class User(id: EntityID<Int>) : IntEntity(id) {
     var dob by UserTable.dob
     var sex by UserTable.sex
 
-    override fun toString() = username
+    override fun toString(): String {
+        return "User(id=$id, type=$type, username=$username)"
+    }
 }
