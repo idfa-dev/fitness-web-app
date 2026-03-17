@@ -24,7 +24,7 @@
     </div>
     {% if block("action") is not empty %}
     <div class="page-action">
-        {% block header %}{% endblock %}
+        {% block action %}{% endblock %}
     </div>
     {% endif %}
 </div>

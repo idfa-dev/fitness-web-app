@@ -168,6 +168,74 @@ button:hover {
     background-color: #722891;
 }
 
+.profile-form-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+.profile-form {
+    border: 2px solid #ccc;
+    border-radius: 40px;
+    padding: 40px 80px;
+    width: 600px;
+    background-color: black;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+/* LABELS */
+.form-row label {
+    font-size: 28px;
+}
+
+/* INPUTS */
+.form-row input,
+.form-row select {
+    width: 300px;
+    height: 45px;
+    font-size: 20px;
+    background-color: black;
+    color: white;
+    border: 2px solid #ccc;
+    padding: 5px 10px;
+    box-sizing: border-box;
+}
+
+/* PLACEHOLDER */
+.form-row input::placeholder {
+    color: #aaa;
+    text-align: center;
+}
+
+/* SAVE BUTTON CONTAINER */
+.form-submit {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* SAVE BUTTON */
+.save-btn {
+    background: linear-gradient(45deg, #8a2be2, #4b00ff);
+    border: none;
+    padding: 15px 50px;
+    font-size: 28px;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.save-btn:hover {
+    background: linear-gradient(45deg, #6a1bbd, #3500cc);
+}
+
 /* SEARCH BAR */
 .search-container {
     display: inline-flex;
