@@ -5,6 +5,11 @@ body {
     color: white;
 }
 
+.center {
+    width: 100vw;
+    display: block;
+}
+
 /* NAVBAR */
 .navbar {
     display: flex;
@@ -68,4 +73,141 @@ body {
 /* CONTENT */
 .content {
     padding: 30px;
+}
+
+/* IMAGES (responsive) */
+.img-container {
+    display: inline-block;
+    text-align: center;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.icon {
+    transition-duration: 0.4s;
+}
+
+.icon:hover {
+    opacity: 0.7;
+}
+
+@media (max-width: 1250px) {
+    .img-container {
+        margin-left: 25px;
+        margin-right: 25px;
+    }
+}
+
+@media (max-width: 675px) {
+    .img-container {
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+
+    .button-container {
+        margin-top: 50px;
+    }
+}
+
+@media (max-width: 450px) {
+    .icon {
+        margin-left: auto;
+    }
+}
+
+/* BUTTONS */
+
+.btn-reset {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.button-container {
+    display: inline-block;
+    text-align: center;
+}
+
+button {
+    background-color: #b73fec;
+    font-size: 30px;
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #b73fec;
+    transition-duration: 0.4s;
+}
+
+button:hover {
+    cursor: pointer;
+    background-color: #722891;
+}
+
+/* SEARCH BAR */
+.search-container {
+    display: inline-flex;
+    text-align: left;
+}
+
+.search {
+    width: 500px;
+    height: 35px;
+    padding: 10px;
+    border-radius: 32px;
+    border: 2px solid white;
+    background-color: black;
+    font-size: 30px;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.search::placeholder {
+    color: white;
+    opacity: 0.7;
+}
+
+.search-btn {
+    width: 35px;
+    height: 35px;
+    border: 2px solid white;
+    border-radius: 32px;
+    padding: 10px;
+    margin-left: 5px;
+}
+
+.search-btn:hover {
+    background-color: black
+}
+
+/* CHECKBOXES */
+.selection-container {
+    text-align: left;
+    padding-left: 10px;
+    display: block;
+    position: relative;
+    margin-top: 12px;
+    font-size: 24px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 2px solid white;
+}
+
+.selection-container input {
+    position: relative;
+    margin-left: 20px;
+    cursor: pointer;
+    height: 50px;
+    width: 50px;
+}
+
+.selection-container input[type="checkbox"]:checked {
+    accent-color: white;
+}
+
+.selection-container input[type="checkbox"]:hover {
+    accent-color: lightgrey;
 }

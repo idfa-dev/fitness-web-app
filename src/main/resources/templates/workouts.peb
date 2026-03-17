@@ -3,5 +3,44 @@
 {% block title %}Workouts{% endblock %}
 
 {% block header %}
-Your workouts
+<div class="center">
+    <div class="img-container">
+        <a href="/workouts/cardio">
+            <img class="icon" src="static/images/cardio_icon.png" alt="red heart">
+        </a>
+        <p>Cardio</p>
+    </div>
+    <div class="img-container">
+        <a href="/workouts/bodyweight">
+            <img class="icon" src="static/images/bodyweight_icon.png" alt="blue person doing a push-up">
+        </a>
+        <p>Bodyweight</p>
+    </div>
+    <div class="img-container">
+        <a href="/workouts/resistance">
+            <img class="icon" src="static/images/resistance_icon.png" alt="green dumbbell">
+        </a>
+        <p>Resistance</p>
+    </div>
+    <div class="img-container">
+        <a href="/workouts/mixed">
+            <img class="icon" src="static/images/mixed_icon.png" alt="yellow two arrows intertwined facing to the right">
+        </a>
+        <p>Mixed</p>
+    </div>
+    <br><br>
+</div>
+<div class="center">
+    <div class="button-container">
+        <a href="/workouts/saved">
+            <button> Saved Workouts </button>
+        </a>
+    </div>
+    <div class="button-container">
+        <a href="/workouts/create">
+            <button> Create a Workout </button>
+        </a>
+    </div>
+</div>
+
 {% endblock %}
