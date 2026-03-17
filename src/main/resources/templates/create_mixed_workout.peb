@@ -17,7 +17,7 @@
 <div class="center" style="width: 90%;">
     <form action=#">
         <label class="selection-container">
-            Exercise A
+           Exercise A
             <input type="checkbox">
             <span class="checkmark"></span>
         </label>
