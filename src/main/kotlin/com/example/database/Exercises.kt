@@ -18,4 +18,11 @@ type
 1 = Bodyweight
 2 = Resistance
 3 = Mixed
- */
+
+rating
+
+1 = easy
+2 = medium
+3 = hard
+
+*/
