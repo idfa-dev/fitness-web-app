@@ -112,6 +112,10 @@ fun Application.configureRouting() {
             call.respond(PebbleContent("profile.peb", mapOf("currentPage" to "profile")))
         }
 
+        get("/profile/profile_info") {
+            call.respond(PebbleContent("profile_info.peb", mapOf("currentPage" to "profile_info")))
+        }
+
         get("/sign-in") {
             call.respond(PebbleContent("sign-in.peb", mapOf("currentPage" to "sign-in")))
         }

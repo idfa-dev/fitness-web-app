@@ -45,14 +45,14 @@ body {
 /* PAGE TITLE */
 .page-title-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: 30px;
+    padding: 25px;
 }
 
 .page-title {
     font-size: 40px;
-    padding: 30px;
+    padding: 20px;
     text-align: center;
 }
 
@@ -131,6 +131,9 @@ body {
 }
 
 button {
+    position: absolute;
+    top: 90px;
+    right: 30px;
     background-color: #b73fec;
     font-size: 30px;
     color: white;
@@ -141,6 +144,26 @@ button {
 }
 
 button:hover {
+    cursor: pointer;
+    background-color: #722891;
+}
+
+/* PROFILE INFO */
+.profile-info-button {
+    position: absolute;
+    top: 90px;
+    right: 30px;
+    background-color: #b73fec;
+    font-size: 30px;
+    color: white;
+    text-decoration: none;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #b73fec;
+    transition-duration: 0.4s;
+}
+
+.profile-info-button:hover {
     cursor: pointer;
     background-color: #722891;
 }

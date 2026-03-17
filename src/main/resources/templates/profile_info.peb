@@ -1,0 +1,10 @@
+{% extends "base.peb" %}
+
+{% block title %}Profile Info{% endblock %}
+
+{% block header %}
+Profile Info
+{% endblock %}
+
+{% block action %}
+{% endblock %}
