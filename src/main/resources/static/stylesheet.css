@@ -131,9 +131,6 @@ body {
 }
 
 button {
-    position: absolute;
-    top: 90px;
-    right: 30px;
     background-color: #b73fec;
     font-size: 30px;
     color: white;
@@ -222,18 +219,19 @@ button:hover {
 
 /* SAVE BUTTON */
 .save-btn {
-    background: linear-gradient(45deg, #8a2be2, #4b00ff);
-    border: none;
+    background-color: #b73fec;
+    border-radius: 12px;
+    border: 1px solid #b73fec;
     padding: 15px 50px;
     font-size: 28px;
     color: white;
-    border-radius: 10px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: 0.4s;
 }
 
 .save-btn:hover {
-    background: linear-gradient(45deg, #6a1bbd, #3500cc);
+    cursor: pointer;
+    background-color: #722891;
 }
 
 /* SEARCH BAR */
