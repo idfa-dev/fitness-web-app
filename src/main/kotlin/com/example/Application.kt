@@ -15,6 +15,11 @@ fun Application.module() {
         addLogger(StdOutSqlLogger)
 
         SchemaUtils.create(Users)
+        SchemaUtils.create(PTs)
+        SchemaUtils.create(Exercises)
+        SchemaUtils.create(Clients)
+        SchemaUtils.create(Workouts)
+        SchemaUtils.create(UserWorkouts)
 
         val user1 = User.new {
             type = 0
