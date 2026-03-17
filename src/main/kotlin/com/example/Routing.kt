@@ -67,6 +67,10 @@ fun Application.configureRouting() {
             call.respond(PebbleContent("exercises.peb", mapOf("currentPage" to "exercises")))
         }
 
+        get("/exercises/view_exercise") {
+            call.respond(PebbleContent("view_exercise.peb", mapOf("currentPage" to "view_exercise")))
+        }       
+
         get("/calendar") {
             val now = LocalDate.now()
             val month = now.month.getDisplayName(TextStyle.FULL, Locale.ENGLISH).uppercase()
