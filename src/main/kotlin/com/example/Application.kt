@@ -15,6 +15,11 @@ fun Application.module() {
         addLogger(StdOutSqlLogger)
 
         SchemaUtils.create(Users)
+        SchemaUtils.create(PTs)
+        SchemaUtils.create(Exercises)
+        SchemaUtils.create(Clients)
+        SchemaUtils.create(Workouts)
+        SchemaUtils.create(UserWorkouts)
 
         val user1 = User.new {
             type = 0
@@ -28,6 +33,14 @@ fun Application.module() {
             sex = "male"
         }
         println("Created User 1 with id = ${user1.id} and username = ${user1.username}")
+
+        val treadmill = Exercise.new {
+            name = "treadmill"
+            type = 0
+            url = "https://www.youtube.com/watch?v=G7QjU44eBvA"
+            rating = 1
+        }
+        println("Created exercise: name=${treadmill.name}, type=${treadmill.type}, url=${treadmill.url}, rating=${treadmill.rating}")
     }
 
     configureRouting()
