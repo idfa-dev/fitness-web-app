@@ -4,8 +4,9 @@
 
 {% block header %}
 Profile
+<a href="/profile/profile_info" class="profile-info-button">Edit Profile</a>
 {% endblock %}
 
 {% block action %}
-<button>Edit Profile</button>
-{% endblock %}
+
+{% endblock %}  
