@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="/static/stylesheet.css">
+
+<title> Jympal Home </title>
+
+<div class style="text-align: center">
+    <img src="/static/images/jympal_logo.png" alt="Jympal logo" style = "width: 50%; margin-top:1%" >
+    <div class="page-title"> You wanna be fit, Gymit! </div>
+</div>
+
+{% block action %}
+{% endblock %}
+
+{% block content %}
+
+<div class style="text-align: center">
+    <p> Website Info: </p>
+
+    <p>BALH BLAH</p>
+    <p>muscle stuff</p>
+    <p>some bull about our app idk</p>
+    <p>kinda gotta fix the slight missalignment though, looks unprofessional</p>
+</div>
+<a href="/sign-in" style = "margin-left: 27%; margin-top: 2%; width: 100px">
+<button>SIGN IN</button>
+</a>
+
+<a href="/sign-up" style = "margin-left: 33%; margin-top: 2%' width: 100px">
+<button >SIGN UP</button>
+</a>
+
+<p> Skip to main home page </p>
+<a href="/" style = "text-align: center">
+<button >Skip to Home</button>
+</a>
+{% endblock %}

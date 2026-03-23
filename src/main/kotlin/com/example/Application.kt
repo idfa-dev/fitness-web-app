@@ -9,7 +9,12 @@ import com.example.database.*
 import org.jetbrains.exposed.v1.core.StdOutSqlLogger
 
 fun Application.module() {
-    Database.connect("jdbc:h2:mem:fitness", driver = "org.h2.Driver") // Starts com.example.database connection (fitness = dbname)
+
+    org.h2.tools.Server.createWebServer("-web", "-webPort", "8082").start() //View H2 database at http://localhost:8082
+
+    Database.connect("jdbc:h2:./test", driver = "org.h2.Driver") // Database now changed to a permanent file
+    
+    //It kinda adds the same entry every time its run, I should probably change that but I'm a bit lazy rn ( I.F. )
 
     transaction {
         addLogger(StdOutSqlLogger)
