@@ -36,56 +36,56 @@ fun Application.module() {
         val c_ex_1 = Exercise.new {
             name = "treadmill"
             type = 0
-            url = "https://www.youtube.com/watch?v=G7QjU44eBvA"
+            url = "G7QjU44eBvA"
             rating = 1
         }
 
         val c_ex_2 = Exercise.new {
             name = "rowing machine"
             type = 0
-            url = "https://www.youtube.com/watch?v=J1nf2Zfbazs"
+            url = "J1nf2Zfbazs"
             rating = 2
         }
 
         val bw_ex_1 = Exercise.new {
             name = "push ups"
             type = 1
-            url = "https://www.youtube.com/watch?v=IODxDxX7oi4"
+            url = "IODxDxX7oi4"
             rating = 1
         }
 
         val bw_ex_2 = Exercise.new {
             name = "pull ups"
             type = 1
-            url = "https://www.youtube.com/watch?v=eGo4IYlbE5g"
+            url = "eGo4IYlbE5g"
             rating = 2
         }
 
         val r_ex_1 = Exercise.new {
             name = "barbell bench press"
             type = 2
-            url = "https://www.youtube.com/watch?v=gRVjAtPip0Y"
+            url = "gRVjAtPip0Y"
             rating = 2
         }
 
         val r_ex_2 = Exercise.new {
             name = "barbell squat"
             type = 2
-            url = "https://www.youtube.com/watch?v=my0tLDaWyDU"
+            url = "my0tLDaWyDU"
             rating = 2
         }
 
         val m_ex_1 = Exercise.new {
             name = "farmer's walk"
             type = 3
-            url = "https://www.youtube.com/watch?v=NH7Xv-7NQNQ"
+            url = "NH7Xv-7NQNQ"
             rating = 3
         }
 
         val m_ex_2 = Exercise.new {
             name = "clean and jerk"
             type = 3
-            url = "https://www.youtube.com/watch?v=PjY1rH4_MOA"
+            url = "PjY1rH4_MOA"
             rating = 3
         }
         for (exercise in Exercise.all()) {

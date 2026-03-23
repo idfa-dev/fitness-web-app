@@ -29,13 +29,7 @@ suspend fun ApplicationCall.exercise() {
         when (val exercise = result.getOrNull()) {
             null -> respond(HttpStatusCode.NotFound)
             else -> {
-                val data = mapOf(
-                    "name" to exercise.name,
-                    "type" to exercise.type,
-                    "url" to exercise.type,
-                    "rating" to exercise.rating
-                )
-                respondTemplate("view_exercise.peb", data)
+                respondTemplate("view_exercise.peb", mapOf("exercise" to exercise))
             }
         }
     }

@@ -14,19 +14,19 @@
 <div class="center" style="width: 100%;">
 {% for exercise in exercises %}
     {% if exercise['type'] == 0 %}
-        <a href="/exercises/view_exercise{{ exercise['id'] }}" class="cardio-exercise-selection-container">
+        <a href="/exercises/{{ exercise['id'] }}" class="cardio-exercise-selection-container">
         {{ exercise['name'] }}
     </a>
     {% elseif exercise['type'] == 1 %}
-        <a href="/exercises/view_exercise{{ exercise['id'] }}" class="bodyweight-exercise-selection-container">
+        <a href="/exercises/{{ exercise['id'] }}" class="bodyweight-exercise-selection-container">
         {{ exercise['name'] }}
     </a>
     {% elseif exercise['type'] == 2 %}
-        <a href="/exercises/view_exercise{{ exercise['id'] }}" class="resistance-exercise-selection-container">
+        <a href="/exercises/{{ exercise['id'] }}" class="resistance-exercise-selection-container">
         {{ exercise['name'] }}
     </a>
     {% elseif exercise['type'] == 3 %}
-        <a href="/exercises/view_exercise{{ exercise['id'] }}" class="mixed-exercise-selection-container">
+        <a href="/exercises/{{ exercise['id'] }}" class="mixed-exercise-selection-container">
         {{ exercise['name'] }}
     </a>
     {% endif %}

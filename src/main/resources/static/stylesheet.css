@@ -348,7 +348,7 @@ button:hover {
     border: 2px solid white;
     width: 700px;
     text-decoration: none;
-    color: #ffe14f;
+    color: yellow;
 }
 
 .exercise-selection-container:hover {
