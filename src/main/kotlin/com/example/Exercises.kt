@@ -4,13 +4,39 @@
 package com.example
 
 import com.example.database.Exercise
+import com.example.database.Exercises
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.pebble.respondTemplate
+import io.ktor.server.response.respond
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 
 suspend fun ApplicationCall.exercises() {
     suspendTransaction {
         val exercises = Exercise.all().sortedBy {it.name}.toList()
         respondTemplate("exercises.peb", mapOf("exercises" to exercises))
+    }
+}
+
+suspend fun ApplicationCall.exercise() {
+    suspendTransaction {
+        val result = runCatching {
+            parameters["id"]?.let {
+                Exercise.findById(it.toInt())
+            }
+        }
+
+        when (val exercise = result.getOrNull()) {
+            null -> respond(HttpStatusCode.NotFound)
+            else -> {
+                val data = mapOf(
+                    "name" to exercise.name,
+                    "type" to exercise.type,
+                    "url" to exercise.type,
+                    "rating" to exercise.rating
+                )
+                respondTemplate("view_exercise.peb", data)
+            }
+        }
     }
 }
