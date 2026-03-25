@@ -10,7 +10,6 @@ class UserWorkout(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<UserWorkout>(UserWorkouts)
 
     var user by User referencedOn UserWorkouts.user
-    var exerciselist by ExerciseList referencedOn UserWorkouts.exerciselist
     var name by UserWorkouts.name
     var desc by UserWorkouts.desc
 }

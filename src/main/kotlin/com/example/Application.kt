@@ -20,6 +20,7 @@ fun Application.module() {
         SchemaUtils.create(Workouts)
         SchemaUtils.create(UserWorkouts)
 
+        // User insertions
         val user1 = User.new {
             type = 0
             username = "regulardude123"
@@ -33,6 +34,7 @@ fun Application.module() {
         }
         println("Created User 1 with id = ${user1.id} and username = ${user1.username}")
 
+        // Exercise insertions
         val c_ex_1 = Exercise.new {
             name = "treadmill"
             type = 0
@@ -90,6 +92,11 @@ fun Application.module() {
         }
         for (exercise in Exercise.all()) {
             println("Created exercise with id: ${exercise.id}, name: ${exercise.name}, type: ${exercise.type}, rating: ${exercise.rating}")
+        }
+
+        // ExerciseList insertions (to be followed by workouts after)
+        val exl_1 = ExerciseList.new {
+
         }
     }
 

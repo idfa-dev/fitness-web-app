@@ -7,7 +7,6 @@ import org.jetbrains.exposed.v1.core.ReferenceOption
 
 object UserWorkouts : IntIdTable("userworkouts") {
     val user = reference("user_id", Users, ReferenceOption.CASCADE)
-    val exerciselist = reference("exerciselist_id", ExerciseLists, ReferenceOption.CASCADE)
     val name = varchar("name", MAX_VARCHAR_LENGTH)
     val desc = varchar("desc", MAX_VARCHAR_LENGTH)
 }

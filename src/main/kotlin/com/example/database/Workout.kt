@@ -9,7 +9,6 @@ import org.jetbrains.exposed.v1.core.dao.id.EntityID
 class Workout(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<Workout>(Workouts)
 
-    var exerciselist by ExerciseList referencedOn Workouts.exerciselist
     var name by Workouts.name
     var desc by Workouts.desc
 
