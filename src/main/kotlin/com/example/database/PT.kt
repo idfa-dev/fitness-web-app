@@ -1,4 +1,4 @@
-// PT entity, mapping onto PT table
+// PT entity, mapping onto PTs
 
 package com.example.database
 

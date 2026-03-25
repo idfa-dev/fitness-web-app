@@ -1,4 +1,4 @@
-// Table schema for WorkoutTable
+// Table schema for Workouts
 
 package com.example.database
 

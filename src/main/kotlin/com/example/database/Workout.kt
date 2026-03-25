@@ -1,4 +1,4 @@
-// Workout entity, mapping onto Workout table
+// Workout entity, mapping onto Workouts
 
 package com.example.database
 
