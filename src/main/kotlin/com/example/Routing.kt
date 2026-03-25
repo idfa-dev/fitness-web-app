@@ -65,13 +65,9 @@ fun Application.configureRouting() {
             call.respond(PebbleContent("create_mixed_workout.peb", mapOf("currentPage" to "workouts")))
         }
 
-        get("/exercises") {
-            call.respond(PebbleContent("exercises.peb", mapOf("currentPage" to "exercises")))
-        }
+        get("/exercises") {call.exercises()}
 
-        get("/exercises/view_exercise") {
-            call.respond(PebbleContent("view_exercise.peb", mapOf("currentPage" to "view_exercise")))
-        }       
+        get("/exercises/{id}") {call.exercise()}
 
         get("/calendar") {
             val now = LocalDate.now()
