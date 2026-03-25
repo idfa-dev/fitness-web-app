@@ -19,6 +19,7 @@ fun Application.module() {
         SchemaUtils.create(Clients)
         SchemaUtils.create(Workouts)
         SchemaUtils.create(UserWorkouts)
+        SchemaUtils.create(WorkoutExercises)
 
         // User insertions
         val user1 = User.new {
@@ -57,7 +58,7 @@ fun Application.module() {
         }
 
         val bw_ex_2 = Exercise.new {
-            name = "pull ups"
+            name = "Pull ups"
             type = 1
             url = "eGo4IYlbE5g"
             rating = 2
@@ -128,11 +129,97 @@ fun Application.module() {
             println("Created workout with id: ${workout.id}, name: ${workout.name}, desc: ${workout.desc}, type: ${workout.type}")
         }
 
-        // Exercise List definitions (link table)
-        val exl_1 = ExerciseList.new {
-            exercise =
+        // Exercise List definitions (link table) assuming duration is in minutes
+        val we_1 = WorkoutExercise.new {
+            workout = w_1
+            exercise = bw_ex_1
+            order = 1
+            sets = 3
+            reps = 15
+            duration = 10.00f
         }
 
+        val we_2 = WorkoutExercise.new {
+            workout = w_1
+            exercise = bw_ex_2
+            order = 2
+            sets = 3
+            reps = 10
+            duration = 10.00f
+        }
+
+        val we_3 = WorkoutExercise.new {
+            workout = w_2
+            exercise = c_ex_2
+            order = 1
+            sets = 1
+            reps = 1
+            duration = 10.00f
+        }
+
+        val we_4 = WorkoutExercise.new {
+            workout = w_2
+            exercise = r_ex_1
+            order = 2
+            sets = 3
+            reps = 6
+            duration = 12.00f
+        }
+
+        val we_5 = WorkoutExercise.new {
+            workout = w_2
+            exercise = m_ex_2
+            order = 3
+            sets = 3
+            reps = 3
+            duration = 12.00f
+        }
+
+        val we_6 = WorkoutExercise.new {
+            workout = w_3
+            exercise = c_ex_1
+            order = 1
+            sets = 2
+            reps = 1
+            duration = 15.00f
+        }
+
+        val we_7 = WorkoutExercise.new {
+            workout = w_4
+            exercise = c_ex_2
+            order = 1
+            sets = 2
+            reps = 1
+            duration = 15.00f
+        }
+
+        val we_8 = WorkoutExercise.new {
+            workout = w_5
+            exercise = r_ex_1
+            order = 1
+            sets = 3
+            reps = 6
+            duration = 12.00f
+        }
+
+        val we_9 = WorkoutExercise.new {
+            workout = w_5
+            exercise = r_ex_2
+            order = 2
+            sets = 3
+            reps = 6
+            duration = 12.00f
+        }
+        for (we in WorkoutExercise.all()) {
+            println("Created workout-exercise link with " +
+                    "id: ${we.id}, " +
+                    "workout_id: ${we.workout.id}, " +
+                    "exercise_id: ${we.exercise.id}, " +
+                    "order: ${we.order}, " +
+                    "sets: ${we.sets}, " +
+                    "reps: ${we.reps}, " +
+                    "duration: ${we.duration} mins")
+        }
     }
 
     configureRouting()
