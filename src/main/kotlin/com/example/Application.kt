@@ -36,21 +36,21 @@ fun Application.module() {
 
         // Exercise insertions
         val c_ex_1 = Exercise.new {
-            name = "treadmill"
+            name = "Treadmill"
             type = 0
             url = "G7QjU44eBvA"
             rating = 1
         }
 
         val c_ex_2 = Exercise.new {
-            name = "rowing machine"
+            name = "Rowing machine"
             type = 0
             url = "J1nf2Zfbazs"
             rating = 2
         }
 
         val bw_ex_1 = Exercise.new {
-            name = "push ups"
+            name = "Push ups"
             type = 1
             url = "IODxDxX7oi4"
             rating = 1
@@ -64,28 +64,28 @@ fun Application.module() {
         }
 
         val r_ex_1 = Exercise.new {
-            name = "barbell bench press"
+            name = "Barbell bench press"
             type = 2
             url = "gRVjAtPip0Y"
             rating = 2
         }
 
         val r_ex_2 = Exercise.new {
-            name = "barbell squat"
+            name = "Barbell squat"
             type = 2
             url = "my0tLDaWyDU"
             rating = 2
         }
 
         val m_ex_1 = Exercise.new {
-            name = "farmer's walk"
+            name = "Farmer's walk"
             type = 3
             url = "NH7Xv-7NQNQ"
             rating = 3
         }
 
         val m_ex_2 = Exercise.new {
-            name = "clean and jerk"
+            name = "Clean and jerk"
             type = 3
             url = "PjY1rH4_MOA"
             rating = 3
@@ -96,7 +96,27 @@ fun Application.module() {
 
         // Workout insertions
         val w_1 = Workout.new {
+            name = "Push and pull"
+            desc = "A small workout that can be done from the comfort of your home."
+            type = 1
+        }
 
+        val w_2 = Workout.new {
+            name = "Tough day"
+            desc = "A workout to put your skills in the gym to the test."
+            type = 3
+        }
+
+        val w_3 = Workout.new {
+            name = "Simple running on the treadmill"
+            desc = "Using the treadmill to do a simple running exercise."
+            type = 0
+        }
+
+        val w_4 = Workout.new {
+            name = "A day out at sea"
+            desc = "Using the rowing machine to do some full-body cardio."
+            type = 0
         }
     }
 
