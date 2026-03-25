@@ -9,4 +9,14 @@ object UserWorkouts : IntIdTable("userworkouts") {
     val user = reference("user_id", Users, ReferenceOption.CASCADE)
     val name = varchar("name", MAX_VARCHAR_LENGTH)
     val desc = varchar("desc", MAX_VARCHAR_LENGTH)
+    val type = integer("type")
 }
+
+/*
+type
+
+0 = Cardio
+1 = Bodyweight
+2 = Resistance
+3 = Mixed
+ */

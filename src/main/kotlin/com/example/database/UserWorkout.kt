@@ -12,4 +12,5 @@ class UserWorkout(id: EntityID<Int>) : IntEntity(id) {
     var user by User referencedOn UserWorkouts.user
     var name by UserWorkouts.name
     var desc by UserWorkouts.desc
+    var type by UserWorkouts.type
 }

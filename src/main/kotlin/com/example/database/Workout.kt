@@ -11,6 +11,7 @@ class Workout(id: EntityID<Int>) : IntEntity(id) {
 
     var name by Workouts.name
     var desc by Workouts.desc
+    val type by Workouts.type
 
     override fun toString() = name
 }

@@ -94,8 +94,8 @@ fun Application.module() {
             println("Created exercise with id: ${exercise.id}, name: ${exercise.name}, type: ${exercise.type}, rating: ${exercise.rating}")
         }
 
-        // ExerciseList insertions (to be followed by workouts after)
-        val exl_1 = ExerciseList.new {
+        // Workout insertions
+        val w_1 = Workout.new {
 
         }
     }
