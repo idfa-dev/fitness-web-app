@@ -3,7 +3,6 @@
 {% block title %}Exercises{% endblock %}
 
 {% block content %}
-
 <div class="center">
     <form class="search-container" action=#>
         <input type="text" class="search" placeholder="Search for an exercise...">
@@ -13,28 +12,25 @@
     </form>
 </div>
 <div class="center" style="width: 100%;">
-    <a href="/exercises/view_exercise" class="cardio-exercise-selection-container">
-        Cardio Exercise 1
+{% for exercise in exercises %}
+    {% if exercise['type'] == 0 %}
+        <a href="/exercises/{{ exercise['id'] }}" class="cardio-exercise-selection-container">
+        {{ exercise['name'] }}
     </a>
-
-    <a href="/exercise_2" class="resistance-exercise-selection-container">
-        Resistance Exercise 1
+    {% elseif exercise['type'] == 1 %}
+        <a href="/exercises/{{ exercise['id'] }}" class="bodyweight-exercise-selection-container">
+        {{ exercise['name'] }}
     </a>
-    <a href="/exercise_3" class="bodyweight-exercise-selection-container">
-        Bodyweight Exercise 1
+    {% elseif exercise['type'] == 2 %}
+        <a href="/exercises/{{ exercise['id'] }}" class="resistance-exercise-selection-container">
+        {{ exercise['name'] }}
     </a>
-
-    <a href="/exercise_4" class="cardio-exercise-selection-container">
-        Cardio Exercise 2
+    {% elseif exercise['type'] == 3 %}
+        <a href="/exercises/{{ exercise['id'] }}" class="mixed-exercise-selection-container">
+        {{ exercise['name'] }}
     </a>
-        <a href="/exercise_5" class="resistance-exercise-selection-container">
-        Resistance Exercise 2
-    </a>
-    <a href="/exercise_6" class="bodyweight-exercise-selection-container">
-        Bodyweight Exercise 3
-    </a>
-
-
+    {% endif %}
+{% endfor %}
 </div>
 
 {% endblock %}

@@ -339,6 +339,18 @@ button:hover {
     color: lightskyblue;          
 }
 
+.mixed-exercise-selection-container {
+    text-align: left;
+    padding: 40px 20px;
+    display: block;
+    margin: 12px auto;
+    font-size: 24px;
+    border: 2px solid white;
+    width: 700px;
+    text-decoration: none;
+    color: yellow;
+}
+
 .exercise-selection-container:hover {
     background-color: #2e2e2e;
     cursor: pointer;
