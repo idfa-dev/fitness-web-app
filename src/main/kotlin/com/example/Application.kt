@@ -118,6 +118,21 @@ fun Application.module() {
             desc = "Using the rowing machine to do some full-body cardio."
             type = 0
         }
+
+        val w_5 = Workout.new {
+            name = "Pump!"
+            desc = "Using the barbell to pump the chest and legs for a great pump."
+            type = 2
+        }
+        for (workout in Workout.all()) {
+            println("Created workout with id: ${workout.id}, name: ${workout.name}, desc: ${workout.desc}, type: ${workout.type}")
+        }
+
+        // Exercise List definitions (link table)
+        val exl_1 = ExerciseList.new {
+            exercise =
+        }
+
     }
 
     configureRouting()
