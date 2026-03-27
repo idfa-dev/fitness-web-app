@@ -76,10 +76,16 @@
             </div>
         </div>
     </div>
+
+    <div id="comp-info-overlay">
+        <div id="comp-info-popup">
+            <div id="comp-info-content"></div>
+        </div>
+    </div>
 </div>
 
 <style>
-html, body{
+html, body {
     margin:0;
     padding:0;
     height:100%;
@@ -88,24 +94,24 @@ html, body{
     color:white;
 }
 
-.page-title-container{
+.page-title-container {
     display:none;
 }
 
-.calendar-container{
+.calendar-container {
     width:100%;
     position:relative;
     padding-bottom:0.5rem;
 }
 
-.month-year{
+.month-year {
     font-size:6vh;
     font-weight:bold;
     margin-top:-1rem;
     margin-left:3rem;
 }
 
-.add-event-text{
+.add-event-text {
     position:absolute;
     top:1.3rem;
     right: calc(1rem + 4rem + 10px);
@@ -116,7 +122,7 @@ html, body{
     cursor:default;
 }
 
-#plus-btn{
+#plus-btn {
     position:absolute;
     top:0.5rem;
     right:1rem;
@@ -134,13 +140,13 @@ html, body{
     padding-top: 0.6rem;
 }
 
-#plus-btn:hover{
+#plus-btn:hover {
     background:#131313;
     color:white;
     border:2px solid white;
 }
 
-table.calendar{
+table.calendar {
     border-collapse:collapse;
     width:80vw;
     max-width:1200px;
@@ -148,7 +154,7 @@ table.calendar{
     margin:0.5rem 0 0 3rem;
 }
 
-table.calendar th, table.calendar td{
+table.calendar th, table.calendar td {
     border:1px solid white;
     padding:0.5rem;
     height:3.5rem;
@@ -156,19 +162,19 @@ table.calendar th, table.calendar td{
     position:relative;
 }
 
-table.calendar th{
+table.calendar th {
     text-transform:uppercase;
     font-weight:bold;
     font-size:2rem;
 }
 
-table.calendar td{
+table.calendar td {
     vertical-align:top;
     color:white;
     font-size:1.5rem;
 }
 
-.day-number{
+.day-number {
     position:absolute;
     top:0.2rem;
     right:0.2rem;
@@ -178,18 +184,19 @@ table.calendar td{
     position: absolute;
     top: 0.2rem;
     left: 0.2rem;
-    background-color: #E32141;
+    background-color: #f33e7a;
     color: white;
     padding: 3px 8px;
     border-radius: 12px;
-    font-size: 0.9rem;
+    font-size: 1rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: calc(100% - 2.4rem);
+    max-width: calc(100% - 3.5rem);
+    cursor: pointer;
 }
 
-#popup-overlay{
+#popup-overlay, #comp-info-overlay {
     position:fixed;
     top:0;
     left:0;
@@ -202,7 +209,7 @@ table.calendar td{
     z-index:1000;
 }
 
-#popup{
+#popup {
     width:60vw;
     max-width:600px;
     height:60vh;
@@ -217,7 +224,7 @@ table.calendar td{
     overflow-y:auto;
 }
 
-#popup-selection{
+#popup-selection {
     display:flex;
     gap:30px;
     justify-content:center;
@@ -225,7 +232,7 @@ table.calendar td{
     transition: all 0.3s;
 }
 
-.popup-type-btn{
+.popup-type-btn {
     background:#9933FF;
     color:white;
     border:none;
@@ -238,49 +245,49 @@ table.calendar td{
     transition: all 0.3s;
 }
 
-#popup-selection.top{
+#popup-selection.top {
     margin-top:10px;
     justify-content:center;
 }
 
-#popup-selection.top .popup-type-btn{
+#popup-selection.top .popup-type-btn {
     padding:15px 35px;
     font-size:16px;
     min-width:120px;
     min-height:50px;
 }
 
-#competition-form, #exercise-form{
+#competition-form, #exercise-form {
     display:none;
     width:100%;
 }
 
-.form-title{
+.form-title {
     font-size:1.5rem;
     font-weight:bold;
     margin-bottom:10px;
     text-align:center;
 }
 
-.side-by-side{
+.side-by-side {
     display:flex;
     gap:10px;
     margin-bottom:10px;
 }
 
-#exercise-types, #competition-types{
+#exercise-types, #competition-types {
     display:flex;
     justify-content:space-around;
     margin:10px 0;
 }
 
-.ex-type, .comp-type{
+.ex-type, .comp-type {
     display:flex;
     flex-direction:column;
     align-items:center;
 }
 
-#exercise-types .circle, #competition-types .circle{
+#exercise-types .circle, #competition-types .circle {
     width:30px;
     height:30px;
     border:2px solid white;
@@ -292,26 +299,19 @@ table.calendar td{
 
 #competition-types .circle.selected {
     background-color: white;
-    border-color: white;
 }
 
-
-.circle{
-    width:30px;
-    height:30px;
-    border:2px solid white;
-    border-radius:50%;
-    background:#131313;
-    cursor:pointer;
+.circle {
+    transition: all 0.2s;
 }
 
-.type-label{
+.type-label {
     margin-top:5px;
     font-size:0.85rem;
     text-align:center;
 }
 
-input{
+input {
     width:100%;
     padding:8px;
     font-size:1rem;
@@ -321,9 +321,8 @@ input{
     box-sizing:border-box;
 }
 
-button#submit-competition, button#submit-exercise{
-    margin: 20px auto 0 auto;
-    display: block;
+button#submit-competition, button#submit-exercise {
+    margin-top:10px;
     padding:10px 25px;
     border:none;
     border-radius:20px;
@@ -331,8 +330,24 @@ button#submit-competition, button#submit-exercise{
     color:white;
     cursor:pointer;
     font-size:18px;
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
 }
 
+#comp-info-popup {
+    width:40vw;
+    max-width:400px;
+    min-height:150px;
+    background:#131313;
+    border:2px solid white;
+    border-radius:25px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:15px;
+    padding:15px;
+}
 </style>
 
 <script>
@@ -343,8 +358,8 @@ const addExBtn = document.getElementById("add-ex-btn");
 const compForm = document.getElementById("competition-form");
 const exForm = document.getElementById("exercise-form");
 const popupSelection = document.getElementById("popup-selection");
-const circles = document.querySelectorAll(".circle");
 const submitCompBtn = document.getElementById("submit-competition");
+const circles = document.querySelectorAll(".circle");
 
 plusBtn.onclick = () => {
     popupOverlay.style.display = "flex";
@@ -358,7 +373,6 @@ popupOverlay.onclick = (e) => {
         popupOverlay.style.display = "none";
         compForm.style.display = "none";
         exForm.style.display = "none";
-        popupSelection.classList.remove("top");
     }
 };
 
@@ -374,13 +388,6 @@ addExBtn.onclick = () => {
     popupSelection.classList.add("top");
 };
 
-circles.forEach(circle => {
-    circle.onclick = () => {
-        circles.forEach(c => c.style.background = "#131313");
-        circle.style.background = circle.dataset.color;
-    };
-});
-
 const compCircles = document.querySelectorAll("#competition-types .circle");
 compCircles.forEach(circle => {
     circle.onclick = () => {
@@ -388,10 +395,23 @@ compCircles.forEach(circle => {
     };
 });
 
+const exCircles = document.querySelectorAll("#exercise-types .circle");
+exCircles.forEach(circle => {
+    circle.onclick = () => {
+        exCircles.forEach(c => c.style.background = "#131313");
+        circle.style.background = circle.dataset.color;
+    };
+});
 
 submitCompBtn.onclick = () => {
     const name = document.getElementById("comp-name").value;
     const date = document.getElementById("comp-date").value;
+    const time = document.getElementById("comp-time").value;
+    const distance = document.getElementById("comp-distance").value;
+    const types = [];
+    compCircles.forEach(c => {
+        if(c.classList.contains("selected")) types.push(c.dataset.name);
+    });
     if(!name || !date) return;
     const day = new Date(date).getDate();
     document.querySelectorAll("table.calendar td").forEach(td => {
@@ -400,6 +420,7 @@ submitCompBtn.onclick = () => {
             const pill = document.createElement("div");
             pill.className = "comp-pill";
             pill.textContent = name;
+            pill.dataset.info = JSON.stringify({name,date,time,distance,types});
             td.appendChild(pill);
         }
     });
@@ -410,8 +431,36 @@ submitCompBtn.onclick = () => {
     compCircles.forEach(c => c.classList.remove("selected"));
     popupOverlay.style.display = "none";
 };
+
+document.addEventListener("click", e => {
+    const pill = e.target.closest(".comp-pill");
+    if(pill){
+        const overlay = document.getElementById("comp-info-overlay");
+        const popup = document.getElementById("comp-info-popup");
+        const content = document.getElementById("comp-info-content");
+        const info = JSON.parse(pill.dataset.info);
+        content.innerHTML = `
+            <div><strong>Name:</strong> ${info.name}</div>
+            <div><strong>Date:</strong> ${info.date}</div>
+            <div><strong>Start Time:</strong> ${info.time}</div>
+            <div><strong>Distance (km):</strong> ${info.distance}</div>
+            <div><strong>Type(s):</strong> ${info.types.join(", ")}</div>
+        `;
+        overlay.style.display = "flex";
+    }
+    const infoOverlay = document.getElementById("comp-info-overlay");
+    if(e.target === infoOverlay){
+        infoOverlay.style.display = "none";
+    }
+});
 </script>
 {% endblock %}
+
+
+
+
+
+
 
 
 
