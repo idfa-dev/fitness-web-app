@@ -3,7 +3,9 @@
 
 package com.example
 
+import com.example.database.WorkoutExercise
 import com.example.database.Workout
+import com.example.database.Exercise
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.pebble.respondTemplate
@@ -36,5 +38,12 @@ suspend fun ApplicationCall.mixed_workouts() {
     suspendTransaction {
         val workouts = Workout.all().filter {it.type==3}.toList()
         respondTemplate("display_workouts.peb", mapOf("workouts" to workouts))
+    }
+}
+
+suspend fun ApplicationCall.display_workout(workout: Workout) {
+    suspendTransaction {
+        val exercises = WorkoutExercise.all().filter {it.workout==Workout}.toList()
+        respondTemplate("display_workout.peb", mapOf("exercises" to exercises))
     }
 }
