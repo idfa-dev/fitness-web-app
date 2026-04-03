@@ -23,21 +23,13 @@ fun Application.configureRouting() {
             call.respond(PebbleContent("workouts.peb", mapOf("currentPage" to "workouts")))
         }
 
-        get("/workouts/cardio") {
-            call.respond(PebbleContent("cardio_workouts.peb", mapOf("currentPage" to "workouts")))
-        }
+        get("/workouts/cardio") {call.cardio_workouts()}
 
-        get("/workouts/bodyweight") {
-            call.respond(PebbleContent("bodyweight_workouts.peb", mapOf("currentPage" to "workouts")))
-        }
+        get("/workouts/bodyweight") {call.bodyweight_workouts()}
 
-        get("/workouts/resistance") {
-            call.respond(PebbleContent("resistance_workouts.peb", mapOf("currentPage" to "workouts")))
-        }
+        get("/workouts/resistance") {call.resistance_workouts()}
 
-        get("/workouts/mixed") {
-            call.respond(PebbleContent("mixed_workouts.peb", mapOf("currentPage" to "workouts")))
-        }
+        get("/workouts/mixed") {call.mixed_workouts()}
 
         get("/workouts/saved") {
             call.respond(PebbleContent("saved_workouts.peb", mapOf("currentPage" to "workouts")))

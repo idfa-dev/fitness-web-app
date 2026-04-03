@@ -355,3 +355,17 @@ button:hover {
     background-color: #2e2e2e;
     cursor: pointer;
 }
+
+/* WORKOUT PAGES */
+.workout-container {
+    text-align: center;
+    padding: 60px 60px;
+    display: block;
+    margin: 12px auto;
+    font-size: 32px;
+    border: 2px solid white;
+    width: 500px;
+    text-decoration: none;
+    color: white;
+    background-color: #E32141;
+}

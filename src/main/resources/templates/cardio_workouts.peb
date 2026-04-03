@@ -5,24 +5,12 @@
 {% block header %}
 
 <div class="center">
-    <h1><span style="color: #D4213E">CARDIO</span> WORKOUTS</h1>
+    <h1><span style="color: #E32141">CARDIO</span> WORKOUTS</h1>
 </div>
-<div class="img-container">
-    <img class="workout-img" src="/static/images/placeholder_1.png" alt="placeholder image of a number 1">
-</div>
-<div class="img-container">
-    <img class="workout-img" src="/static/images/placeholder_2.png" alt="placeholder image of a number 2">
-</div>
-<div class="img-container">
-    <img class="workout-img" src="/static/images/placeholder_3.png" alt="placeholder image of a number 3">
-</div>
-<div class="img-container">
-    <img class="workout-img" src="/static/images/placeholder_4.png" alt="placeholder image of a number 4">
-</div>
-<div class="img-container">
-    <img class="workout-img" src="/static/images/placeholder_5.png" alt="placeholder image of a number 5">
-</div>
-<div class="img-container">
-    <img class="workout-img" src="/static/images/placeholder_6.png" alt="placeholder image of a number 6">
-</div>
+{% for workout in workouts %}
+    <div class="workout-container">
+        <p><b> {{ workout['name'] }} </b></p>
+        <p style="font-size: 16px;"><em> {{ workout['desc'] }} </em></p>
+    </div>
+{% endfor %}
 {% endblock %}
