@@ -43,7 +43,13 @@ suspend fun ApplicationCall.mixed_workouts() {
 
 suspend fun ApplicationCall.display_workout(workout: Workout) {
     suspendTransaction {
-        val exercises = WorkoutExercise.all().filter {it.workout==Workout}.toList()
-        respondTemplate("display_workout.peb", mapOf("exercises" to exercises))
+        val exercises = WorkoutExercise.all().filter {it.workout==workout}.toList()
+        val exerciseInfo = mutableListOf<Exercise>()
+        for (x in 0..exercises.size-1) {
+            var exercise = Exercise.all().firstOrNull {it.id==exercises[x].id}
+            if (exercise != null) {
+                exerciseInfo.add(exercise)
+            }
+        }
     }
 }
