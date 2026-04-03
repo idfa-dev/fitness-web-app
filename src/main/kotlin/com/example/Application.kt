@@ -8,6 +8,7 @@ import org.jetbrains.exposed.v1.core.StdOutSqlLogger
 import com.example.database.*
 
 fun Application.module() {
+  
     Database.connect("jdbc:h2:mem:fitness;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver") // Starts com.example.database connection (fitness = dbname)
 
     transaction {
