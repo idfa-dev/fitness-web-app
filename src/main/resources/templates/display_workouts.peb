@@ -1,0 +1,20 @@
+{% extends "base.peb" %}
+{% set w = ["Cardio", "Bodyweight", "Resistance", "Mixed"] %} {# list containing workout types #}
+{% set colours = ["E32141", "0F95CB", "196B24", "FFC000"] %} {#  list containing workout type colours #}
+{% set type = workouts[0].type %} {#  line to find workout type #}
+{% block title %}{{ w[type] }} Workouts {% endblock %}
+
+{% block header %}
+<div class="center">
+    <h1><span style="color: #{{ colours[type] }}">{{w[type] | upper}}</span> WORKOUTS</h1>
+</div>
+
+{% endblock %}
+{% block content %}
+{% for workout in workouts %}
+    <div class="workout-container" style="background-color: #{{ colours[type] }};">
+        <p><b> {{ workout['name'] }} </b></p>
+        <p style="font-size: 16px;"><em> {{ workout['desc'] }} </em></p>
+    </div>
+{% endfor %}
+{% endblock %}
