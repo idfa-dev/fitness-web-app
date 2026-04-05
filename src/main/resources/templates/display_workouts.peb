@@ -12,9 +12,9 @@
 {% endblock %}
 {% block content %}
 {% for workout in workouts %}
-    <div class="workout-container" style="background-color: #{{ colours[type] }};">
+    <a class="workout-container" style="background-color: #{{ colours[type] }};" href="/workouts/{{ workout['id'] }}">
         <p><b> {{ workout['name'] }} </b></p>
         <p style="font-size: 16px;"><em> {{ workout['desc'] }} </em></p>
-    </div>
+    </a>
 {% endfor %}
 {% endblock %}

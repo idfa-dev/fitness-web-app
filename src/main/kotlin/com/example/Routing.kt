@@ -1,5 +1,6 @@
 package com.example
 
+import com.example.database.Workout
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -23,6 +24,13 @@ fun Application.configureRouting() {
 
         get("/workouts") {
             call.respond(PebbleContent("workouts.peb", mapOf("currentPage" to "workouts")))
+        }
+
+        get("/workouts/{id}") {
+            val id = call.parameters["id"]?.toIntOrNull()
+            if (id != null) {
+                call.display_workout(id)
+            }
         }
 
         get("/workouts/cardio") {call.cardio_workouts()}

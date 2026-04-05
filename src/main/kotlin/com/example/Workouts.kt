@@ -10,6 +10,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.pebble.respondTemplate
 import io.ktor.server.response.respond
+import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import kotlin.text.toInt
 
@@ -41,15 +42,30 @@ suspend fun ApplicationCall.mixed_workouts() {
     }
 }
 
-suspend fun ApplicationCall.display_workout(workout: Workout) {
+// Class definition for workout object to be passed in the respondTemplate call for display_workout (below)
+class WorkoutObject (
+    var workout: Workout,
+    var exercises: MutableList<WorkoutExercise>,
+    var exerciseInfo: MutableList<Exercise>
+)
+
+suspend fun ApplicationCall.display_workout(id: Int) {
     suspendTransaction {
-        val exercises = WorkoutExercise.all().filter {it.workout==workout}.toList()
+        val workout = Workout.get(id)
+        val exercises = WorkoutExercise.all().filter {it.workout==workout}.toMutableList()
         val exerciseInfo = mutableListOf<Exercise>()
-        for (x in 0..exercises.size-1) {
+        for (x in 0..exercises.size - 1) {
             var exercise = Exercise.all().firstOrNull {it.id==exercises[x].id}
             if (exercise != null) {
                 exerciseInfo.add(exercise)
             }
         }
+        val wo = WorkoutObject(
+            workout = workout,
+            exercises = exercises,
+            exerciseInfo = exerciseInfo
+        )
+
+        respondTemplate("display_workout.peb", mapOf("workout" to wo))
     }
 }
