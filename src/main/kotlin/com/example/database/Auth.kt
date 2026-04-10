@@ -11,3 +11,11 @@ fun authenticateUser(username: String, password: String): Boolean {
         }.firstOrNull() != null
     }
 }
+
+fun doesCollide(username: String, email: String): Boolean {
+    return transaction {
+        Users.selectAll().where {
+            (Users.username eq username) or (Users.email eq email)
+        }.firstOrNull() != null
+    }
+}

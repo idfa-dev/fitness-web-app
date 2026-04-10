@@ -10,6 +10,9 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 import com.example.database.authenticateUser //importing authentication from auth.kt
+import com.example.database.doesCollide //importing collision checker from auth.kt
+import com.example.database.User
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod daabase
 import io.ktor.server.request.receiveParameters
 
 fun Application.configureRouting() {
@@ -132,7 +135,7 @@ fun Application.configureRouting() {
 
             println("Username: $username, Password: $password") //input check for sign-in
             
-            val isValid = authenticateUser(username, password)
+            var isValid = authenticateUser(username, password)
 
             // 
             if (isValid) {
@@ -145,8 +148,56 @@ fun Application.configureRouting() {
 
         }
 
-        get("/sign-up") {
+         get("/sign-up") {
             call.respond(PebbleContent("sign-up.peb", mapOf("currentPage" to "sign-up")))
+        }
+
+        post("/sign-up") {
+            val parameters = call.receiveParameters()
+
+            
+            val _username = parameters["username"] ?: "Input not received."
+            val _email = parameters["email"] ?: "Input not received."
+            val _password = parameters["password"] ?: "Input not received."
+            val _usertype = parameters["usertype"] ?: "Input not received."
+            
+            //Prints the actual like user input for the log in
+            println("Username: $_username, Email: $_email, Password: $_password") // debug
+
+
+            //collision check
+            val userExists = doesCollide(_username, _email)
+
+            var success = false
+
+            if ( userExists ) {
+                call.respondText("User already exists. Please sign in instead.")
+                return@post 
+            }
+            else
+            {
+                transaction{
+                    User.new {
+                        type = 0              // Would love to add type but currenty not sure
+                        username = _username   // how that works iwth this number system, 
+                        password = _password   // have to discuss it first
+                        email = _email
+                        fname = ""
+                        height = 0f
+                        weight = 0f
+                        dob = ""
+                        sex = ""
+                    }
+                }
+
+                success = true
+            }
+
+            if (success) {
+                call.respondRedirect("/sign-in") // redirect to sign-in
+            } else {    //error
+                call.respondText("Failed to create user. Please try again.")
+            }
         }
 
         get("/landing") {
