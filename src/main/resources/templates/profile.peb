@@ -7,6 +7,84 @@ Profile
 <a href="/profile/profile_info" class="profile-info-button">Edit Profile</a>
 {% endblock %}
 
-{% block action %}
+{% block content %}
+<div class="chart-container">
+    <canvas id="workoutChart"></canvas>
+</div>
+{% endblock %}
 
-{% endblock %}  
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const labels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+const cardioData = [30, 20, 40, 25, 35, 50, 45];
+const bodyweightData = [15, 25, 20, 30, 10, 20, 15];
+const resistanceData = [20, 30, 25, 35, 40, 30, 20];
+const mixedData = [10, 15, 5, 20, 15, 10, 25];
+
+const ctx = document.getElementById("workoutChart");
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [
+            {
+                label: "Cardio",
+                data: cardioData,
+                backgroundColor: "red"
+            },
+            {
+                label: "Bodyweight",
+                data: bodyweightData,
+                backgroundColor: "blue"
+            },
+            {
+                label: "Resistance",
+                data: resistanceData,
+                backgroundColor: "green"
+            },
+            {
+                label: "Mixed",
+                data: mixedData,
+                backgroundColor: "yellow"
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                labels: {
+                    color: "white"
+                }
+            }
+        },
+        scales: {
+            x: {
+                ticks: {
+                    color: "white"
+                }
+            },
+            y: {
+                ticks: {
+                    color: "white"
+                },
+                title: {
+                    display: true,
+                    text: "Minutes",
+                    color: "white",
+                    font: {
+                        size: 14
+                    }
+                },
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

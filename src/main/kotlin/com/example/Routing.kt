@@ -8,6 +8,11 @@ import io.ktor.server.pebble.PebbleContent
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import com.example.database.User
+import com.example.database.Users
+import org.jetbrains.exposed.v1.core.eq
+import com.example.WorkoutData
 
 import com.example.database.authenticateUser //importing authentication from auth.kt
 import io.ktor.server.request.receiveParameters
@@ -115,7 +120,43 @@ fun Application.configureRouting() {
         }
 
         get("/profile/profile_info") {
-            call.respond(PebbleContent("profile_info.peb", mapOf("currentPage" to "profile")))
+            val user = transaction {
+                User.find { Users.username eq "regulardude123" }.firstOrNull()
+            }
+
+            val context = mutableMapOf<String, Any>(
+                "currentPage" to "profile"
+            )
+
+            user?.let { context["user"] = it }
+            call.respond(PebbleContent("profile_info.peb", context))
+        }
+
+        post("/profile/profile_info") {
+            val params = call.receiveParameters()
+
+            val fname = params["fname"]
+            val sex = params["sex"]
+            val age = params["age"]
+            val height = params["height"]?.toFloatOrNull()
+            val weight = params["weight"]?.toFloatOrNull()
+
+            println("POST ROUTE HIT")
+
+            transaction {
+                val user = User.find { Users.username eq "regulardude123" }.firstOrNull()
+
+                if (user != null) {
+                    if (!fname.isNullOrBlank()) user.fname = fname
+                    if (!sex.isNullOrBlank()) user.sex = sex
+                    height?.let { user.height = it }
+                    weight?.let { user.weight = it }
+                    if (!age.isNullOrBlank()) {
+                        user.age = age.toInt()
+                    }
+                }
+            }
+            call.respondRedirect("/profile/profile_info")
         }
 
         get("/sign-in") {
