@@ -9,6 +9,8 @@ import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
 
+import com.example.database.authenticateUser //importing authentication from auth.kt
+import io.ktor.server.request.receiveParameters
 
 fun Application.configureRouting() {
     routing {
@@ -63,13 +65,9 @@ fun Application.configureRouting() {
             call.respond(PebbleContent("create_mixed_workout.peb", mapOf("currentPage" to "workouts")))
         }
 
-        get("/exercises") {
-            call.respond(PebbleContent("exercises.peb", mapOf("currentPage" to "exercises")))
-        }
+        get("/exercises") {call.exercises()}
 
-        get("/exercises/view_exercise") {
-            call.respond(PebbleContent("view_exercise.peb", mapOf("currentPage" to "view_exercise")))
-        }       
+        get("/exercises/{id}") {call.exercise()}
 
         get("/calendar") {
             val now = LocalDate.now()
@@ -116,8 +114,35 @@ fun Application.configureRouting() {
             call.respond(PebbleContent("profile.peb", mapOf("currentPage" to "profile")))
         }
 
+        get("/profile/profile_info") {
+            call.respond(PebbleContent("profile_info.peb", mapOf("currentPage" to "profile")))
+        }
+
         get("/sign-in") {
             call.respond(PebbleContent("sign-in.peb", mapOf("currentPage" to "sign-in")))
+        }
+
+        post("/sign-in") {  // Handling sign-in, for now only works for regulardude123, password regular
+
+            
+            val parameters = call.receiveParameters()
+
+            val username = parameters["username"] ?: "Input not received."  //second case for input check
+            val password = parameters["password"] ?: "Input not received."
+
+            println("Username: $username, Password: $password") //input check for sign-in
+            
+            val isValid = authenticateUser(username, password)
+
+            // 
+            if (isValid) {
+                call.respondRedirect("/")   //redirects ot the actual home page
+            }
+            else 
+            {
+                call.respondText("Invalid details. Please try again.")  //error message on failure
+            }
+
         }
 
         get("/sign-up") {
