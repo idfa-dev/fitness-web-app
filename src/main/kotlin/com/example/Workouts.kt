@@ -45,25 +45,17 @@ suspend fun ApplicationCall.mixed_workouts() {
 // Class definition for workout object to be passed in the respondTemplate call for display_workout (below)
 class WorkoutObject (
     var workout: Workout,
-    var exercises: MutableList<WorkoutExercise>,
-    var exerciseInfo: MutableList<Exercise>
+    var exercises: MutableList<WorkoutExercise>
 )
 
 suspend fun ApplicationCall.display_workout(id: Int) {
     suspendTransaction {
         val workout = Workout.get(id)
-        val exercises = WorkoutExercise.all().filter {it.workout==workout}.toMutableList()
-        val exerciseInfo = mutableListOf<Exercise>()
-        for (x in 0..exercises.size - 1) {
-            var exercise = Exercise.all().firstOrNull {it.id==exercises[x].id}
-            if (exercise != null) {
-                exerciseInfo.add(exercise)
-            }
-        }
+        val exercises = WorkoutExercise.all().filter {it.workout==workout}.sortedBy {it.order}.toMutableList() // Sorting by order
+
         val wo = WorkoutObject(
-            workout = workout,
-            exercises = exercises,
-            exerciseInfo = exerciseInfo
+            workout = workout, // Containing the workout content (name, desc, type)
+            exercises = exercises // Containing the workout exercise content (workout, exercise, order, sets, reps, duration)
         )
 
         respondTemplate("display_workout.peb", mapOf("workout" to wo))
