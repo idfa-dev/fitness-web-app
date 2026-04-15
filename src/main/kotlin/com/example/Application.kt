@@ -7,8 +7,12 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.core.StdOutSqlLogger
 import com.example.database.*
 
+import org.h2.tools.Server //db viewer thing
+
 fun Application.module() {
-  
+
+    Server.createWebServer("-webPort", "8082", "-webAllowOthers").start() // view db
+
     Database.connect("jdbc:h2:mem:fitness;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver") // Starts com.example.database connection (fitness = dbname)
 
     transaction {
