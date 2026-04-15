@@ -1,4 +1,4 @@
-// Table schema for User
+// Table schema for Users
 
 package com.example.database
 
