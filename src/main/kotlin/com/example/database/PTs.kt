@@ -1,4 +1,4 @@
-// Table schema for PT
+// Table schema for PTs
 
 package com.example.database
 

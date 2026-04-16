@@ -1,4 +1,4 @@
-// Table schema for ClientTable
+// Table schema for Clients
 
 package com.example.database
 
