@@ -12,8 +12,6 @@ import io.ktor.serialization.kotlinx.json.*
 import org.h2.tools.Server //db viewer thing
 
 fun Application.module() {
-  
-    //Server.createWebServer("-webPort", "8082", "-webAllowOthers").start() // view db
 
     install(ContentNegotiation) {
         json()
