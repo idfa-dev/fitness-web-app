@@ -9,7 +9,6 @@ import io.ktor.server.pebble.PebbleContent
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import com.example.database.User
 import com.example.database.Users
 import org.jetbrains.exposed.v1.core.eq
@@ -17,7 +16,6 @@ import com.example.WorkoutData
 
 import com.example.database.authenticateUser //importing authentication from auth.kt
 import com.example.database.doesCollide //importing collision checker from auth.kt
-import com.example.database.User
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod daabase
 import io.ktor.server.request.receiveParameters
 

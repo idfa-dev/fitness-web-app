@@ -13,7 +13,7 @@ import org.h2.tools.Server //db viewer thing
 
 fun Application.module() {
   
-    Server.createWebServer("-webPort", "8082", "-webAllowOthers").start() // view db
+    //Server.createWebServer("-webPort", "8082", "-webAllowOthers").start() // view db
 
     install(ContentNegotiation) {
         json()
@@ -41,66 +41,71 @@ fun Application.module() {
 
             println("Created User 1 with id = ${user1.id} and username = ${user1.username}")
         }
-        
-        if (Exercise.all().empty()) {
 
-            println("Seeding exercises...")
+        WorkoutExercise.all().forEach { it.delete() }
+        Workout.all().forEach { it.delete() }
+        Exercise.all().forEach { it.delete() }
 
-            Exercise.new {
-                name = "Treadmill"
-                type = 0
-                url = "G7QjU44eBvA"
-                rating = 1
-            }
+        println("Seeding exercises...")
 
-            Exercise.new {
-                name = "Rowing machine"
-                type = 0
-                url = "J1nf2Zfbazs"
-                rating = 2
-            }
+        val c_ex_1 = Exercise.new {
+            name = "Treadmill"
+            type = 0
+            url = "G7QjU44eBvA"
+            rating = 1
+        }
 
-            Exercise.new {
-                name = "Push ups"
-                type = 1
-                url = "IODxDxX7oi4"
-                rating = 1
-            }
+        val c_ex_2 = Exercise.new {
+            name = "Rowing machine"
+            type = 0
+            url = "J1nf2Zfbazs"
+            rating = 2
+        }
 
-            Exercise.new {
-                name = "Pull ups"
-                type = 1
-                url = "eGo4IYlbE5g"
-                rating = 2
-            }
+        val bw_ex_1 = Exercise.new {
+            name = "Push ups"
+            type = 1
+            url = "IODxDxX7oi4"
+            rating = 1
+        }
 
-            Exercise.new {
-                name = "Barbell bench press"
-                type = 2
-                url = "gRVjAtPip0Y"
-                rating = 2
-            }
+        val bw_ex_2 = Exercise.new {
+            name = "Pull ups"
+            type = 1
+            url = "eGo4IYlbE5g"
+            rating = 2
+        }
 
-            Exercise.new {
-                name = "Barbell squat"
-                type = 2
-                url = "my0tLDaWyDU"
-                rating = 2
-            }
+        val r_ex_1 = Exercise.new {
+            name = "Barbell bench press"
+            type = 2
+            url = "gRVjAtPip0Y"
+            rating = 2
+        }
 
-            Exercise.new {
-                name = "Farmer's walk"
-                type = 3
-                url = "NH7Xv-7NQNQ"
-                rating = 3
-            }
+        val r_ex_2 = Exercise.new {
+            name = "Barbell squat"
+            type = 2
+            url = "my0tLDaWyDU"
+            rating = 2
+        }
 
-            Exercise.new {
-                name = "Clean and jerk"
-                type = 3
-                url = "PjY1rH4_MOA"
-                rating = 3
-            }
+        val m_ex_1 = Exercise.new {
+            name = "Farmer's walk"
+            type = 3
+            url = "NH7Xv-7NQNQ"
+            rating = 3
+        }
+
+        val m_ex_2 = Exercise.new {
+            name = "Clean and jerk"
+            type = 3
+            url = "PjY1rH4_MOA"
+            rating = 3
+        }
+
+        for (exercise in Exercise.all()) {
+            println("Created exercise with id: ${exercise.id}, name: ${exercise.name}, type: ${exercise.type}, rating: ${exercise.rating}")
         }
 
         // Workout insertions
