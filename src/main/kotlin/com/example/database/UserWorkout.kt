@@ -1,4 +1,4 @@
-// UserWorkout entity, mapping onto UserWorkout table
+// UserWorkout entity, mapping onto UserWorkouts
 
 package com.example.database
 
@@ -10,5 +10,7 @@ class UserWorkout(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<UserWorkout>(UserWorkouts)
 
     var user by User referencedOn UserWorkouts.user
-    var exercise by Exercise referencedOn UserWorkouts.exercise
+    var name by UserWorkouts.name
+    var desc by UserWorkouts.desc
+    var type by UserWorkouts.type
 }

@@ -1,4 +1,4 @@
-// User entity, mapping onto User table
+// User entity, mapping onto Users
 
 package com.example.database
 
