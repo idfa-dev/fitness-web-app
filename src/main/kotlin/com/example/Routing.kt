@@ -1,5 +1,6 @@
 package com.example
 
+import com.example.database.Workout
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -8,13 +9,14 @@ import io.ktor.server.pebble.PebbleContent
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import com.example.database.User
 import com.example.database.Users
 import org.jetbrains.exposed.v1.core.eq
 import com.example.WorkoutData
 
 import com.example.database.authenticateUser //importing authentication from auth.kt
+import com.example.database.doesCollide //importing collision checker from auth.kt
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod daabase
 import io.ktor.server.request.receiveParameters
 
 fun Application.configureRouting() {
@@ -30,21 +32,20 @@ fun Application.configureRouting() {
             call.respond(PebbleContent("workouts.peb", mapOf("currentPage" to "workouts")))
         }
 
-        get("/workouts/cardio") {
-            call.respond(PebbleContent("cardio_workouts.peb", mapOf("currentPage" to "workouts")))
+        get("/workouts/{id}") {
+            val id = call.parameters["id"]?.toIntOrNull()
+            if (id != null) {
+                call.display_workout(id)
+            }
         }
 
-        get("/workouts/bodyweight") {
-            call.respond(PebbleContent("bodyweight_workouts.peb", mapOf("currentPage" to "workouts")))
-        }
+        get("/workouts/cardio") {call.cardio_workouts()}
 
-        get("/workouts/resistance") {
-            call.respond(PebbleContent("resistance_workouts.peb", mapOf("currentPage" to "workouts")))
-        }
+        get("/workouts/bodyweight") {call.bodyweight_workouts()}
 
-        get("/workouts/mixed") {
-            call.respond(PebbleContent("mixed_workouts.peb", mapOf("currentPage" to "workouts")))
-        }
+        get("/workouts/resistance") {call.resistance_workouts()}
+
+        get("/workouts/mixed") {call.mixed_workouts()}
 
         get("/workouts/saved") {
             call.respond(PebbleContent("saved_workouts.peb", mapOf("currentPage" to "workouts")))
@@ -173,7 +174,7 @@ fun Application.configureRouting() {
 
             println("Username: $username, Password: $password") //input check for sign-in
             
-            val isValid = authenticateUser(username, password)
+            var isValid = authenticateUser(username, password)
 
             // 
             if (isValid) {
@@ -186,8 +187,56 @@ fun Application.configureRouting() {
 
         }
 
-        get("/sign-up") {
+         get("/sign-up") {
             call.respond(PebbleContent("sign-up.peb", mapOf("currentPage" to "sign-up")))
+        }
+
+        post("/sign-up") {
+            val parameters = call.receiveParameters()
+
+            
+            val _username = parameters["username"] ?: "Input not received."
+            val _email = parameters["email"] ?: "Input not received."
+            val _password = parameters["password"] ?: "Input not received."
+            val _usertype = parameters["usertype"] ?: "Input not received."
+            
+            //Prints the actual like user input for the log in
+            println("Username: $_username, Email: $_email, Password: $_password") // debug
+
+
+            //collision check
+            val userExists = doesCollide(_username, _email)
+
+            var success = false
+
+            if ( userExists ) {
+                call.respondText("User already exists. Please sign in instead.")
+                return@post 
+            }
+            else
+            {
+                transaction{
+                    User.new {
+                        type = 0              // Would love to add type but currenty not sure
+                        username = _username   // how that works iwth this number system, 
+                        password = _password   // have to discuss it first
+                        email = _email
+                        fname = ""
+                        height = 0f
+                        weight = 0f
+                        dob = ""
+                        sex = ""
+                    }
+                }
+
+                success = true
+            }
+
+            if (success) {
+                call.respondRedirect("/sign-in") // redirect to sign-in
+            } else {    //error
+                call.respondText("Failed to create user. Please try again.")
+            }
         }
 
         get("/landing") {
