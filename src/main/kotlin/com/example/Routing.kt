@@ -15,6 +15,8 @@ import org.jetbrains.exposed.v1.core.eq
 import com.example.WorkoutData
 
 import com.example.database.authenticateUser //importing authentication from auth.kt
+import com.example.database.doesCollide //importing collision checker from auth.kt
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod daabase
 import io.ktor.server.request.receiveParameters
 
 fun Application.configureRouting() {
