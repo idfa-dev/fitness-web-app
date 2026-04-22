@@ -67,6 +67,8 @@ fun Application.configureRouting() {
 
         get("/exercises") {call.exercises()}
 
+        get("/exercises/search") {call.search_exercises()}
+
         get("/exercises/{id}") {call.exercise()}
 
         get("/calendar") {
