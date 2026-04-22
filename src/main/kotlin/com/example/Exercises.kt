@@ -14,7 +14,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 suspend fun ApplicationCall.exercises() {
     suspendTransaction {
         val exercises = Exercise.all().sortedBy {it.name}.toList()
-        respondTemplate("exercises.peb", mapOf("exercises" to exercises))
+        respondTemplate("exercises.peb", mapOf("exercises" to exercises, "currentPage" to "exercises"))
     }
 }
 
