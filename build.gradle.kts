@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktor)
+    kotlin("plugin.serialization") version "2.3.0"
 }
 
 group = "com.example"
@@ -28,6 +29,11 @@ dependencies {
     implementation("io.pebbletemplates:pebble:3.4.0")
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
+
+    // JSON
+    implementation("io.ktor:ktor-server-content-negotiation")
+    implementation("io.ktor:ktor-serialization-kotlinx-json")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json")
 
     // Database dependencies
     implementation(libs.exposed.core)

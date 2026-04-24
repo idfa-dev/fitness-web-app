@@ -1,4 +1,4 @@
-// Client entity, mapping onto Client table
+// Client entity, mapping onto Clients
 
 package com.example.database
 
