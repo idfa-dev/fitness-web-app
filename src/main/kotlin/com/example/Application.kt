@@ -8,6 +8,7 @@ import org.jetbrains.exposed.v1.core.StdOutSqlLogger
 import com.example.database.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.sessions.*
 
 import org.h2.tools.Server //db viewer thing
 
@@ -16,6 +17,7 @@ fun Application.module() {
     install(ContentNegotiation) {
         json()
     }
+    install(Sessions)
 
     Database.connect("jdbc:h2:file:./data/fitness", driver = "org.h2.Driver") // Starts com.example.database connection (fitness = dbname)
 
