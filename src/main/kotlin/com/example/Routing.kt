@@ -16,8 +16,11 @@ import com.example.WorkoutData
 
 import com.example.database.authenticateUser //importing authentication from auth.kt
 import com.example.database.doesCollide //importing collision checker from auth.kt
+import com.example.database.getUserIdByUsername
+import io.ktor.http.HttpStatusCode
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod daabase
 import io.ktor.server.request.receiveParameters
+import io.ktor.server.sessions.*
 
 fun Application.configureRouting() {
     routing {
@@ -25,7 +28,19 @@ fun Application.configureRouting() {
         staticResources("/static", "static")
 
         get("/") {
-            call.respond(PebbleContent("home.peb", mapOf("currentPage" to "home")))
+            call.respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+        }
+
+        get("/home") {
+            val user = call.sessions.get<UserSession>()
+            print(user?.id)
+            print(user?.username)
+            if (user != null) {
+                call.respond(PebbleContent("home.peb", mapOf("currentPage" to "home")))
+            }
+            else {
+                call.respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+            }
         }
 
         get("/workouts") {
@@ -171,20 +186,24 @@ fun Application.configureRouting() {
             
             val parameters = call.receiveParameters()
 
-            val username = parameters["username"] ?: "Input not received."  //second case for input check
+            val username = parameters["username"] ?: "Input not received."  // Second case for input check
             val password = parameters["password"] ?: "Input not received."
 
-            println("Username: $username, Password: $password") //input check for sign-in
+            println("Username: $username, Password: $password") // Input check for sign-in
             
             var isValid = authenticateUser(username, password)
 
             // 
             if (isValid) {
-                call.respondRedirect("/")   //redirects ot the actual home page
+                transaction {
+                    val userID = getUserIdByUsername(username)
+                    call.sessions.set(UserSession(id=userID.toString(), username=username))
+                }
+                call.respondRedirect("/home")   // Redirects ot the actual home page
             }
             else 
             {
-                call.respondText("Invalid details. Please try again.")  //error message on failure
+                call.respondText("Invalid details. Please try again.")  // Error message on failure
             }
 
         }
@@ -239,10 +258,6 @@ fun Application.configureRouting() {
             } else {    //error
                 call.respondText("Failed to create user. Please try again.")
             }
-        }
-
-        get("/landing") {
-            call.respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
         }
     }
 }
