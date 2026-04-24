@@ -15,18 +15,42 @@
 <div class style="text-align: center">
     
     <div class = "box" style =" width: 600px; height: auto; border: 2px solid white; background: transparent; margin: auto;">
-    
-        <p style = "font-size: 30px"> E-mail: <input type="text" style = "margin-left: 20px"></input></p>
-        <p style = "font-size: 30px"> Username: <input type="text" style = "margin-left: 20px"></input></p>
-        <p style = "font-size: 30px"> Password:  <input type="text" style = "margin-left: 20px"></input></p>
+    <form action="/sign-up" method="post">
 
-        <label>Casual<input type="radio" name="toggle" value="on"></label>
-        <label>Competitor<input type="radio" name="toggle" value="on"></label>
-        <label>Personal Trainer<input type="radio" name="toggle" value="on"></label>
+        <p style = "font-size: 30px">
+        E-mail:
+        <input type="text" name="email" style = "margin-left: 20px"></input>
+        </p>
+
+        <p style = "font-size: 30px"> 
+        Username: 
+        <input type="text" name="username" style = "margin-left: 20px"></input>
+        </p>
         
+        <p style = "font-size: 30px"> 
+        Password:  
+        <input type="text" name="password"  style = "margin-left: 20px"></input></p>
+
+        <label>
+        Casual
+        <input type="radio" name="usertype" value="casual"
+        </label>
+        
+        <label>
+        Competitor
+        <input type="radio" name="usertype" value="competitor">
+        </label>
+
+        <label>
+        Personal Trainer
+        <input type="radio" name="usertype" value="personal trainer">
+        </label>
+    
         <p></p>
         
-        <button class="page-action"> SIGN UP </button>
+        <button class="page-action" type="submit"> SIGN UP </button>
+        </form>
+
         <p style = "margin-top: 10px" > Already have an account? 
         <a href="/sign-in" style ="color: #510071"> Sign In </a>
         </p>

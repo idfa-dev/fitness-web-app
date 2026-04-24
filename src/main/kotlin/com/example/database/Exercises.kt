@@ -1,4 +1,4 @@
-// Table schema for Exercise
+// Table schema for Exercises
 
 package com.example.database
 
