@@ -34,3 +34,17 @@ suspend fun ApplicationCall.exercise() {
         }
     }
 }
+
+suspend fun ApplicationCall.search_exercises() {
+    suspendTransaction {
+        val search = parameters["search"]
+
+        if (search == null) {
+            respond(HttpStatusCode.BadRequest)
+        }
+        else {
+            val exercises = Exercise.all().filter {it.name.contains(search, true)}.sortedBy {it.name}.toList()
+            respondTemplate("exercises.peb", mapOf("exercises" to exercises))
+        }
+    }
+}
