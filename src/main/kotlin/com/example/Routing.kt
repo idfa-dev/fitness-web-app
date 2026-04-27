@@ -1,6 +1,6 @@
 package com.example
 
-import com.example.database.Workout
+import com.example.database.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -9,14 +9,8 @@ import io.ktor.server.pebble.PebbleContent
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
-import com.example.database.User
-import com.example.database.Users
 import org.jetbrains.exposed.v1.core.eq
 import com.example.WorkoutData
-
-import com.example.database.authenticateUser //importing authentication from auth.kt
-import com.example.database.doesCollide //importing collision checker from auth.kt
-import com.example.database.getUserIdByUsername
 import io.ktor.http.HttpStatusCode
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod daabase
 import io.ktor.server.request.receiveParameters
@@ -47,24 +41,24 @@ fun Application.configureRouting() {
             call.respond(PebbleContent("workouts.peb", mapOf("currentPage" to "workouts")))
         }
 
+        post("/workouts") {call.saveWorkout()}
+
         get("/workouts/{id}") {
             val id = call.parameters["id"]?.toIntOrNull()
             if (id != null) {
-                call.display_workout(id)
+                call.displayWorkout(id)
             }
         }
 
-        get("/workouts/cardio") {call.cardio_workouts()}
+        get("/workouts/cardio") {call.cardioWorkouts()}
 
-        get("/workouts/bodyweight") {call.bodyweight_workouts()}
+        get("/workouts/bodyweight") {call.bodyweightWorkouts()}
 
-        get("/workouts/resistance") {call.resistance_workouts()}
+        get("/workouts/resistance") {call.resistanceWorkouts()}
 
-        get("/workouts/mixed") {call.mixed_workouts()}
+        get("/workouts/mixed") {call.mixedWorkouts()}
 
-        get("/workouts/saved") {
-            call.respond(PebbleContent("saved_workouts.peb", mapOf("currentPage" to "workouts")))
-        }
+        get("/workouts/saved") {call.savedWorkouts()}
 
         get("/workouts/create") {
             call.respond(PebbleContent("create_workout.peb", mapOf("currentPage" to "workouts")))
@@ -236,7 +230,7 @@ fun Application.configureRouting() {
             }
             else
             {
-                transaction{
+                transaction {
                     User.new {
                         type = 0              // Would love to add type but currenty not sure
                         username = _username   // how that works iwth this number system, 
