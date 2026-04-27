@@ -82,7 +82,7 @@ fun Application.configureRouting() {
 
         get("/exercises") {call.exercises()}
 
-        get("/exercises/search") {call.search_exercises()}
+        get("/exercises/search") {call.searchExercises()}
 
         get("/exercises/{id}") {call.exercise()}
 
