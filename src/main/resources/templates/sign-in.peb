@@ -12,7 +12,7 @@
 
 {% block content %}
 
-<div class style="text-aligzn: center">
+<div class style="text-align: center">
     
     <div class = "box" style =" width: 600px; height: auto; border: 2px solid white; background: transparent; margin: auto;">
     <form action="/sign-in" method="post">

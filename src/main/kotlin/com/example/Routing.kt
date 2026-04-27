@@ -1,6 +1,6 @@
 package com.example
 
-import com.example.database.Workout
+import com.example.database.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -9,15 +9,12 @@ import io.ktor.server.pebble.PebbleContent
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
-import com.example.database.User
-import com.example.database.Users
 import org.jetbrains.exposed.v1.core.eq
 import com.example.WorkoutData
-
-import com.example.database.authenticateUser //importing authentication from auth.kt
-import com.example.database.doesCollide //importing collision checker from auth.kt
+import io.ktor.http.HttpStatusCode
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod daabase
 import io.ktor.server.request.receiveParameters
+import io.ktor.server.sessions.*
 
 fun Application.configureRouting() {
     routing {
@@ -25,31 +22,43 @@ fun Application.configureRouting() {
         staticResources("/static", "static")
 
         get("/") {
-            call.respond(PebbleContent("home.peb", mapOf("currentPage" to "home")))
+            call.respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+        }
+
+        get("/home") {
+            val user = call.sessions.get<UserSession>()
+            print(user?.id)
+            print(user?.username)
+            if (user != null) {
+                call.respond(PebbleContent("home.peb", mapOf("currentPage" to "home")))
+            }
+            else {
+                call.respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+            }
         }
 
         get("/workouts") {
             call.respond(PebbleContent("workouts.peb", mapOf("currentPage" to "workouts")))
         }
 
+        post("/workouts") {call.saveWorkout()}
+
         get("/workouts/{id}") {
             val id = call.parameters["id"]?.toIntOrNull()
             if (id != null) {
-                call.display_workout(id)
+                call.displayWorkout(id)
             }
         }
 
-        get("/workouts/cardio") {call.cardio_workouts()}
+        get("/workouts/cardio") {call.cardioWorkouts()}
 
-        get("/workouts/bodyweight") {call.bodyweight_workouts()}
+        get("/workouts/bodyweight") {call.bodyweightWorkouts()}
 
-        get("/workouts/resistance") {call.resistance_workouts()}
+        get("/workouts/resistance") {call.resistanceWorkouts()}
 
-        get("/workouts/mixed") {call.mixed_workouts()}
+        get("/workouts/mixed") {call.mixedWorkouts()}
 
-        get("/workouts/saved") {
-            call.respond(PebbleContent("saved_workouts.peb", mapOf("currentPage" to "workouts")))
-        }
+        get("/workouts/saved") {call.savedWorkouts()}
 
         get("/workouts/create") {
             call.respond(PebbleContent("create_workout.peb", mapOf("currentPage" to "workouts")))
@@ -73,7 +82,7 @@ fun Application.configureRouting() {
 
         get("/exercises") {call.exercises()}
 
-        get("/exercises/search") {call.search_exercises()}
+        get("/exercises/search") {call.searchExercises()}
 
         get("/exercises/{id}") {call.exercise()}
 
@@ -171,20 +180,24 @@ fun Application.configureRouting() {
             
             val parameters = call.receiveParameters()
 
-            val username = parameters["username"] ?: "Input not received."  //second case for input check
+            val username = parameters["username"] ?: "Input not received."  // Second case for input check
             val password = parameters["password"] ?: "Input not received."
 
-            println("Username: $username, Password: $password") //input check for sign-in
+            println("Username: $username, Password: $password") // Input check for sign-in
             
             var isValid = authenticateUser(username, password)
 
             // 
             if (isValid) {
-                call.respondRedirect("/")   //redirects ot the actual home page
+                transaction {
+                    val userID = getUserIdByUsername(username)
+                    call.sessions.set(UserSession(id=userID.toString(), username=username))
+                }
+                call.respondRedirect("/home")   // Redirects ot the actual home page
             }
             else 
             {
-                call.respondText("Invalid details. Please try again.")  //error message on failure
+                call.respondText("Invalid details. Please try again.")  // Error message on failure
             }
 
         }
@@ -217,7 +230,7 @@ fun Application.configureRouting() {
             }
             else
             {
-                transaction{
+                transaction {
                     User.new {
                         type = 0              // Would love to add type but currenty not sure
                         username = _username   // how that works iwth this number system, 
@@ -239,10 +252,6 @@ fun Application.configureRouting() {
             } else {    //error
                 call.respondText("Failed to create user. Please try again.")
             }
-        }
-
-        get("/landing") {
-            call.respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
         }
     }
 }
