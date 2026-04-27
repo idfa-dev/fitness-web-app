@@ -23,7 +23,7 @@ fun Application.module() {
     transaction {
         addLogger(StdOutSqlLogger)
 
-        SchemaUtils.create(Users, PTs, Exercises, Clients, Workouts, UserWorkouts, WorkoutExercises)
+        SchemaUtils.create(Users, PTs, Exercises, Clients, Workouts, UserWorkouts, WorkoutExercises, SavedWorkouts)
 
         if (User.all().empty()) {
             val user1 = User.new {
