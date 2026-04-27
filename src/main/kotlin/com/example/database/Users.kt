@@ -19,7 +19,8 @@ object Users : IntIdTable("users") {
 /*
 user type
 
-0 = Regular
-1 = Competitive
+1 = Casual
+2 = Competitive
+3 = PT ( only for sign-up, 3 does not exist as a type in DB )
 
  */
