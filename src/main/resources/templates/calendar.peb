@@ -196,6 +196,35 @@ table.calendar td {
     cursor: pointer;
 }
 
+.exercise-dot {
+    position: absolute;
+    bottom: 0.2rem;
+    width: 20px;
+    height: 20px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.exercise-dot.red {
+    right: 5.0rem;
+    background:#E32141;
+}
+
+.exercise-dot.blue {
+    right: 3.4rem;
+    background:#0F95CB;
+}
+
+.exercise-dot.green {
+    right: 1.8rem;
+    background:#196B24;
+}
+
+.exercise-dot.yellow {
+    right: 0.2rem;
+    background:#FFC000;
+}
+
 #popup-overlay, #comp-info-overlay {
     position:fixed;
     top:0;
@@ -338,16 +367,19 @@ button#submit-competition, button#submit-exercise {
 #comp-info-popup {
     width:40vw;
     max-width:400px;
-    min-height:150px;
+    height:40vh;
     background:#131313;
     border:2px solid white;
     border-radius:25px;
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:15px;
-    padding:15px;
+    justify-content:center;
+    gap:20px;
+    padding:20px;
+    overflow-y:auto;
 }
+
 </style>
 
 <script>
@@ -360,6 +392,14 @@ const exForm = document.getElementById("exercise-form");
 const popupSelection = document.getElementById("popup-selection");
 const submitCompBtn = document.getElementById("submit-competition");
 const circles = document.querySelectorAll(".circle");
+const submitExBtn = document.getElementById("submit-exercise");
+
+const exerciseTypeMap = {
+    "Cardio": "red",
+    "Body Weight": "blue",
+    "Resistance": "green",
+    "Mixed": "yellow"
+};
 
 plusBtn.onclick = () => {
     popupOverlay.style.display = "flex";
@@ -432,7 +472,86 @@ submitCompBtn.onclick = () => {
     popupOverlay.style.display = "none";
 };
 
+submitExBtn.onclick = () => {
+    const name = document.getElementById("ex-name").value;
+    const date = document.getElementById("ex-date").value;
+    const distance = document.getElementById("ex-distance").value;
+    const timeTaken = document.getElementById("ex-time-taken").value;
+    const weight = document.getElementById("ex-weight").value;
+    const machine = document.getElementById("ex-machine").value;
+    const calories = document.getElementById("ex-calories").value;
+
+    let selectedType = null;
+
+    document.querySelectorAll("#exercise-types .circle").forEach(circle => {
+        if(circle.style.background !== "" && circle.style.background !== "rgb(19, 19, 19)") {
+            selectedType = circle.nextElementSibling.textContent;
+        }
+    });
+
+    if(!date || !selectedType) return;
+
+    const exercise = {
+        name,
+        date,
+        distance,
+        timeTaken,
+        weight,
+        machine,
+        calories,
+        type: selectedType
+    };
+
+    const day = new Date(date).getDate();
+    const colourClass = exerciseTypeMap[selectedType];
+
+    document.querySelectorAll("table.calendar td").forEach(td => {
+        const dn = td.querySelector(".day-number");
+
+        if(dn && parseInt(dn.textContent) === day){
+
+            let dot = td.querySelector(".exercise-dot." + colourClass);
+
+            if(!dot){
+                dot = document.createElement("div");
+                dot.className = "exercise-dot " + colourClass;
+                dot.dataset.exercises = JSON.stringify([]);
+                td.appendChild(dot);
+            }
+
+            const existing = JSON.parse(dot.dataset.exercises);
+            existing.push(exercise);
+            dot.dataset.exercises = JSON.stringify(existing);
+        }
+    });
+
+    popupOverlay.style.display = "none";
+};
+
 document.addEventListener("click", e => {
+    const dot = e.target.closest(".exercise-dot");
+    if(dot){
+        const overlay = document.getElementById("comp-info-overlay");
+        const content = document.getElementById("comp-info-content");
+
+        const exercises = JSON.parse(dot.dataset.exercises);
+
+        content.innerHTML = exercises.map(ex => {
+            let html = `<div style="margin-bottom:10px"><strong>${ex.name}</strong></div>`;
+
+            if(ex.distance) html += `<div>Distance: ${ex.distance} km</div>`;
+            if(ex.timeTaken) html += `<div>Time: ${ex.timeTaken}</div>`;
+            if(ex.weight) html += `<div>Weight: ${ex.weight} kg</div>`;
+            if(ex.machine) html += `<div>Machine: ${ex.machine}</div>`;
+            if(ex.calories) html += `<div>Calories Burnt: ${ex.calories} kcal</div>`;
+
+            return html
+        }).join("");
+
+        overlay.style.display = "flex";
+        return;
+    }
+
     const pill = e.target.closest(".comp-pill");
     if(pill){
         const overlay = document.getElementById("comp-info-overlay");
