@@ -1,4 +1,4 @@
-// User entity, mapping onto User table
+// User entity, mapping onto Users
 
 package com.example.database
 
@@ -17,6 +17,7 @@ class User(id: EntityID<Int>) : IntEntity(id) {
     var height by Users.height
     var weight by Users.weight
     var dob by Users.dob
+    var age by Users.age
     var sex by Users.sex
 
     override fun toString(): String {

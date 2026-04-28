@@ -1,4 +1,4 @@
-// Table schema for User
+// Table schema for Users
 
 package com.example.database
 
@@ -12,6 +12,7 @@ object Users : IntIdTable("users") {
     val fname = varchar("fname", MAX_VARCHAR_LENGTH)
     val height = float("height")
     val weight = float("weight")
+    val age = integer("age").nullable()
     val dob = varchar("dob", 10) // length 10 for dob DD-MM-YYYY
     val sex = varchar("sex", MAX_VARCHAR_LENGTH)
 }

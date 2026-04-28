@@ -1,0 +1,30 @@
+{% extends "base.peb" %}
+{% set colours = ["E32141", "0F95CB", "196B24", "FFC000"] %} {#  list containing workout type colours #}
+{% set type = workout.workout['type'] %} {#  line to find workout type #}
+{% block title %} Workout: {{ workout.workout['name'] }} {% endblock %}
+
+{% block header %}
+<div class="center">
+    <h1><span style="color: #{{ colours[type] }}">{{ workout.workout['name'] | upper }}</span></h1>
+    <h4>{{ workout.workout['desc'] }}</h4>
+</div>
+
+{% endblock %}
+{% block content %}
+<div class="center">
+    {% for exercise in workout.exercises %}
+    <div class="workout-container" style="background-color: #{{ colours[type] }};">
+        <h2>Exercise {{ exercise['order'] }}: {{ exercise['exercise'].name }}</h2>
+        <p>Sets: {{ exercise['sets'] }}</p>
+        <p>Reps (per set): {{ exercise['reps'] }}</p>
+        <p>Duration: {{ exercise['duration'] }} minutes</p>
+        <a href=/exercises/{{ exercise['exercise'].id }}>Instructions</a>
+        <br>
+    </div>
+    {% endfor %}
+    <form action="/workouts" method="POST">
+        <input type="hidden" name="workoutID" value={{ workout.workout['id'] }}>
+        <button type="submit">Save Workout</button>
+    </form>
+</div>
+{% endblock %}

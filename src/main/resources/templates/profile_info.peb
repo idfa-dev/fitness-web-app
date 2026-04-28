@@ -10,34 +10,34 @@ Profile Info
 <div class="profile-form-container">
     <form method="post" action="/profile/profile_info" class="profile-form">
         <div class="form-row">
-            <label>Username:</label>
-            <input type="text" name="username">
+            <label>First name:</label>
+            <input type="text" name="fname" value="{{ user.fname | default('') }}">
         </div>
 
         <div class="form-row">
             <label>Sex:</label>
             <select name="sex">
                 <option value="">*optional*</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-                <option value="prefer_not">Prefer not to say</option>
+                <option value="male" {% if user.sex == "male" %}selected{% endif %}>Male</option>
+                <option value="female" {% if user.sex == "female" %}selected{% endif %}>Female</option>
+                <option value="other" {% if user.sex == "other" %}selected{% endif %}>Other</option>
+                <option value="prefer_not" {% if user.sex == "prefer_not" %}selected{% endif %}>Prefer not to say</option>
             </select>
         </div>
 
         <div class="form-row">
             <label>Age:</label>
-            <input type="number" name="age" placeholder="*optional*">
+            <input type="number" name="age" value="{{ user.age |  default('') }}">
         </div>
 
         <div class="form-row">
             <label>Height (cm):</label>
-            <input type="number" name="height" placeholder="*optional*">
+            <input type="number" step="0.1" name="height" value="{{ user.height | default('') }}">
         </div>
 
         <div class="form-row">
             <label>Weight (kg):</label>
-            <input type="number" name="weight" placeholder="*optional*">
+            <input type="number" step="0.1" name="weight" value="{{ user.weight | default('') }}">
         </div>
 
         <div class="form-submit">
