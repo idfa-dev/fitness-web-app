@@ -20,16 +20,44 @@
 
             <div id="competition-form">
                 <div class="form-title">Add Competition</div>
-                <input type="text" id="comp-name" placeholder="Competition Name">
-                <input type="date" id="comp-date">
+                <div class ="required-field">
+                    <input type="text" id="comp-name" placeholder="Competition Name">
+                    <span class="required-star">*</span>
+                </div>
+                <div class ="required-field">
+                    <input type="date" id="comp-date">
+                    <span class="required-star">*</span>
+                </div>
                 <input type="time" id="comp-time">
+                <input type="number" id="comp-distance" placeholder="Distance (km)" min="0">
+                <input type="text" id="comp-finish-time" placeholder="Finish Time (hh:mm:ss)">
+                <div id="competition-types">
+                    <div class="comp-type">
+                        <div class="circle" data-color="#E32141" data-name="Running"></div>
+                        <div class="type-label">Running</div>
+                    </div>
+                    <div class="comp-type">
+                        <div class="circle" data-color="#0F95CB" data-name="Swimming"></div>
+                        <div class="type-label">Swimming</div>
+                    </div>
+                    <div class="comp-type">
+                        <div class="circle" data-color="#196B24" data-name="Cycling"></div>
+                        <div class="type-label">Cycling</div>
+                    </div>
+                </div>
                 <button id="submit-competition">Submit</button>
             </div>
 
             <div id="exercise-form">
                 <div class="form-title">Add Exercise</div>
-                <input type="text" id="ex-name" placeholder="Exercise Name">
-                <input type="date" id="ex-date">
+                <div class ="required-field">
+                    <input type="text" id="ex-name" placeholder="Exercise Name">
+                    <span class="required-star">*</span>
+                </div>
+                <div class ="required-field">
+                    <input type="date" id="ex-date">
+                    <span class="required-star">*</span>
+                </div>
                 <div class="side-by-side">
                     <input type="number" id="ex-distance" placeholder="Distance (km)" min="0">
                     <input type="text" id="ex-time-taken" placeholder="Time Taken (hh:mm:ss)">
@@ -37,6 +65,10 @@
                 <div class="side-by-side">
                     <input type="number" id="ex-weight" placeholder="Weight (kg)" min="0">
                     <input type="text" id="ex-machine" placeholder="Machine">
+                </div>
+                <div class="side-by-side">
+                    <input type="number" id="ex-calories" placeholder="Calories Burnt (kcal)">
+                    <input type="text" id="ex-sets-reps" placeholder="Sets x Reps (e.g. 3x10)">
                 </div>
                 <div id="exercise-types">
                     <div class="ex-type">
@@ -56,15 +88,21 @@
                         <div class="type-label">Mixed</div>
                     </div>
                 </div>
-                <input type="number" id="ex-calories" placeholder="Calories Burnt (kcal)">
                 <button id="submit-exercise">Submit</button>
             </div>
+        </div>
+    </div>
+
+    <div id="comp-info-overlay">
+        <div id="comp-info-popup">
+            <div id="comp-info-content"></div>
+            <button id="edit-event-btn">Update</button>
         </div>
     </div>
 </div>
 
 <style>
-html, body{
+html, body {
     margin:0;
     padding:0;
     height:100%;
@@ -73,24 +111,24 @@ html, body{
     color:white;
 }
 
-.page-title-container{
+.page-title-container {
     display:none;
 }
 
-.calendar-container{
+.calendar-container {
     width:100%;
     position:relative;
     padding-bottom:0.5rem;
 }
 
-.month-year{
+.month-year {
     font-size:6vh;
     font-weight:bold;
     margin-top:-1rem;
     margin-left:3rem;
 }
 
-.add-event-text{
+.add-event-text {
     position:absolute;
     top:1.3rem;
     right: calc(1rem + 4rem + 10px);
@@ -101,7 +139,7 @@ html, body{
     cursor:default;
 }
 
-#plus-btn{
+#plus-btn {
     position:absolute;
     top:0.5rem;
     right:1rem;
@@ -113,15 +151,19 @@ html, body{
     background:white;
     color:black;
     cursor:pointer;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 0.6rem;
 }
 
-#plus-btn:hover{
+#plus-btn:hover {
     background:#131313;
     color:white;
     border:2px solid white;
 }
 
-table.calendar{
+table.calendar {
     border-collapse:collapse;
     width:80vw;
     max-width:1200px;
@@ -129,7 +171,7 @@ table.calendar{
     margin:0.5rem 0 0 3rem;
 }
 
-table.calendar th, table.calendar td{
+table.calendar th, table.calendar td {
     border:1px solid white;
     padding:0.5rem;
     height:3.5rem;
@@ -137,25 +179,70 @@ table.calendar th, table.calendar td{
     position:relative;
 }
 
-table.calendar th{
+table.calendar th {
     text-transform:uppercase;
     font-weight:bold;
     font-size:2rem;
 }
 
-table.calendar td{
+table.calendar td {
     vertical-align:top;
     color:white;
     font-size:1.5rem;
 }
 
-.day-number{
+.day-number {
     position:absolute;
     top:0.2rem;
     right:0.2rem;
 }
 
-#popup-overlay{
+.comp-pill {
+    position: absolute;
+    top: 0.2rem;
+    left: 0.2rem;
+    background-color: #f33e7a;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 3.5rem);
+    cursor: pointer;
+}
+
+.exercise-dot {
+    position: absolute;
+    bottom: 0.2rem;
+    width: 20px;
+    height: 20px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.exercise-dot.red {
+    right: 5.0rem;
+    background:#E32141;
+}
+
+.exercise-dot.blue {
+    right: 3.4rem;
+    background:#0F95CB;
+}
+
+.exercise-dot.green {
+    right: 1.8rem;
+    background:#196B24;
+}
+
+.exercise-dot.yellow {
+    right: 0.2rem;
+    background:#FFC000;
+}
+
+#popup-overlay, #comp-info-overlay {
     position:fixed;
     top:0;
     left:0;
@@ -168,7 +255,7 @@ table.calendar td{
     z-index:1000;
 }
 
-#popup{
+#popup {
     width:60vw;
     max-width:600px;
     height:60vh;
@@ -183,7 +270,7 @@ table.calendar td{
     overflow-y:auto;
 }
 
-#popup-selection{
+#popup-selection {
     display:flex;
     gap:30px;
     justify-content:center;
@@ -191,7 +278,7 @@ table.calendar td{
     transition: all 0.3s;
 }
 
-.popup-type-btn{
+.popup-type-btn {
     background:#9933FF;
     color:white;
     border:none;
@@ -204,64 +291,73 @@ table.calendar td{
     transition: all 0.3s;
 }
 
-#popup-selection.top{
+#popup-selection.top {
     margin-top:10px;
     justify-content:center;
 }
 
-#popup-selection.top .popup-type-btn{
+#popup-selection.top .popup-type-btn {
     padding:15px 35px;
     font-size:16px;
     min-width:120px;
     min-height:50px;
 }
 
-#competition-form, #exercise-form{
+#competition-form, #exercise-form {
     display:none;
     width:100%;
 }
 
-.form-title{
+.form-title {
     font-size:1.5rem;
     font-weight:bold;
     margin-bottom:10px;
     text-align:center;
 }
 
-.side-by-side{
+.side-by-side {
     display:flex;
     gap:10px;
     margin-bottom:10px;
 }
 
-#exercise-types{
+#exercise-types, #competition-types {
     display:flex;
     justify-content:space-around;
     margin:10px 0;
 }
 
-.ex-type{
+.ex-type, .comp-type {
     display:flex;
     flex-direction:column;
     align-items:center;
 }
 
-.circle{
-    width:40px;
-    height:40px;
+#exercise-types .circle, #competition-types .circle {
+    width:30px;
+    height:30px;
     border:2px solid white;
     border-radius:50%;
     background:#131313;
     cursor:pointer;
+    transition: all 0.2s;
 }
 
-.type-label{
+#competition-types .circle.selected {
+    background-color: white;
+}
+
+.circle {
+    transition: all 0.2s;
+}
+
+.type-label {
     margin-top:5px;
     font-size:0.85rem;
     text-align:center;
 }
 
-input{
+input {
     width:100%;
     padding:8px;
     font-size:1rem;
@@ -271,7 +367,39 @@ input{
     box-sizing:border-box;
 }
 
-button#submit-competition, button#submit-exercise{
+button#submit-competition, button#submit-exercise {
+    margin-top:10px;
+    padding:10px 25px;
+    border:none;
+    border-radius:20px;
+    background:#9933FF;
+    color:white;
+    cursor:pointer;
+    font-size:18px;
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#comp-info-popup {
+    width:40vw;
+    max-width:400px;
+    height:40vh;
+    background:#131313;
+    border:2px solid white;
+    border-radius:25px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:20px;
+    padding:20px;
+    overflow-y:auto;
+    font-size:1.2rem;
+    line-height:1.6; 
+}
+
+#edit-event-btn {
     margin-top:10px;
     padding:10px 25px;
     border:none;
@@ -281,6 +409,25 @@ button#submit-competition, button#submit-exercise{
     cursor:pointer;
     font-size:18px;
 }
+
+.required-field {
+    position:relative;
+}
+
+.required-field input {
+    padding-right:20px;
+}
+
+.required-star {
+    position:absolute;
+    right:8px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#FF3B3B;
+    font-weight:bold;
+    pointer-events:none;
+}
+
 </style>
 
 <script>
@@ -291,7 +438,20 @@ const addExBtn = document.getElementById("add-ex-btn");
 const compForm = document.getElementById("competition-form");
 const exForm = document.getElementById("exercise-form");
 const popupSelection = document.getElementById("popup-selection");
+const submitCompBtn = document.getElementById("submit-competition");
 const circles = document.querySelectorAll(".circle");
+const submitExBtn = document.getElementById("submit-exercise");
+
+let currentEventElement = null;
+let currentEventData = null;
+let currentExerciseData = null;
+
+const exerciseTypeMap = {
+    "Cardio": "red",
+    "Body Weight": "blue",
+    "Resistance": "green",
+    "Mixed": "yellow"
+};
 
 plusBtn.onclick = () => {
     popupOverlay.style.display = "flex";
@@ -305,7 +465,6 @@ popupOverlay.onclick = (e) => {
         popupOverlay.style.display = "none";
         compForm.style.display = "none";
         exForm.style.display = "none";
-        popupSelection.classList.remove("top");
     }
 };
 
@@ -321,13 +480,251 @@ addExBtn.onclick = () => {
     popupSelection.classList.add("top");
 };
 
-circles.forEach(circle => {
+const compCircles = document.querySelectorAll("#competition-types .circle");
+compCircles.forEach(circle => {
     circle.onclick = () => {
-        circles.forEach(c => c.style.background = "#131313");
+        circle.classList.toggle("selected");
+    };
+});
+
+const exCircles = document.querySelectorAll("#exercise-types .circle");
+exCircles.forEach(circle => {
+    circle.onclick = () => {
+        exCircles.forEach(c => c.style.background = "#131313");
         circle.style.background = circle.dataset.color;
     };
 });
+
+submitCompBtn.onclick = () => {
+    const name = document.getElementById("comp-name").value;
+    const date = document.getElementById("comp-date").value;
+    const time = document.getElementById("comp-time").value;
+    const distance = document.getElementById("comp-distance").value;
+    const finishTime = document.getElementById("comp-finish-time").value;
+
+    const types = [];
+    compCircles.forEach(c => {
+        if(c.classList.contains("selected")) types.push(c.dataset.name);
+    });
+
+    if(!name || !date) return;
+
+    if(currentEventElement){
+        currentEventElement.textContent = name;
+        currentEventElement.dataset.info = JSON.stringify({name,date,time,distance,finishTime,types});
+
+        currentEventElement = null;
+        currentEventData = null;
+
+        document.getElementById("comp-name").value = "";
+        document.getElementById("comp-date").value = "";
+        document.getElementById("comp-time").value = "";
+        document.getElementById("comp-distance").value = "";
+        document.getElementById("comp-finish-time").value = "";
+        compCircles.forEach(c => c.classList.remove("selected"));
+
+        popupOverlay.style.display = "none";
+        return;
+    }
+
+    const day = new Date(date).getDate();
+
+    document.querySelectorAll("table.calendar td").forEach(td => {
+        const dn = td.querySelector(".day-number");
+
+        if(dn && parseInt(dn.textContent) === day){
+            const pill = document.createElement("div");
+            pill.className = "comp-pill";
+            pill.textContent = name;
+            pill.dataset.info = JSON.stringify({name,date,time,distance,types});
+            td.appendChild(pill);
+        }
+    });
+
+    document.getElementById("comp-name").value = "";
+    document.getElementById("comp-date").value = "";
+    document.getElementById("comp-time").value = "";
+    document.getElementById("comp-distance").value = "";
+    compCircles.forEach(c => c.classList.remove("selected"));
+
+    popupOverlay.style.display = "none";
+};
+
+submitExBtn.onclick = () => {
+    const name = document.getElementById("ex-name").value.trim();
+    const date = document.getElementById("ex-date").value;
+    const distance = document.getElementById("ex-distance").value;
+    const timeTaken = document.getElementById("ex-time-taken").value;
+    const weight = document.getElementById("ex-weight").value;
+    const machine = document.getElementById("ex-machine").value;
+    const calories = document.getElementById("ex-calories").value;
+    const setsReps = document.getElementById("ex-sets-reps").value;
+
+    let selectedType = null;
+
+    document.querySelectorAll("#exercise-types .circle").forEach(circle => {
+        if (circle.style.background !== "" && circle.style.background !== "rgb(19, 19, 19)") {
+            selectedType = circle.nextElementSibling.textContent;
+        }
+    });
+
+    if (!name || !date || !selectedType) return;
+
+    const exercise = {
+        name,
+        date,
+        distance,
+        timeTaken,
+        weight,
+        machine,
+        calories,
+        setsReps,
+        type: selectedType
+    };
+
+    const day = new Date(date).getDate();
+    const colourClass = exerciseTypeMap[selectedType];
+
+    document.querySelectorAll("table.calendar td").forEach(td => {
+        const dn = td.querySelector(".day-number");
+
+        if (dn && parseInt(dn.textContent) === day) {
+
+            let dot = td.querySelector(".exercise-dot." + colourClass);
+
+            if (!dot) {
+                dot = document.createElement("div");
+                dot.className = "exercise-dot " + colourClass;
+                dot.dataset.exercises = JSON.stringify([]);
+                td.appendChild(dot);
+            }
+
+            const existing = JSON.parse(dot.dataset.exercises);
+            existing.push(exercise);
+            dot.dataset.exercises = JSON.stringify(existing);
+        }
+    });
+
+    document.getElementById("ex-name").value = "";
+    document.getElementById("ex-date").value = "";
+    document.getElementById("ex-distance").value = "";
+    document.getElementById("ex-time-taken").value = "";
+    document.getElementById("ex-weight").value = "";
+    document.getElementById("ex-machine").value = "";
+    document.getElementById("ex-calories").value = "";
+    document.getElementById("ex-sets-reps").value = "";
+
+    document.querySelectorAll("#exercise-types .circle").forEach(c => {
+        c.style.background = "#131313";
+    });
+
+    popupOverlay.style.display = "none";
+};
+
+document.addEventListener("click", e => {
+    const dot = e.target.closest(".exercise-dot");
+    if(dot){
+        const overlay = document.getElementById("comp-info-overlay");
+        const content = document.getElementById("comp-info-content");
+
+        const exercises = JSON.parse(dot.dataset.exercises);
+
+        currentExerciseData = exercises[0];
+        currentEventData = null;
+
+        content.innerHTML = exercises.map(ex => {
+            let html = `<div style="margin-bottom:10px"><strong>${ex.name}</strong></div>`;
+
+            if(ex.distance) html += `<div>Distance: ${ex.distance} km</div>`;
+            if(ex.timeTaken) html += `<div>Time: ${ex.timeTaken}</div>`;
+            if(ex.weight) html += `<div>Weight: ${ex.weight} kg</div>`;
+            if(ex.machine) html += `<div>Machine: ${ex.machine}</div>`;
+            if(ex.calories) html += `<div>Calories Burnt: ${ex.calories} kcal</div>`;
+            if(ex.setsReps) html += `<div>Sets & Reps: ${ex.setsReps}</div>`;
+
+            return html
+        }).join("");
+
+        overlay.style.display = "flex";
+        return;
+    }
+
+    const pill = e.target.closest(".comp-pill");
+    if(pill){
+        const overlay = document.getElementById("comp-info-overlay");
+        const popup = document.getElementById("comp-info-popup");
+        const content = document.getElementById("comp-info-content");
+        const info = JSON.parse(pill.dataset.info);
+        currentEventElement = pill;
+        currentEventData = info;
+        content.innerHTML = `
+            <div><strong>Name:</strong> ${info.name}</div>
+            <div><strong>Date:</strong> ${info.date}</div>
+            <div><strong>Start Time:</strong> ${info.time}</div>
+            <div><strong>Distance (km):</strong> ${info.distance}</div>
+            <div><strong>Finish Time:</strong> ${info.finishTime}</div>
+            <div><strong>Type(s):</strong> ${info.types.join(", ")}</div>
+        `;
+        overlay.style.display = "flex";
+    }
+    const infoOverlay = document.getElementById("comp-info-overlay");
+    if(e.target === infoOverlay){
+        infoOverlay.style.display = "none";
+    }
+});
+
+document.getElementById("edit-event-btn").onclick = () => {
+
+    if(currentEventData){
+        document.getElementById("comp-name").value = currentEventData.name || "";
+        document.getElementById("comp-date").value = currentEventData.date || "";
+        document.getElementById("comp-time").value = currentEventData.time || "";
+        document.getElementById("comp-distance").value = currentEventData.distance || "";
+        document.getElementById("comp-finish-time").value = currentEventData.finishTime || "";
+
+        popupOverlay.style.display = "flex";
+        compForm.style.display = "block";
+        exForm.style.display = "none";
+        popupSelection.classList.add("top");
+
+        document.getElementById("comp-info-overlay").style.display = "none";
+        return;
+    }
+
+    if(currentExerciseData){
+        document.getElementById("ex-name").value = currentExerciseData.name || "";
+        document.getElementById("ex-date").value = currentExerciseData.date || "";
+        document.getElementById("ex-distance").value = currentExerciseData.distance || "";
+        document.getElementById("ex-time-taken").value = currentExerciseData.timeTaken || "";
+        document.getElementById("ex-weight").value = currentExerciseData.weight || "";
+        document.getElementById("ex-machine").value = currentExerciseData.machine || "";
+        document.getElementById("ex-calories").value = currentExerciseData.calories || "";
+        document.getElementById("ex-sets-reps").value = currentExerciseData.setsReps || "";
+
+        document.querySelectorAll("#exercise-types .circle").forEach(c=>{
+            c.style.background="#131313";
+            if(c.nextElementSibling.textContent === currentExerciseData.type){
+                c.style.background = c.dataset.color;
+            }
+        });
+
+        popupOverlay.style.display = "flex";
+        exForm.style.display = "block";
+        compForm.style.display = "none";
+        popupSelection.classList.add("top");
+
+        document.getElementById("comp-info-overlay").style.display = "none";
+    }
+};
+
 </script>
 {% endblock %}
+
+
+
+
+
+
+
 
 
