@@ -11,10 +11,10 @@
 
 {% endblock %}
 {% block content %}
-{% for workout in workouts %}
-    <a class="workout-container" style="--bgc: #{{ colours[type] }};" href="/workouts/{{ workout['id'] }}">
-        <p><b> {{ workout['name'] }} </b></p>
-        <p style="font-size: 16px;"><em> {{ workout['desc'] }} </em></p>
-    </a>
-{% endfor %}
+    {% for workout in workouts %}
+        <a class="workout-container" style="--bgc: #{{ colours[type] }};" href="/workouts/{{ workout['id'] }}">
+            <p><b> {{ workout['name'] }} </b></p>
+            <p style="font-size: 16px;"><em> {{ workout['desc'] }} </em></p>
+        </a>
+    {% endfor %}
 {% endblock %}

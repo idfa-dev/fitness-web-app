@@ -40,4 +40,7 @@ dependencies {
     implementation(libs.exposed.dao)
     implementation(libs.exposed.jdbc)
     implementation(libs.h2)
+
+    // Sessions
+    implementation(libs.ktor.server.sessions)
 }
