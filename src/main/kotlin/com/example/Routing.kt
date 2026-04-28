@@ -200,15 +200,11 @@ fun Application.configureRouting() {
             }
             // 
             if (isValid) {
-<<<<<<< HEAD
-                call.respondRedirect("/")   //redirects to the actual home page
-=======
                 transaction {
                     val userID = getUserIdByUsername(username)
                     call.sessions.set(UserSession(id=userID.toString(), username=username))
                 }
                 call.respondRedirect("/home")   // Redirects ot the actual home page
->>>>>>> eddb66e50be9d8a00da28a11658beb5efff4099d
             }
             else 
             {
@@ -245,7 +241,6 @@ fun Application.configureRouting() {
             }
             else
             {
-<<<<<<< HEAD
                 if  (_usertype == "3")
                 {
                     transaction {
@@ -275,19 +270,6 @@ fun Application.configureRouting() {
                             dob = ""
                             sex = ""
                         }
-=======
-                transaction {
-                    User.new {
-                        type = 0              // Would love to add type but currenty not sure
-                        username = _username   // how that works iwth this number system, 
-                        password = _password   // have to discuss it first
-                        email = _email
-                        fname = ""
-                        height = 0f
-                        weight = 0f
-                        dob = ""
-                        sex = ""
->>>>>>> eddb66e50be9d8a00da28a11658beb5efff4099d
                     }
                 }
 
