@@ -8,6 +8,7 @@ import org.jetbrains.exposed.v1.core.StdOutSqlLogger
 import com.example.database.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.sessions.*
 
 import org.h2.tools.Server //db viewer thing
 
@@ -22,7 +23,7 @@ fun Application.module() {
     transaction {
         addLogger(StdOutSqlLogger)
 
-        SchemaUtils.create(Users, PTs, Exercises, Clients, Workouts, UserWorkouts, WorkoutExercises)
+        SchemaUtils.create(Users, PTs, Exercises, Clients, Workouts, UserWorkouts, WorkoutExercises, SavedWorkouts)
 
         if (User.all().empty()) {
             val user1 = User.new {
@@ -235,4 +236,5 @@ fun Application.module() {
 
     configureRouting()
     configureTemplates()
+    configureSessions()
 }

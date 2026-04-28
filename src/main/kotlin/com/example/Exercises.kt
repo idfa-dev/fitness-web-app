@@ -35,7 +35,7 @@ suspend fun ApplicationCall.exercise() {
     }
 }
 
-suspend fun ApplicationCall.search_exercises() {
+suspend fun ApplicationCall.searchExercises() {
     suspendTransaction {
         val search = parameters["search"]
 

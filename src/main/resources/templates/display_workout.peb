@@ -22,5 +22,9 @@
         <br>
     </div>
     {% endfor %}
+    <form action="/workouts" method="POST">
+        <input type="hidden" name="workoutID" value={{ workout.workout['id'] }}>
+        <button type="submit">Save Workout</button>
+    </form>
 </div>
 {% endblock %}
