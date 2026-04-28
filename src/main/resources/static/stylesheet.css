@@ -161,6 +161,12 @@ button:hover {
     transition-duration: 0.4s;
 }
 
+.chart-container {
+    width: 900px;
+    height: 450px;
+    margin: 20px auto;
+}
+
 .profile-info-button:hover {
     cursor: pointer;
     background-color: #722891;
@@ -354,4 +360,23 @@ button:hover {
 .exercise-selection-container:hover {
     background-color: #2e2e2e;
     cursor: pointer;
+}
+
+/* WORKOUT PAGES */
+.workout-container {
+    background-color: var(--bgc);
+    text-align: center;
+    padding: 60px 60px;
+    display: block;
+    margin: 12px auto;
+    font-size: 32px;
+    border: 2px solid white;
+    width: 500px;
+    text-decoration: none;
+    color: white;
+}
+
+a.workout-container:hover { /* Only affects workout buttons, not exercise buttons */
+    transition: 0.4s ease;
+    filter: brightness(85%);
 }

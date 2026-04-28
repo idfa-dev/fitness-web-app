@@ -14,7 +14,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 suspend fun ApplicationCall.exercises() {
     suspendTransaction {
         val exercises = Exercise.all().sortedBy {it.name}.toList()
-        respondTemplate("exercises.peb", mapOf("exercises" to exercises))
+        respondTemplate("exercises.peb", mapOf("exercises" to exercises, "currentPage" to "exercises"))
     }
 }
 
@@ -31,6 +31,20 @@ suspend fun ApplicationCall.exercise() {
             else -> {
                 respondTemplate("view_exercise.peb", mapOf("exercise" to exercise))
             }
+        }
+    }
+}
+
+suspend fun ApplicationCall.searchExercises() {
+    suspendTransaction {
+        val search = parameters["search"]
+
+        if (search == null) {
+            respond(HttpStatusCode.BadRequest)
+        }
+        else {
+            val exercises = Exercise.all().filter {it.name.contains(search, true)}.sortedBy {it.name}.toList()
+            respondTemplate("exercises.peb", mapOf("exercises" to exercises))
         }
     }
 }

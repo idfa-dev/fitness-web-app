@@ -10,7 +10,7 @@
 
 <!-- NAVBAR -->
 <div class="navbar">
-    <a href="/" class="tab {% if currentPage == 'home' %}active{% endif %}">Home</a>
+    <a href="/home" class="tab {% if currentPage == 'home' %}active{% endif %}">Home</a>
     <a href="/workouts" class="tab {% if currentPage == 'workouts' %}active{% endif %}">Workouts</a>
     <a href="/exercises" class="tab {% if currentPage == 'exercises' %}active{% endif %}">Exercises</a>
     <a href="/calendar" class="tab {% if currentPage == 'calendar' %}active{% endif %}">Calendar</a>
@@ -34,5 +34,6 @@
     {% block content %}{% endblock %}
 </div>
 
+{% block scripts %}{% endblock %}
 </body>
 </html>

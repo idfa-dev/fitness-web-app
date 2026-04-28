@@ -1,5 +1,6 @@
 package com.example
 
+import com.example.database.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -8,14 +9,21 @@ import io.ktor.server.pebble.PebbleContent
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
+<<<<<<< HEAD
 
 import com.example.database.authenticateUser //importing authentication from auth.kt
 import com.example.database.authenticatePT
 import com.example.database.doesCollide //importing collision checker from auth.kt
 import com.example.database.User
 import com.example.database.PT
+=======
+import org.jetbrains.exposed.v1.core.eq
+import com.example.WorkoutData
+import io.ktor.http.HttpStatusCode
+>>>>>>> eddb66e50be9d8a00da28a11658beb5efff4099d
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod daabase
 import io.ktor.server.request.receiveParameters
+import io.ktor.server.sessions.*
 
 fun Application.configureRouting() {
     routing {
@@ -23,32 +31,43 @@ fun Application.configureRouting() {
         staticResources("/static", "static")
 
         get("/") {
-            call.respond(PebbleContent("home.peb", mapOf("currentPage" to "home")))
+            call.respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+        }
+
+        get("/home") {
+            val user = call.sessions.get<UserSession>()
+            print(user?.id)
+            print(user?.username)
+            if (user != null) {
+                call.respond(PebbleContent("home.peb", mapOf("currentPage" to "home")))
+            }
+            else {
+                call.respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+            }
         }
 
         get("/workouts") {
             call.respond(PebbleContent("workouts.peb", mapOf("currentPage" to "workouts")))
         }
 
-        get("/workouts/cardio") {
-            call.respond(PebbleContent("cardio_workouts.peb", mapOf("currentPage" to "workouts")))
+        post("/workouts") {call.saveWorkout()}
+
+        get("/workouts/{id}") {
+            val id = call.parameters["id"]?.toIntOrNull()
+            if (id != null) {
+                call.displayWorkout(id)
+            }
         }
 
-        get("/workouts/bodyweight") {
-            call.respond(PebbleContent("bodyweight_workouts.peb", mapOf("currentPage" to "workouts")))
-        }
+        get("/workouts/cardio") {call.cardioWorkouts()}
 
-        get("/workouts/resistance") {
-            call.respond(PebbleContent("resistance_workouts.peb", mapOf("currentPage" to "workouts")))
-        }
+        get("/workouts/bodyweight") {call.bodyweightWorkouts()}
 
-        get("/workouts/mixed") {
-            call.respond(PebbleContent("mixed_workouts.peb", mapOf("currentPage" to "workouts")))
-        }
+        get("/workouts/resistance") {call.resistanceWorkouts()}
 
-        get("/workouts/saved") {
-            call.respond(PebbleContent("saved_workouts.peb", mapOf("currentPage" to "workouts")))
-        }
+        get("/workouts/mixed") {call.mixedWorkouts()}
+
+        get("/workouts/saved") {call.savedWorkouts()}
 
         get("/workouts/create") {
             call.respond(PebbleContent("create_workout.peb", mapOf("currentPage" to "workouts")))
@@ -71,6 +90,8 @@ fun Application.configureRouting() {
         }
 
         get("/exercises") {call.exercises()}
+
+        get("/exercises/search") {call.searchExercises()}
 
         get("/exercises/{id}") {call.exercise()}
 
@@ -120,7 +141,43 @@ fun Application.configureRouting() {
         }
 
         get("/profile/profile_info") {
-            call.respond(PebbleContent("profile_info.peb", mapOf("currentPage" to "profile")))
+            val user = transaction {
+                User.find { Users.username eq "regulardude123" }.firstOrNull()
+            }
+
+            val context = mutableMapOf<String, Any>(
+                "currentPage" to "profile"
+            )
+
+            user?.let { context["user"] = it }
+            call.respond(PebbleContent("profile_info.peb", context))
+        }
+
+        post("/profile/profile_info") {
+            val params = call.receiveParameters()
+
+            val fname = params["fname"]
+            val sex = params["sex"]
+            val age = params["age"]
+            val height = params["height"]?.toFloatOrNull()
+            val weight = params["weight"]?.toFloatOrNull()
+
+            println("POST ROUTE HIT")
+
+            transaction {
+                val user = User.find { Users.username eq "regulardude123" }.firstOrNull()
+
+                if (user != null) {
+                    if (!fname.isNullOrBlank()) user.fname = fname
+                    if (!sex.isNullOrBlank()) user.sex = sex
+                    height?.let { user.height = it }
+                    weight?.let { user.weight = it }
+                    if (!age.isNullOrBlank()) {
+                        user.age = age.toInt()
+                    }
+                }
+            }
+            call.respondRedirect("/profile/profile_info")
         }
 
         get("/sign-in") {
@@ -132,10 +189,10 @@ fun Application.configureRouting() {
             
             val parameters = call.receiveParameters() //pull website input
 
-            val username = parameters["username"] ?: "Input not received."  //second case for input check
+            val username = parameters["username"] ?: "Input not received."  // Second case for input check
             val password = parameters["password"] ?: "Input not received."
 
-            println("Username: $username, Password: $password") //input check for sign-in
+            println("Username: $username, Password: $password") // Input check for sign-in
             
             var isValid = authenticateUser(username, password) //check
             if (!isValid){
@@ -143,11 +200,19 @@ fun Application.configureRouting() {
             }
             // 
             if (isValid) {
+<<<<<<< HEAD
                 call.respondRedirect("/")   //redirects to the actual home page
+=======
+                transaction {
+                    val userID = getUserIdByUsername(username)
+                    call.sessions.set(UserSession(id=userID.toString(), username=username))
+                }
+                call.respondRedirect("/home")   // Redirects ot the actual home page
+>>>>>>> eddb66e50be9d8a00da28a11658beb5efff4099d
             }
             else 
             {
-                call.respondText("Invalid details. Please try again.")  //error message on failure
+                call.respondText("Invalid details. Please try again.")  // Error message on failure
             }
 
         }
@@ -180,6 +245,7 @@ fun Application.configureRouting() {
             }
             else
             {
+<<<<<<< HEAD
                 if  (_usertype == "3")
                 {
                     transaction {
@@ -209,6 +275,19 @@ fun Application.configureRouting() {
                             dob = ""
                             sex = ""
                         }
+=======
+                transaction {
+                    User.new {
+                        type = 0              // Would love to add type but currenty not sure
+                        username = _username   // how that works iwth this number system, 
+                        password = _password   // have to discuss it first
+                        email = _email
+                        fname = ""
+                        height = 0f
+                        weight = 0f
+                        dob = ""
+                        sex = ""
+>>>>>>> eddb66e50be9d8a00da28a11658beb5efff4099d
                     }
                 }
 
@@ -220,10 +299,6 @@ fun Application.configureRouting() {
             } else {    //error
                 call.respondText("Failed to create user. Please try again.")
             }
-        }
-
-        get("/landing") {
-            call.respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
         }
     }
 }
