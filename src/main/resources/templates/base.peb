@@ -11,7 +11,7 @@
 <!-- NAVBAR -->
 <div class="navbar">
     <a href="/home" class="tab {% if currentPage == 'home' %}active{% endif %}">Home</a>
-    <a href="/workouts" class="tab {% if currentPage == 'workouts' %}active{% endif %}">Workouts</a>
+    <a href="/workouts" class="tab {% if currentPage == 'workouts' or currentPage == 'display_workouts' or currentPage == 'create_workout' %}active{% endif %}">Workouts</a>
     <a href="/exercises" class="tab {% if currentPage == 'exercises' %}active{% endif %}">Exercises</a>
     <a href="/calendar" class="tab {% if currentPage == 'calendar' %}active{% endif %}">Calendar</a>
     <a href="/profile" class="tab {% if currentPage == 'profile' %}active{% endif %}">Profile</a>

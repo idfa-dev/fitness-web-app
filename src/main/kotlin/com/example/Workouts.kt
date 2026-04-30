@@ -35,7 +35,7 @@ suspend fun ApplicationCall.displayWorkout(id: Int) {
     suspendTransaction {
         val workout = Workout.get(id)
         val workoutExercises = WorkoutExercise.all().filter {it.workout==workout}.sortedBy {it.order}.toList() // Sorting by order
-        val types = mutableSetOf<String>() // We use sets as an easy implementation of no-duplicates
+        val types = mutableSetOf<String>() // Set used as a data structure with no duplicate values
         for (workoutExercise in workoutExercises) {
             // Append exercise type to list
             types.add(exerciseTypes[workoutExercise.exercise.type])
@@ -47,7 +47,7 @@ suspend fun ApplicationCall.displayWorkout(id: Int) {
             types = types // Containing the types of exercises within the workout
         )
 
-        respondTemplate("display_workout.peb", mapOf("workout" to wo))
+        respond(PebbleContent("display_workout.peb", mapOf("workout" to wo)))
     }
 }
 
@@ -73,10 +73,10 @@ suspend fun ApplicationCall.displayWorkouts() {
 
             }
             // After workoutTypes has been fully formed, each workout has a corresponding type
-            respondTemplate("display_workouts.peb", mapOf("workouts" to workoutObjects))
+            respond(PebbleContent("display_workouts.peb", mapOf("workouts" to workoutObjects)))
         }
         else {
-            respondTemplate("landing.peb", mapOf("currentPage" to "landing"))
+            respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
         }
     }
 }
@@ -105,11 +105,11 @@ suspend fun ApplicationCall.searchWorkouts() {
 
                 }
                 // After workoutTypes has been fully formed, each workout has a corresponding type
-                respondTemplate("display_workouts.peb", mapOf("workouts" to workoutObjects))
+                respond(PebbleContent("display_workouts.peb", mapOf("workouts" to workoutObjects)))
             }
         }
         else {
-            respondTemplate("landing.peb", mapOf("currentPage" to "landing"))
+            respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
         }
     }
 }

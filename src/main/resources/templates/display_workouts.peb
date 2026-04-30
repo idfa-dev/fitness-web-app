@@ -1,7 +1,8 @@
 {% extends "base.peb" %}
+{# Note: 'workout' may seem like an error (underlined in red) but this is just due to the Pebble linter. The code runs fine.  #}
 {% set types = ["C", "B", "R", "M"] %} {# list containing exercise types #}
 {% set colours = ["E32141", "0F95CB", "196B24", "FFC000"] %} {#  list containing exercise type colours #}
-{% block title %} Workouts {% endblock %}
+{% block title %} View Workouts {% endblock %}
 
 {% block header %}
 
@@ -15,24 +16,26 @@
             </button>
         </form>
     </div>
-
-    <p> Key: C = Cardio, B = Bodyweight, R = Resistance, M = Mixed
-
-    <table>
-    <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Contains</th>
-        <th>Favourited</th>
-    </tr>
-    {% for w in workouts %}
-        {% set contain = [] %}
+    <div class="center">
+        <p> Key: C = Cardio, B = Bodyweight, R = Resistance, M = Mixed
+    </div>
+    <div class="center">
+        <table>
         <tr>
-            <td><a href="/workouts/{{ w.workout['id'] }}">{{ w.workout['name'] }}</a></td>
-            <td>{{ w.workout['desc'] }}</td>
-            <td>{{ w.types }}</td>
-            <td>{{ w.workout['favourited'] }}</td>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Contains</th>
+            <th>Favourited</th>
         </tr>
-    {% endfor %}
-    </table>
+        {% for w in workouts %}
+            {% set contain = [] %}
+            <tr>
+                <td><a href="/workouts/{{ w.workout['id'] }}">{{ w.workout['name'] }}</a></td>
+                <td>{{ w.workout['desc'] }}</td>
+                <td>{{ w.types }}</td>
+                <td>{{ w.workout['favourited'] }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
 {% endblock %}
