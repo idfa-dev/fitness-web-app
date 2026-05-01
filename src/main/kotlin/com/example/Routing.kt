@@ -9,19 +9,16 @@ import io.ktor.server.pebble.PebbleContent
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
-<<<<<<< HEAD
 
+//Authentication stuff
 import com.example.database.authenticateUser //importing authentication from auth.kt
 import com.example.database.authenticatePT
 import com.example.database.doesCollide //importing collision checker from auth.kt
 import com.example.database.User
 import com.example.database.PT
-=======
-import org.jetbrains.exposed.v1.core.eq
-import com.example.WorkoutData
-import io.ktor.http.HttpStatusCode
->>>>>>> eddb66e50be9d8a00da28a11658beb5efff4099d
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod daabase
+
+import org.jetbrains.exposed.v1.core.*
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod db
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.sessions.*
 
@@ -184,7 +181,7 @@ fun Application.configureRouting() {
             call.respond(PebbleContent("sign-in.peb", mapOf("currentPage" to "sign-in")))
         }
 
-        post("/sign-in") {
+        post("/sign-in") { //This whole section will be added to Auth.kt eventually or like modularized
 
             
             val parameters = call.receiveParameters() //pull website input
@@ -195,10 +192,10 @@ fun Application.configureRouting() {
             println("Username: $username, Password: $password") // Input check for sign-in
             
             var isValid = authenticateUser(username, password) //check
-            if (!isValid){
+            if (!isValid)
+            {
                 isValid = authenticatePT(username, password) //Double check if user is a PT
             }
-            // 
             if (isValid) {
                 transaction {
                     val userID = getUserIdByUsername(username)
@@ -217,7 +214,8 @@ fun Application.configureRouting() {
             call.respond(PebbleContent("sign-up.peb", mapOf("currentPage" to "sign-up")))
         }
 
-        post("/sign-up") {
+        post("/sign-up") {  //This whole section will be added to User/Users eventually.
+            
             val parameters = call.receiveParameters()
 
             
