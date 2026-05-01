@@ -9,10 +9,16 @@ import io.ktor.server.pebble.PebbleContent
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
-import org.jetbrains.exposed.v1.core.eq
-import com.example.WorkoutData
-import io.ktor.http.HttpStatusCode
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod daabase
+
+//Authentication stuff
+import com.example.database.authenticateUser //importing authentication from auth.kt
+import com.example.database.authenticatePT
+import com.example.database.doesCollide //importing collision checker from auth.kt
+import com.example.database.User
+import com.example.database.PT
+
+import org.jetbrains.exposed.v1.core.*
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod db
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.sessions.*
 
@@ -167,19 +173,21 @@ fun Application.configureRouting() {
             call.respond(PebbleContent("sign-in.peb", mapOf("currentPage" to "sign-in")))
         }
 
-        post("/sign-in") {  // Handling sign-in, for now only works for regulardude123, password regular
+        post("/sign-in") { //This whole section will be added to Auth.kt eventually or like modularized
 
             
-            val parameters = call.receiveParameters()
+            val parameters = call.receiveParameters() //pull website input
 
             val username = parameters["username"] ?: "Input not received."  // Second case for input check
             val password = parameters["password"] ?: "Input not received."
 
             println("Username: $username, Password: $password") // Input check for sign-in
             
-            var isValid = authenticateUser(username, password)
-
-            // 
+            var isValid = authenticateUser(username, password) //check
+            if (!isValid)
+            {
+                isValid = authenticatePT(username, password) //Double check if user is a PT
+            }
             if (isValid) {
                 transaction {
                     val userID = getUserIdByUsername(username)
@@ -198,7 +206,8 @@ fun Application.configureRouting() {
             call.respond(PebbleContent("sign-up.peb", mapOf("currentPage" to "sign-up")))
         }
 
-        post("/sign-up") {
+        post("/sign-up") {  //This whole section will be added to User/Users eventually.
+            
             val parameters = call.receiveParameters()
 
             
@@ -222,17 +231,35 @@ fun Application.configureRouting() {
             }
             else
             {
-                transaction {
-                    User.new {
-                        type = 0              // Would love to add type but currenty not sure
-                        username = _username   // how that works iwth this number system, 
-                        password = _password   // have to discuss it first
-                        email = _email
-                        fname = ""
-                        height = 0f
-                        weight = 0f
-                        dob = ""
-                        sex = ""
+                if  (_usertype == "3")
+                {
+                    transaction {
+                        PT.new {
+                            username = _username
+                            password = _password
+                            email = _email 
+                            fname = ""
+                            height = 0f
+                            weight = 0f
+                            dob = ""
+                            sex = ""
+                        }
+                    }
+                }
+                else
+                {
+                    transaction {
+                        User.new {
+                            type = 0              // Would love to add type but currenty not sure
+                            username = _username   // how that works iwth this number system, 
+                            password = _password   // have to discuss it first
+                            email = _email
+                            fname = ""
+                            height = 0f
+                            weight = 0f
+                            dob = ""
+                            sex = ""
+                        }
                     }
                 }
 
