@@ -41,8 +41,6 @@ fun Application.configureRouting() {
             call.respond(PebbleContent("workouts.peb", mapOf("currentPage" to "workouts")))
         }
 
-        post("/workouts") {call.saveWorkout()}
-
         get("/workouts/{id}") {
             val id = call.parameters["id"]?.toIntOrNull()
             if (id != null) {
@@ -50,15 +48,9 @@ fun Application.configureRouting() {
             }
         }
 
-        get("/workouts/cardio") {call.cardioWorkouts()}
+        get("/workouts/view") {call.displayWorkouts()}
 
-        get("/workouts/bodyweight") {call.bodyweightWorkouts()}
-
-        get("/workouts/resistance") {call.resistanceWorkouts()}
-
-        get("/workouts/mixed") {call.mixedWorkouts()}
-
-        get("/workouts/saved") {call.savedWorkouts()}
+        get("/workouts/view/search") {call.searchWorkouts()}
 
         get("/workouts/create") {
             call.respond(PebbleContent("create_workout.peb", mapOf("currentPage" to "workouts")))
