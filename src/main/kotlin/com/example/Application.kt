@@ -18,7 +18,7 @@ fun Application.module() {
         json()
     }
 
-    Database.connect("jdbc:h2:file:./data/fitness", driver = "org.h2.Driver") // Starts com.example.database connection (fitness = dbname)
+    Database.connect("jdbc:h2:mem:fitness;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver") // Starts com.example.database connection (fitness = dbname)
 
     transaction {
         addLogger(StdOutSqlLogger)

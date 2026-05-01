@@ -8,7 +8,7 @@ fun Application.configureSessions() {
     install(Sessions) {
         cookie<UserSession>("user_session") {
             cookie.path = "/"
-            cookie.maxAgeInSeconds = 360 // 6 minutes
+            cookie.maxAgeInSeconds = 3600 // 60 minutes
         }
     }
 }

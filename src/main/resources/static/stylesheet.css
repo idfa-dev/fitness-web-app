@@ -380,3 +380,24 @@ a.workout-container:hover { /* Only affects workout buttons, not exercise button
     transition: 0.4s ease;
     filter: brightness(85%);
 }
+
+/* TABLES */
+.center table {
+    margin-left: auto;
+    margin-right: auto;
+}
+table, th, td {
+    border: 1px solid white;
+    border-collapse: collapse;
+}
+/* Unvisited link */
+tr a:link {
+    color: lightblue
+}
+/* Visited link */
+tr a:visited {
+    color: lightblue
+}
+tr:hover {
+    background-color: darkgray
+}
