@@ -12,6 +12,7 @@ import java.util.Locale
 import org.jetbrains.exposed.v1.core.eq
 import com.example.WorkoutData
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.parameters
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod daabase
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.sessions.*
@@ -38,7 +39,34 @@ fun Application.configureRouting() {
         }
 
         get("/current-workout") {
-            call.respond(PebbleContent("current_workout.peb", mapOf("currentPage" to "current-workout")))
+            val currentWorkoutSession = call.sessions.get<CurrentWorkoutSession>()
+            print(currentWorkoutSession?.workoutSessionId)
+            print(currentWorkoutSession?.userId)
+            if (currentWorkoutSession == null) {
+                call.respond(PebbleContent("start_workout.peb", mapOf("currentPage" to "current-workout")))
+            }
+            else {
+                // Make sure this is fixed to contain workout info
+                call.respond(PebbleContent("current_workout.peb", mapOf("currentPage" to "current-workout")))
+            }
+        }
+
+        post("/current-workout") {
+            val use_template = call.receiveParameters()["use_template"]
+            println(use_template)
+            if (use_template == null) {
+                call.respond(HttpStatusCode.BadRequest)
+            }
+            else {
+                if (use_template == "yes") {
+                    // User is redirected to a page where a template can be selected (currently not implemented)
+                    call.respond(PebbleContent("current_workout.peb", mapOf("currentPage" to "current-workout")))
+                }
+                else if (use_template == "no") {
+                    // User is redirected to the main current-workout page, and a workout can be started
+                    call.respond(PebbleContent("current_workout.peb", mapOf("currentPage" to "current-workout")))
+                }
+            }
         }
 
         get("/workouts") {
