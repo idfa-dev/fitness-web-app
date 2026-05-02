@@ -401,3 +401,33 @@ tr a:visited {
 tr:hover {
     background-color: darkgray
 }
+
+.search-filter-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.filter-btn {
+    padding: 8px 12px;
+    background-color: #b73fec;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.filter-btn:hover {
+    background-color: #722891;
+}
+
+.filter-options {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+    color: white;
+    width: 100%;
+}
