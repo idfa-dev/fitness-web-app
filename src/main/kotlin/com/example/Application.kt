@@ -42,7 +42,12 @@ fun Application.module() {
 
         //resetDatabase() // Only uncomment for testing!
 
-        SchemaUtils.create(Users, PTs, Exercises, Clients, Workouts, UserWorkouts, WorkoutExercises)
+        SchemaUtils.create(
+            Users, PTs, Exercises,
+            Clients, Workouts, UserWorkouts,
+            WorkoutExercises, WorkoutSessions, WorkoutSessionExercises,
+            WorkoutSessionSets
+        )
 
         if (User.all().empty()) {
             seedDummyValues()

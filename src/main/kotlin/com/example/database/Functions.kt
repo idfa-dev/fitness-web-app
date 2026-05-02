@@ -223,7 +223,12 @@ fun seedDummyValues() {
 fun resetDatabase() {
     transaction {
         exec("DROP ALL OBJECTS")
-        SchemaUtils.create(Users, PTs, Exercises, Clients, Workouts, UserWorkouts, WorkoutExercises)
+        SchemaUtils.create(
+            Users, PTs, Exercises,
+            Clients, Workouts, UserWorkouts,
+            WorkoutExercises, WorkoutSessions, WorkoutSessionExercises,
+            WorkoutSessionSets
+        )
     }
     println("\nSUCCESSFULLY RESET DATABASE\n")
 }
