@@ -7,7 +7,6 @@ import com.example.database.WorkoutExercise
 import com.example.database.Workout
 import com.example.database.Exercise
 import com.example.database.User
-import com.example.database.SavedWorkout
 import com.example.database.getUserIdByUsername
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
