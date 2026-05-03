@@ -14,8 +14,6 @@ import java.util.Locale
 import com.example.database.authenticateUser //importing authentication from auth.kt
 import com.example.database.authenticatePT
 import com.example.database.doesCollide //importing collision checker from auth.kt
-import com.example.database.User
-import com.example.database.PT
 import io.ktor.http.HttpStatusCode
 
 import org.jetbrains.exposed.v1.core.*
@@ -46,8 +44,8 @@ fun Application.configureRouting() {
 
         get("/current-workout") {
             val currentWorkoutSession = call.sessions.get<CurrentWorkoutSession>()
-            print(currentWorkoutSession?.workoutSessionId)
-            print(currentWorkoutSession?.userId)
+            print(currentWorkoutSession?.workoutSessionID)
+            print(currentWorkoutSession?.userID)
             if (currentWorkoutSession == null) {
                 call.respond(PebbleContent("start_workout.peb", mapOf("currentPage" to "current-workout")))
             }
@@ -59,17 +57,46 @@ fun Application.configureRouting() {
         }
 
         post("/current-workout") {
-            val use_template = call.receiveParameters()["use_template"]
-            println(use_template)
-            if (use_template == null) {
-                call.respond(HttpStatusCode.BadRequest)
+            val useTemplate = call.receiveParameters()["use_template"]
+            val exerciseChoice = call.receiveParameters()["exercise"]
+            val workoutSessionID = call.sessions.get<CurrentWorkoutSession>()?.workoutSessionID
+            println(useTemplate)
+            if (useTemplate == null) {
+                if (exerciseChoice == null) {
+                    call.respond(HttpStatusCode.BadRequest)
+                }
+                else {
+                    // Get workoutSessionID
+                    if (workoutSessionID != null) {
+                        // Get WorkoutSession and Exercise
+                        val ws = WorkoutSession.all().first {it.id.toString() == workoutSessionID}
+                        val ex = Exercise.all().first {it.name == exerciseChoice}
+                        // Figure out the order below
+                        val wsExerciseList = WorkoutSessionExercise.all().sortedBy { it.workoutSession == ws }.toList()
+                        var maxOrder = 1
+                        for (x in wsExerciseList) {
+                            if (x.order > maxOrder) {
+                                maxOrder = x.order
+                            }
+                        }
+                        maxOrder += 1
+                        // Add exercise as a workoutSessionExercise
+                        transaction {
+                            WorkoutSessionExercise.new {
+                                workoutSession = ws
+                                exercise = ex
+                                order = maxOrder
+                            }
+                        }
+                    }
+                }
             }
             else {
-                if (use_template == "yes") {
+                if (useTemplate == "yes") {
                     // User is redirected to a page where a template can be selected (currently not implemented)
                     call.respond(PebbleContent("current_workout.peb", mapOf("currentPage" to "current-workout")))
                 }
-                else if (use_template == "no") {
+                else if (useTemplate == "no") {
                     // User is redirected to the main current-workout page, and a workout can be started
                     call.startNewWorkout()
                 }

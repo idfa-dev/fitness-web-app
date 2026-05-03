@@ -118,7 +118,7 @@ suspend fun ApplicationCall.searchWorkouts() {
 }
 
 // Class definition for workout session exercises to be passed in the respondTemplate calls for functions linking to current-workout (below)
-data class WorkoutSessionExercise (
+data class WorkoutSessionExerciseObject (
     var exercise: WorkoutSessionExercise,
     var sets: List<WorkoutSessionSet>,
 )
@@ -129,16 +129,15 @@ suspend fun ApplicationCall.startNewWorkout() {
         if (userSession != null) {
             // First, create the WorkoutSession instance
             val userEntity = User.all().first() {it.id.toString() == userSession.id}
-            val workoutSessionId = WorkoutSession.new { user = userEntity }.id.toString() // Only need to pass user as all other attributes have default values
+            val workoutSessionID = WorkoutSession.new { user = userEntity }.id.toString() // Only need to pass user as all other attributes have default values
             // Second, set the CurrentWorkoutSession values for use of page generation
-            sessions.set(CurrentWorkoutSession(workoutSessionId, userSession.id))
+            sessions.set(CurrentWorkoutSession(workoutSessionID, userSession.id))
             // Third, we must get a list of all exercises in the database
             val exercises = Exercise.all().sortedBy {it.name}.toList()
-            println(exercises)
             // Finally, since this is a new workout, we currently have no values to pass, so we only pass CurrentPage and exercises
             println("Created WorkoutSession and set CurrentWorkoutSession")
             println("CurrentWorkoutSession:")
-            println(workoutSessionId)
+            println(workoutSessionID)
             println(userSession.id)
             respond(PebbleContent("current_workout.peb", mapOf("currentPage" to "current-workout", "exercises" to exercises)))
         }

@@ -19,12 +19,14 @@
     <button onclick="exerciseDropdown()" class="dropdownbtn"> Add Exercise </button>
     <div id="dropdown" class="dropdown-content">
         <input type="text" placeholder="Search for an exercise..." id="search" onkeyup="filterExercises()">
+        <form action="/current-workout" method="POST">
         {% for exercise in exercises %}
             <div id="exercise-item" class="exercise-item">
-                <button class="exercise-btn">
+                <button class="exercise-btn" type="submit" name="exercise" value="{{ exercise.id }}">
                     {{ exercise.name }}
                 </button>
             </div>
+        </form>
         {% endfor %}
     </div>
 </div>

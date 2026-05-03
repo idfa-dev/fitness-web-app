@@ -21,4 +21,4 @@ fun Application.configureSessions() {
 data class UserSession(val id: String, val username: String)
 
 @Serializable
-data class CurrentWorkoutSession(val workoutSessionId: String, val userId: String)
+data class CurrentWorkoutSession(val workoutSessionID: String, val userID: String)
