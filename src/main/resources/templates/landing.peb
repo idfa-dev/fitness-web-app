@@ -2,34 +2,70 @@
 
 <title> Jympal Home </title>
 
-<div class style="text-align: center">
-    <img src="/static/images/jympal_logo.png" alt="Jympal logo" style = "width: 50%; margin-top:1%" >
-    <div class="page-title"> You wanna be fit, Gymit! </div>
+<div class="landing-bg">
+
+    <img class="bg-img" src="/static/images/landing_background.png" alt="background">
+
+    <div class="landing-box">
+
+        <div style="text-align: left">
+            <img src="/static/images/jympal_logo.png" alt="Jympal logo" style="width: 15%; margin-top:7px%;">
+        </div>
+
+        <div style="text-align: left">
+            <div class="landing-slogan">
+                You wanna be fit? Jymit!
+            </div>
+        </div>
+
+        {% block action %}
+        {% endblock %}
+
+        {% block content %}
+
+        <div style="display: flex; gap: 20px;">
+
+            <div style="flex: 55; text-align: left; margin-top: -10px;">
+                <div class="landing-text">
+                    <h3 class="section-pill">About Jympal</h3>
+                    <p>
+                    Jympal is a fitness tracking platform designed to help you stay consistent with your training.<br>
+                    You can create workouts, log exercises, and track performance.
+                    </p>
+
+                    <h3 class="section-pill">Features</h3>
+                    <ul>
+                        <li>Track distance, reps, sets, and calories per exercise</li>
+                        <li>Visual calendar view od your progress</li>
+                        <li>Plan, log, and update sessions easily</li>
+                        <li>Options for personal, competitive, or personal trainer accounts</li>
+                    </ul>
+
+                    <h3 class="section-pill">Get Started</h3>
+                    <p>
+                        Sign in or create an account to take control of your training today!
+                    </p> 
+
+                    <div style="margin-top:-10px;">
+                        <a href="/sign-in">
+                            <button class="pill-btn">SIGN IN</button>
+                        </a>
+
+                        <a href="/sign-up">
+                            <button class="pill-btn">SIGN UP</button>
+                        </a> 
+                    </div>
+
+                </div>
+            </div>
+
+            <div style="flex: 45; text-align: center;">
+                <img src="/static/images/running.png" alt="Landing image" style="height: 110%; width: 88%; border-radius: 15px; margin-top: -95px; margin-right: 35px;">
+            </div>
+
+        </div>
+
+        {% endblock %}
+
+    </div>
 </div>
-
-{% block action %}
-{% endblock %}
-
-{% block content %}
-
-<div class style="text-align: center">
-    <p> Website Info: </p>
-
-    <p>BALH BLAH</p>
-    <p>muscle stuff</p>
-    <p>some bull about our app idk</p>
-    <p>kinda gotta fix the slight missalignment though, looks unprofessional</p>
-</div>
-<a href="/sign-in" style = "margin-left: 27%; margin-top: 2%; width: 100px">
-<button>SIGN IN</button>
-</a>
-
-<a href="/sign-up" style = "margin-left: 33%; margin-top: 2%' width: 100px">
-<button >SIGN UP</button>
-</a>
-
-<p> Skip to main home page </p>
-<a href="/" style = "text-align: center">
-<button >Skip to Home</button>
-</a>
-{% endblock %}
