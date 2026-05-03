@@ -10,8 +10,15 @@ fun Application.configureSessions() {
             cookie.path = "/"
             cookie.maxAgeInSeconds = 3600 // 60 minutes
         }
+        cookie<CurrentWorkoutSession>("current_workout_session") {
+            cookie.path = "/"
+            cookie.maxAgeInSeconds = 3600 // 60 minutes
+        }
     }
 }
 
 @Serializable
 data class UserSession(val id: String, val username: String)
+
+@Serializable
+data class CurrentWorkoutSession(val workoutSessionId: String, val userId: String)
