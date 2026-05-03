@@ -177,6 +177,7 @@ fun Application.configureRouting() {
 
             
             val parameters = call.receiveParameters() //pull website input
+            var isPT = false
 
             val username = parameters["username"] ?: "Input not received."  // Second case for input check
             val password = parameters["password"] ?: "Input not received."
@@ -187,10 +188,15 @@ fun Application.configureRouting() {
             if (!isValid)
             {
                 isValid = authenticatePT(username, password) //Double check if user is a PT
+                isPT = true
             }
             if (isValid) {
                 transaction {
-                    val userID = getUserIdByUsername(username)
+                    val userID: Int? = if (isPT) {
+                        getPTIdByUsername(username)
+                    } else {
+                        getUserIdByUsername(username)
+                    }
                     call.sessions.set(UserSession(id=userID.toString(), username=username))
                 }
                 call.respondRedirect("/home")   // Redirects ot the actual home page
