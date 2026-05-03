@@ -27,13 +27,13 @@
 
             <div style="flex: 55; text-align: left; margin-top: -10px;">
                 <div class="landing-text">
-                    <h3 class="section-pill">About Jympal</h3>
+                    <h3 class="purple-rect">About Jympal</h3>
                     <p>
                     Jympal is a fitness tracking platform designed to help you stay consistent with your training.<br>
                     You can create workouts, log exercises, and track performance.
                     </p>
 
-                    <h3 class="section-pill">Features</h3>
+                    <h3 class="purple-rect">Features</h3>
                     <ul>
                         <li>Track distance, reps, sets, and calories per exercise</li>
                         <li>Visual calendar view od your progress</li>
@@ -41,12 +41,12 @@
                         <li>Options for personal, competitive, or personal trainer accounts</li>
                     </ul>
 
-                    <h3 class="section-pill">Get Started</h3>
+                    <h3 class="purple-rect">Get Started</h3>
                     <p>
                         Sign in or create an account to take control of your training today!
                     </p> 
 
-                    <div style="margin-top:-10px;">
+                    <div style="margin-top:15px;">
                         <a href="/sign-in">
                             <button class="pill-btn">SIGN IN</button>
                         </a>
@@ -60,7 +60,7 @@
             </div>
 
             <div style="flex: 45; text-align: center;">
-                <img src="/static/images/running.png" alt="Landing image" style="height: 110%; width: 88%; border-radius: 15px; margin-top: -95px; margin-right: 35px;">
+                <img src="/static/images/running.png" alt="Landing image" style="height: 110%; width: 88%; border-radius: 15px; margin-top: -90px; margin-right: 35px;">
             </div>
 
         </div>

@@ -381,7 +381,6 @@ a.workout-container:hover { /* Only affects workout buttons, not exercise button
     filter: brightness(85%);
 }
 
-<<<<<<< HEAD
 .landing-bg {
     position: relative;
     min-height: 100vh;
@@ -445,22 +444,64 @@ a.workout-container:hover { /* Only affects workout buttons, not exercise button
 
     cursor: pointer;
     transition: 0.3s;
+    font-weight: bold;
 }
 
-.section-pill {
+.purple-rect {
     display: inline-block;
     background-color: #9933FF;
     color: white;
     padding: 2px 14px;
-    border-radius: 999px;
     margin: 20px 0 10px 0;
 }
 
-.section-pill + p {
+.purple-rect + p {
     margin-top: 0;
-    margin-bottom: 0;
-=======
-/* TABLES */
+    margin-bottom: 5px
+}
+
+.purple-rect + ul {
+    margin-top: 0;
+    margin-bottom: 5px
+}
+
+.mini-running {
+    width: 120px;
+    margin-top: 10px;
+    border-radius: 10px;
+}
+
+.input-group {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.input-group input {
+    width: 60%;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid white;
+
+    color: white;
+    font-size: 18px;
+    padding: 8px 5px;
+
+    outline: none;
+}
+
+.input-group input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.input-group input:focus {
+    border-bottom: 2px solid #9933FF;
+}
+
+input[type="radio"] {
+    accent-color: #9933FF;
+}
+
 .center table {
     margin-left: auto;
     margin-right: auto;
@@ -479,5 +520,4 @@ tr a:visited {
 }
 tr:hover {
     background-color: darkgray
->>>>>>> 5194dc3367f79a1caeef3b67b0afd34d2d205865
 }
