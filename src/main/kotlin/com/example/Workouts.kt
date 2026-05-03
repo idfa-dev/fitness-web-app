@@ -3,6 +3,9 @@
 
 package com.example
 
+import com.example.database.WorkoutSession
+import com.example.database.WorkoutSessionExercise
+import com.example.database.WorkoutSessionSet
 import com.example.database.WorkoutExercise
 import com.example.database.Workout
 import com.example.database.Exercise
@@ -16,6 +19,7 @@ import io.ktor.server.request.receiveParameters
 import io.ktor.server.response.respond
 import io.ktor.server.sessions.get
 import io.ktor.server.sessions.sessions
+import io.ktor.server.sessions.set
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -106,6 +110,52 @@ suspend fun ApplicationCall.searchWorkouts() {
                 // After workoutTypes has been fully formed, each workout has a corresponding type
                 respond(PebbleContent("view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to "workouts")))
             }
+        }
+        else {
+            respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+        }
+    }
+}
+
+// Class definition for workout session exercises to be passed in the respondTemplate calls for functions linking to current-workout (below)
+data class WorkoutSessionExercise (
+    var exercise: WorkoutSessionExercise,
+    var sets: List<WorkoutSessionSet>,
+)
+
+suspend fun ApplicationCall.startNewWorkout() {
+    suspendTransaction {
+        val userSession = sessions.get<UserSession>()
+        if (userSession != null) {
+            // First, create the WorkoutSession instance
+            val userEntity = User.all().first() {it.id.toString() == userSession.id}
+            val workoutSessionId = WorkoutSession.new { user = userEntity }.id.toString() // Only need to pass user as all other attributes have default values
+            // Second, set the CurrentWorkoutSession values for use of page generation
+            sessions.set(CurrentWorkoutSession(workoutSessionId, userSession.id))
+            // Third, we must get a list of all exercises in the database
+            val exercises = Exercise.all().sortedBy {it.name}.toList()
+            println(exercises)
+            // Finally, since this is a new workout, we currently have no values to pass, so we only pass CurrentPage and exercises
+            println("Created WorkoutSession and set CurrentWorkoutSession")
+            println("CurrentWorkoutSession:")
+            println(workoutSessionId)
+            println(userSession.id)
+            respond(PebbleContent("current_workout.peb", mapOf("currentPage" to "current-workout", "exercises" to exercises)))
+        }
+        else {
+            respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+        }
+    }
+}
+
+suspend fun ApplicationCall.continueWorkout() {
+    suspendTransaction {
+        val userSession = sessions.get<UserSession>()
+        if (userSession != null) {
+            val exercises = Exercise.all().sortedBy {it.name}.toList()
+            println(exercises)
+            // CHANGE THIS FUNCTION IN FUTURE TO PROVIDE LIST OF OBJECTS TOO
+            respond(PebbleContent("current_workout.peb", mapOf("currentPage" to "current-workout", "exercises" to exercises)))
         }
         else {
             respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))

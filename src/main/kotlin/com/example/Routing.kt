@@ -16,6 +16,7 @@ import com.example.database.authenticatePT
 import com.example.database.doesCollide //importing collision checker from auth.kt
 import com.example.database.User
 import com.example.database.PT
+import io.ktor.http.HttpStatusCode
 
 import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod db
@@ -40,6 +41,38 @@ fun Application.configureRouting() {
             }
             else {
                 call.respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+            }
+        }
+
+        get("/current-workout") {
+            val currentWorkoutSession = call.sessions.get<CurrentWorkoutSession>()
+            print(currentWorkoutSession?.workoutSessionId)
+            print(currentWorkoutSession?.userId)
+            if (currentWorkoutSession == null) {
+                call.respond(PebbleContent("start_workout.peb", mapOf("currentPage" to "current-workout")))
+            }
+            else {
+                // Make sure this is fixed to contain workout info
+                call.continueWorkout()
+                call.respond(PebbleContent("current_workout.peb", mapOf("currentPage" to "current-workout")))
+            }
+        }
+
+        post("/current-workout") {
+            val use_template = call.receiveParameters()["use_template"]
+            println(use_template)
+            if (use_template == null) {
+                call.respond(HttpStatusCode.BadRequest)
+            }
+            else {
+                if (use_template == "yes") {
+                    // User is redirected to a page where a template can be selected (currently not implemented)
+                    call.respond(PebbleContent("current_workout.peb", mapOf("currentPage" to "current-workout")))
+                }
+                else if (use_template == "no") {
+                    // User is redirected to the main current-workout page, and a workout can be started
+                    call.startNewWorkout()
+                }
             }
         }
 

@@ -9,10 +9,44 @@
 {% endblock %}
 {% block content %}
 <div class="center">
-    <p> PLACEHOLDER TIMER </p>
-    <br>
-    <p> PLACEHOLDER EXERCISE </p>
-    <br>
-    <p> PLACEHOLDER EXERCISE AGAIN </p>
+    {% for WorkoutSessionExercise in WorkoutSessionExercises %}
+        <p> {{ WorkoutSessionExercise.exercise.name }} <p>
+        {% for set in WorkoutSessionExercise.sets %}
+            <p> Reps: {{ set.reps }} </p>
+            <p> Weight (kg): {{ set.weight }} </p>
+        {% endfor %}
+    {% endfor %}
+    <button onclick="exerciseDropdown()" class="dropdownbtn"> Add Exercise </button>
+    <div id="dropdown" class="dropdown-content">
+        <input type="text" placeholder="Search for an exercise..." id="search" onkeyup="filterExercises()">
+        {% for exercise in exercises %}
+            <div id="exercise-item" class="exercise-item">
+                <button class="exercise-btn">
+                    {{ exercise.name }}
+                </button>
+            </div>
+        {% endfor %}
+    </div>
 </div>
+
+<script>
+function exerciseDropdown() {
+    document.getElementById("dropdown").classList.toggle("show")
+}
+
+function filterExercises() {
+    const input = document.getElementById("search");
+    const filter = input.value.toUpperCase();
+    const div = document.getElementById("dropdown");
+    const exercise = div.getElementsByClassName("exercise-item");
+    for (let i = 0; i < exercise.length; i++) {
+        txtValue = exercise[i].textContent || exercise[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            exercise[i].style.display = "";
+        } else {
+            exercise[i].style.display = "none";
+        }
+    }
+}
+</script>
 {% endblock %}

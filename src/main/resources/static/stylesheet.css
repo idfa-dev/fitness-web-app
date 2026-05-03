@@ -118,6 +118,36 @@ body {
 
 /* BUTTONS */
 
+.exercise-btn {
+    width: 100%;
+    background: transparent;
+    font-size: 24px;
+    color: black;
+    border: none;
+    text-align: left;
+    padding: 10px 14px;
+    transition-duration: 0.4s;
+}
+
+.exercise-btn:hover {
+    cursor: pointer;
+    color: white;
+    background-color: #b73fec;
+}
+
+.dropdownbtn {
+    background-color: #b73fec;
+    font-size: 30px;
+    color: white;
+    padding: 20px;
+    border: 1px solid #b73fec;
+    transition-duration: 0.4s;
+}
+
+.dropdownbtn:hover, .dropdownbtn:focus {
+    background-color: #722891;
+}
+
 .btn-reset {
     all: unset;
     display: inline-flex;
@@ -363,6 +393,49 @@ button:hover {
 }
 
 /* WORKOUT PAGES */
+
+#search {
+    box-sizing: border-box;
+    background-image: url('searchicon.png');
+    background-position: 14px 12px;
+    background-repeat: no-repeat;
+    font-size: 16px;
+    padding: 14px 20px 12px 45px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+}
+
+#search:focus {outline: 3px solid #ddd}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f6f6f6;
+    min-width: 230px;
+    overflow: auto;
+    border: 1px solid #ddd;
+    z-index: 1;
+    margin-top: 2%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.dropdown-content input {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown a:hover {background-color: #ddd;}
+
+.show {display: block;}
+
 .workout-container {
     background-color: var(--bgc);
     text-align: center;
