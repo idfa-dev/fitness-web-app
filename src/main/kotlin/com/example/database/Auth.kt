@@ -12,6 +12,14 @@ fun authenticateUser(username: String, password: String): Boolean {
     }
 }
 
+fun authenticatePT(username: String, password: String): Boolean {
+    return transaction {
+        PTs.selectAll().where {
+            (PTs.username eq username) and (PTs.password eq password)
+        }.firstOrNull() != null
+    }
+}
+
 fun doesCollide(username: String, email: String): Boolean {
     return transaction {
         Users.selectAll().where {

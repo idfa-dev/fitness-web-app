@@ -381,6 +381,7 @@ a.workout-container:hover { /* Only affects workout buttons, not exercise button
     filter: brightness(85%);
 }
 
+<<<<<<< HEAD
 .landing-bg {
     position: relative;
     min-height: 100vh;
@@ -458,4 +459,25 @@ a.workout-container:hover { /* Only affects workout buttons, not exercise button
 .section-pill + p {
     margin-top: 0;
     margin-bottom: 0;
+=======
+/* TABLES */
+.center table {
+    margin-left: auto;
+    margin-right: auto;
+}
+table, th, td {
+    border: 1px solid white;
+    border-collapse: collapse;
+}
+/* Unvisited link */
+tr a:link {
+    color: lightblue
+}
+/* Visited link */
+tr a:visited {
+    color: lightblue
+}
+tr:hover {
+    background-color: darkgray
+>>>>>>> 5194dc3367f79a1caeef3b67b0afd34d2d205865
 }

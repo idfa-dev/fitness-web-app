@@ -1,0 +1,22 @@
+{% extends "base.peb" %}
+{% block title %} Start Workout {% endblock %}
+
+{% block header %}
+<div class="center">
+    <h1>Start New Workout</h1>
+</div>
+
+{% endblock %}
+{% block content %}
+<div class="center">
+    <p> Would you like to use a template for your workout? </p>
+    <form action="/current-workout" method="post">
+        <div class="button-container">
+            <button type="submit" name="use_template" value="yes"> Use a template </button>
+        </div>
+        <div class="button-container">
+            <button type="submit" name="use_template" value="no"> Start from scratch </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
