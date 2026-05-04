@@ -466,7 +466,7 @@ a.workout-container:hover { /* Only affects workout buttons, not exercise button
 }
 
 .mini-running {
-    width: 120px;
+    width: 180px;
     margin-top: 10px;
     border-radius: 10px;
 }
@@ -502,6 +502,28 @@ input[type="radio"] {
     accent-color: #9933FF;
 }
 
+.home-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.home-box {
+    width: 370px;
+    height: 230px;
+    background: #242425;
+    border-radius: 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    padding-top: 15px;
+}
+
+
+
 .center table {
     margin-left: auto;
     margin-right: auto;
@@ -518,6 +540,7 @@ tr a:link {
 tr a:visited {
     color: lightblue
 }
-tr:hover {
-    background-color: darkgray
+table:not(.calendar) tr:hover {
+    background-color: darkgray;
 }
+

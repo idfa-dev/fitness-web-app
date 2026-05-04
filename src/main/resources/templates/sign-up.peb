@@ -38,7 +38,7 @@
                     <label style="margin-left: 10px;"><input type="radio" name="usertype" value="3"> PT</label>
                 </div>
 
-                <button class="pill-btn" type="submit" style="display: block; margin: auto;">
+                <button class="pill-btn" type="submit" style="display: block; margin: 30px auto 0;">
                     SIGN UP
                 </button>
 

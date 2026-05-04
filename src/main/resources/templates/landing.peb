@@ -29,16 +29,26 @@
                 <div class="landing-text">
                     <h3 class="purple-rect">About Jympal</h3>
                     <p>
-                    Jympal is a fitness tracking platform designed to help you stay consistent with your training.<br>
-                    You can create workouts, log exercises, and track performance.
+                    Jympal is a fitness tracking platform designed to help your training be consistent!
                     </p>
 
-                    <h3 class="purple-rect">Features</h3>
+                    <h3 class="purple-rect">Features For All Accounts</h3>
                     <ul>
                         <li>Track distance, reps, sets, and calories per exercise</li>
-                        <li>Visual calendar view od your progress</li>
-                        <li>Plan, log, and update sessions easily</li>
-                        <li>Options for personal, competitive, or personal trainer accounts</li>
+                        <li>Create workouts, categorised into Cardio, Body Weight, Resistance, and Mixed</li>
+                        <li>Log and view completed exercises on a calendar</li>
+                        <li>Options for personal, competitor, or personal trainer accounts</li>
+                    </ul>
+
+                    <h3 class="purple-rect">Competitor Account Features</h3>
+                    <ul>
+                        <li>Log upcoming competitions to the calendar</li>
+                        <li>Add completion times to competitions to track personal bests</li>
+                    </ul>
+
+                    <h3 class="purple-rect">Personal Trainer Account Features</h3>
+                    <ul>
+                        <li>Add clients and oversee their activity</li>
                     </ul>
 
                     <h3 class="purple-rect">Get Started</h3>
@@ -60,7 +70,7 @@
             </div>
 
             <div style="flex: 45; text-align: center;">
-                <img src="/static/images/running.png" alt="Landing image" style="height: 110%; width: 88%; border-radius: 15px; margin-top: -90px; margin-right: 35px;">
+                <img src="/static/images/running.png" alt="Landing image" style="height: 40vw; width: 40vw; border-radius: 15px; margin-top: -85px; margin-right: 5px;">
             </div>
 
         </div>

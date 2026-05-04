@@ -85,12 +85,29 @@ fun Application.configureRouting() {
         get("/exercises/{id}") {call.exercise()}
 
         get("/calendar") {
+
             val now = LocalDate.now()
-            val month = now.month.getDisplayName(TextStyle.FULL, Locale.ENGLISH).uppercase()
-            val year = now.year
-            val firstDay = now.withDayOfMonth(1)
-            val lastDay = now.withDayOfMonth(now.lengthOfMonth())
-            val startWeekday = (firstDay.dayOfWeek.value + 6) % 7 // Monday first
+
+            val monthParam = call.request.queryParameters["month"]?.toIntOrNull()
+            val yearParam = call.request.queryParameters["year"]?.toIntOrNull()
+
+            val safeMonth = monthParam?.coerceIn(1, 12)
+            val safeYear = yearParam ?: now.year
+
+            val date = if (safeMonth != null) {
+                LocalDate.of(safeYear, safeMonth, 1)
+            } else {
+                now
+            }
+
+
+            val month = date.month.getDisplayName(TextStyle.FULL, Locale.ENGLISH).uppercase()
+            val year = date.year
+            val monthNumber = date.monthValue
+
+            val firstDay = date.withDayOfMonth(1)
+            val lastDay = date.withDayOfMonth(date.lengthOfMonth())
+            val startWeekday = (firstDay.dayOfWeek.value + 6) % 7
 
             val days = mutableListOf<String>()
             repeat(startWeekday) { days.add("") }
@@ -101,8 +118,13 @@ fun Application.configureRouting() {
 
             val weeks = days.chunked(7)
 
+            val (prevMonth, prevYear) =
+                if (date.monthValue == 1) 12 to date.year - 1 else date.monthValue - 1 to date.year
+
+            val (nextMonth, nextYear) =
+                if (date.monthValue == 12) 1 to date.year + 1 else date.monthValue + 1 to date.year
+
             val calendarTable = buildString {
-                append("<div class='month-year'>$month $year</div>")
                 append("<table class='calendar'>")
                 append("<tr>")
                 listOf("MON","TUE","WED","THU","FRI","SAT","SUN").forEach { append("<th>$it</th>") }
@@ -120,7 +142,14 @@ fun Application.configureRouting() {
 
             call.respond(PebbleContent("calendar.peb", mapOf(
                 "currentPage" to "calendar",
-                "calendarTable" to calendarTable
+                "calendarTable" to calendarTable,
+                "month" to month,
+                "year" to year,
+                "prevMonth" to prevMonth,
+                "prevYear" to prevYear,
+                "nextMonth" to nextMonth,
+                "nextYear" to nextYear,
+                "monthNumber" to monthNumber,
             )))
         }
 

@@ -6,7 +6,14 @@
 
 {% block content %}
 <div class="calendar-container">
-    <div class="month-year">{{ month }} {{ year }}</div>
+    <div class="month-nav">
+        <button id="prev-month">&lt;</button>
+
+        <div class="month-year">{{ month }} {{ year }}</div>
+
+        <button id="next-month">&gt;</button>
+    </div>
+
     <div class="add-event-text">Add<br>Event</div>
     <button id="plus-btn">+</button>
     {{ calendarTable | raw }}
@@ -119,13 +126,14 @@ html, body {
     width:100%;
     position:relative;
     padding-bottom:0.5rem;
+    padding-top:-2rem;
 }
 
 .month-year {
     font-size:6vh;
     font-weight:bold;
-    margin-top:-1rem;
-    margin-left:3rem;
+    margin-top:-0.5;
+    line-height:1;
 }
 
 .add-event-text {
@@ -165,16 +173,15 @@ html, body {
 
 table.calendar {
     border-collapse:collapse;
-    width:80vw;
-    max-width:1200px;
+    width:90vw;
     text-align:center;
-    margin:0.5rem 0 0 3rem;
+    margin:3.5rem 3rem 0 3rem;
 }
 
 table.calendar th, table.calendar td {
     border:1px solid white;
     padding:0.5rem;
-    height:3.5rem;
+    height:4.7rem;
     width:calc(80vw / 7);
     position:relative;
 }
@@ -428,6 +435,36 @@ button#submit-competition, button#submit-exercise {
     pointer-events:none;
 }
 
+.month-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: 3rem;
+    transform: translateY(0.7rem)
+}
+
+.month-nav button {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    border: 2px solid black;
+    background: white;
+    color: black;
+    cursor: pointer;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.month-nav button:hover {
+    background: #131313;
+    color: white;
+    border: 2px solid white;
+}
+
 </style>
 
 <script>
@@ -441,10 +478,14 @@ const popupSelection = document.getElementById("popup-selection");
 const submitCompBtn = document.getElementById("submit-competition");
 const circles = document.querySelectorAll(".circle");
 const submitExBtn = document.getElementById("submit-exercise");
+const prevBtn = document.getElementById("prev-month");
+const nextBtn = document.getElementById("next-month");
 
 let currentEventElement = null;
 let currentEventData = null;
 let currentExerciseData = null;
+let currentMonth = {{ monthNumber }};
+let currentYear = {{ year }};
 
 const exerciseTypeMap = {
     "Cardio": "red",
@@ -717,14 +758,27 @@ document.getElementById("edit-event-btn").onclick = () => {
     }
 };
 
+prevBtn.onclick = () => {
+    currentMonth--;
+    if (currentMonth < 1) {
+        currentMonth = 12;
+        currentYear--;
+    }
+    reloadCalendar();
+};
+
+nextBtn.onclick = () => {
+    currentMonth++;
+    if (currentMonth > 12) {
+        currentMonth = 1;
+        currentYear++;
+    }
+    reloadCalendar();
+};
+
+function reloadCalendar() {
+    window.location.href = `/calendar?month=${currentMonth}&year=${currentYear}`;
+}
+
 </script>
 {% endblock %}
-
-
-
-
-
-
-
-
-
