@@ -207,21 +207,46 @@ suspend fun ApplicationCall.addExercise(exerciseChoice: String) {
                     exercise = ex
                     order = maxOrder
                 }
-                println("Added WorkoutSessionExercise")
-                val exercises = Exercise.all().sortedBy { it.name }.toList()
-                // Create list of WorkoutSessionExerciseObject to pass as a collection
-                val wseo = getListOfWorkoutSessionExercises(ws)
-                respond(
-                    PebbleContent(
-                        "current_workout.peb",
-                        mapOf("currentPage" to "current-workout", "exercises" to exercises, "workoutSessionExerciseObjects" to wseo)
-                    )
-                )
+                println("Successfully added WorkoutSessionExercise")
+                continueWorkout()
             }
             else {
                 println("BAD REQUEST IN addExercise()")
                 respond(HttpStatusCode.BadRequest)
             }
+        }
+    }
+}
+
+suspend fun ApplicationCall.addSet(workoutSessionExerciseID: Int, inputReps: Int, inputWeight: Float) {
+    suspendTransaction {
+        // Get workoutSessionExercise from id
+        val wse = WorkoutSessionExercise.all().firstOrNull {it.id.toString() == workoutSessionExerciseID.toString()}
+        if (wse != null) {
+            WorkoutSessionSet.new {
+                workoutSessionExercise = wse
+                reps = inputReps
+                weight = inputWeight
+            }
+            println(println("Successfully added WorkoutSessionSet"))
+            continueWorkout()
+        }
+        else {
+            println("wse is null")
+        }
+    }
+}
+
+suspend fun ApplicationCall.removeSet(wssid: Int) {
+    suspendTransaction {
+        val set = WorkoutSessionSet.all().firstOrNull {it.id.toString() == wssid.toString()}
+        if (set != null) {
+            set.delete()
+            println("Successfully deleted WorkoutSessionSet with id=$wssid")
+            continueWorkout()
+        }
+        else {
+            println("set is null")
         }
     }
 }

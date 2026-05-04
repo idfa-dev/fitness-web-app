@@ -60,10 +60,36 @@ fun Application.configureRouting() {
             val parameters = call.receiveParameters()
             val useTemplate = parameters["use_template"]
             val exerciseChoice = parameters["exercise"]
-            println(useTemplate)
+            val removeExercise = parameters["remove_exercise"]
+            val removeSet = parameters["remove_set"]
+            val workoutSessionExerciseID = parameters["wseid"]?.toIntOrNull()
+            val reps = parameters["reps"]?.toIntOrNull()
+            val weight = parameters["weight"]?.toFloatOrNull()
             if (useTemplate == null) {
                 if (exerciseChoice == null) {
-                    call.respond(HttpStatusCode.BadRequest)
+                    if (removeExercise == null && removeSet == null) {
+                        if (workoutSessionExerciseID == null || reps == null || weight == null) {
+                            call.respond(HttpStatusCode.BadRequest)
+                        }
+                        else {
+                            call.addSet(workoutSessionExerciseID,reps,weight)
+                        }
+                    }
+                    else {
+                        if (removeSet != null) {
+                            // removeSet contains id of set to be removed
+                            val wssid = removeSet.toIntOrNull()
+                            if (wssid != null) {
+                                call.removeSet(wssid)
+                            }
+                            else {
+                                println("wssid is null")
+                            }
+                        }
+                        else if (removeExercise != null) {
+                            //call.removeExercise()
+                        }
+                    }
                 }
                 else {
                     // Handle adding an exercise

@@ -8,11 +8,11 @@ fun Application.configureSessions() {
     install(Sessions) {
         cookie<UserSession>("user_session") {
             cookie.path = "/"
-            cookie.maxAgeInSeconds = 3600 // 60 minutes
+            cookie.maxAgeInSeconds = 10800 // 3 Hours
         }
         cookie<CurrentWorkoutSession>("current_workout_session") {
             cookie.path = "/"
-            cookie.maxAgeInSeconds = 3600 // 60 minutes
+            cookie.maxAgeInSeconds = 10800 // 3 Hours
         }
     }
 }

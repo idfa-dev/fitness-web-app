@@ -118,6 +118,22 @@ body {
 
 /* BUTTONS */
 
+.remove-btn {
+    width: 100%;
+    background: transparent;
+    font-size: 24px;
+    color: red;
+    border: none;
+    text-align: left;
+    padding: 10px 14px;
+    transition-duration: 0.4s;
+}
+
+.remove-btn:hover {
+    cursor: pointer;
+    background-color: #722891;
+}
+
 .exercise-btn {
     width: 100%;
     background: transparent;
@@ -459,18 +475,39 @@ a.workout-container:hover { /* Only affects workout buttons, not exercise button
     margin-left: auto;
     margin-right: auto;
 }
+
 table, th, td {
     border: 1px solid white;
     border-collapse: collapse;
+    font-size: 20px;
 }
+
+.exercise-header {
+    text-transform: uppercase;
+    font-size: 24px;
+    padding: 14px 0;
+    border-bottom: 2px solid white;
+}
+
+td input {
+    font-size: 24px;
+    background-color: lightgrey;
+}
+
 /* Unvisited link */
 tr a:link {
     color: lightblue
 }
+
 /* Visited link */
 tr a:visited {
     color: lightblue
 }
-tr:hover {
-    background-color: darkgray
+
+tr:hover{
+    background-color: #3b145a;
+}
+
+tr:hover input{
+    background-color: whitesmoke;
 }
