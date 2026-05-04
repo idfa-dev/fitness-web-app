@@ -1,0 +1,18 @@
+{% extends "base.peb" %}
+{% block title %} Current Workout {% endblock %}
+
+{% block header %}
+<div class="center">
+    <h1>Current Workout</h1>
+</div>
+
+{% endblock %}
+{% block content %}
+<div class="center">
+    <p> PLACEHOLDER TIMER </p>
+    <br>
+    <p> PLACEHOLDER EXERCISE </p>
+    <br>
+    <p> PLACEHOLDER EXERCISE AGAIN </p>
+</div>
+{% endblock %}

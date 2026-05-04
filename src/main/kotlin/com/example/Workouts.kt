@@ -7,7 +7,6 @@ import com.example.database.WorkoutExercise
 import com.example.database.Workout
 import com.example.database.Exercise
 import com.example.database.User
-import com.example.database.SavedWorkout
 import com.example.database.getUserIdByUsername
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
@@ -47,7 +46,7 @@ suspend fun ApplicationCall.displayWorkout(id: Int) {
             types = types // Containing the types of exercises within the workout
         )
 
-        respond(PebbleContent("display_workout.peb", mapOf("workout" to wo)))
+        respond(PebbleContent("view_workout.peb", mapOf("workout" to wo, "currentPage" to "workouts")))
     }
 }
 
@@ -73,7 +72,7 @@ suspend fun ApplicationCall.displayWorkouts() {
 
             }
             // After workoutTypes has been fully formed, each workout has a corresponding type
-            respond(PebbleContent("display_workouts.peb", mapOf("workouts" to workoutObjects)))
+            respond(PebbleContent("view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to "workouts")))
         }
         else {
             respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
@@ -105,7 +104,7 @@ suspend fun ApplicationCall.searchWorkouts() {
 
                 }
                 // After workoutTypes has been fully formed, each workout has a corresponding type
-                respond(PebbleContent("display_workouts.peb", mapOf("workouts" to workoutObjects)))
+                respond(PebbleContent("view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to "workouts")))
             }
         }
         else {
