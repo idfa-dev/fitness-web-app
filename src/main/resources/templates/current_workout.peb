@@ -9,9 +9,9 @@
 {% endblock %}
 {% block content %}
 <div class="center">
-    {% for WorkoutSessionExercise in WorkoutSessionExercises %}
-        <p> {{ WorkoutSessionExercise.exercise.name }} <p>
-        {% for set in WorkoutSessionExercise.sets %}
+    {% for wse in workoutSessionExerciseObjects %}
+        <p> {{ wse.wsExercise.exercise.name }} </p>
+        {% for set in wse.sets %}
             <p> Reps: {{ set.reps }} </p>
             <p> Weight (kg): {{ set.weight }} </p>
         {% endfor %}
@@ -26,8 +26,8 @@
                     {{ exercise.name }}
                 </button>
             </div>
-        </form>
         {% endfor %}
+        </form>
     </div>
 </div>
 

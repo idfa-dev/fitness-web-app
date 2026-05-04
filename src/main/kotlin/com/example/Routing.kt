@@ -15,6 +15,7 @@ import com.example.database.authenticateUser //importing authentication from aut
 import com.example.database.authenticatePT
 import com.example.database.doesCollide //importing collision checker from auth.kt
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.parameters
 
 import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod db
@@ -52,43 +53,21 @@ fun Application.configureRouting() {
             else {
                 // Make sure this is fixed to contain workout info
                 call.continueWorkout()
-                call.respond(PebbleContent("current_workout.peb", mapOf("currentPage" to "current-workout")))
             }
         }
 
         post("/current-workout") {
-            val useTemplate = call.receiveParameters()["use_template"]
-            val exerciseChoice = call.receiveParameters()["exercise"]
-            val workoutSessionID = call.sessions.get<CurrentWorkoutSession>()?.workoutSessionID
+            val parameters = call.receiveParameters()
+            val useTemplate = parameters["use_template"]
+            val exerciseChoice = parameters["exercise"]
             println(useTemplate)
             if (useTemplate == null) {
                 if (exerciseChoice == null) {
                     call.respond(HttpStatusCode.BadRequest)
                 }
                 else {
-                    // Get workoutSessionID
-                    if (workoutSessionID != null) {
-                        // Get WorkoutSession and Exercise
-                        val ws = WorkoutSession.all().first {it.id.toString() == workoutSessionID}
-                        val ex = Exercise.all().first {it.name == exerciseChoice}
-                        // Figure out the order below
-                        val wsExerciseList = WorkoutSessionExercise.all().sortedBy { it.workoutSession == ws }.toList()
-                        var maxOrder = 1
-                        for (x in wsExerciseList) {
-                            if (x.order > maxOrder) {
-                                maxOrder = x.order
-                            }
-                        }
-                        maxOrder += 1
-                        // Add exercise as a workoutSessionExercise
-                        transaction {
-                            WorkoutSessionExercise.new {
-                                workoutSession = ws
-                                exercise = ex
-                                order = maxOrder
-                            }
-                        }
-                    }
+                    // Handle adding an exercise
+                    call.addExercise(exerciseChoice)
                 }
             }
             else {
@@ -258,6 +237,7 @@ fun Application.configureRouting() {
                         getUserIdByUsername(username)
                     }
                     call.sessions.set(UserSession(id=userID.toString(), username=username))
+                    call.sessions.clear<CurrentWorkoutSession>()
                 }
                 call.respondRedirect("/home")   // Redirects ot the actual home page
             }

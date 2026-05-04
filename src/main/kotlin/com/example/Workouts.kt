@@ -10,6 +10,7 @@ import com.example.database.WorkoutExercise
 import com.example.database.Workout
 import com.example.database.Exercise
 import com.example.database.User
+import com.example.database.getListOfWorkoutSessionExercises
 import com.example.database.getUserIdByUsername
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
@@ -119,7 +120,7 @@ suspend fun ApplicationCall.searchWorkouts() {
 
 // Class definition for workout session exercises to be passed in the respondTemplate calls for functions linking to current-workout (below)
 data class WorkoutSessionExerciseObject (
-    var exercise: WorkoutSessionExercise,
+    var wsExercise: WorkoutSessionExercise,
     var sets: List<WorkoutSessionSet>,
 )
 
@@ -150,14 +151,77 @@ suspend fun ApplicationCall.startNewWorkout() {
 suspend fun ApplicationCall.continueWorkout() {
     suspendTransaction {
         val userSession = sessions.get<UserSession>()
-        if (userSession != null) {
+        val workoutSessionID = sessions.get<CurrentWorkoutSession>()?.workoutSessionID
+        if (userSession != null && workoutSessionID != null) {
+            val ws = WorkoutSession.all().firstOrNull { it.id.toString() == workoutSessionID }
             val exercises = Exercise.all().sortedBy {it.name}.toList()
             println(exercises)
-            // CHANGE THIS FUNCTION IN FUTURE TO PROVIDE LIST OF OBJECTS TOO
-            respond(PebbleContent("current_workout.peb", mapOf("currentPage" to "current-workout", "exercises" to exercises)))
+            if (ws != null) {
+                val wseo = getListOfWorkoutSessionExercises(ws)
+                respond(
+                    PebbleContent(
+                        "current_workout.peb",
+                        mapOf("currentPage" to "current-workout", "exercises" to exercises, "workoutSessionExerciseObjects" to wseo)
+                    )
+                )
+            }
+            else {
+                println("WorkoutSession is null")
+                respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+            }
         }
         else {
+            if (userSession == null) {
+                println("UserSession is null")
+            }
+            if (workoutSessionID == null) {
+                println("workoutSessionID is null")
+            }
             respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+        }
+    }
+}
+
+suspend fun ApplicationCall.addExercise(exerciseChoice: String) {
+    suspendTransaction {
+        // Get workoutSessionID
+        val workoutSessionID = sessions.get<CurrentWorkoutSession>()?.workoutSessionID
+        if (workoutSessionID != null) {
+            // Get WorkoutSession and Exercise
+            val ws = WorkoutSession.all().firstOrNull { it.id.toString() == workoutSessionID }
+            val ex = Exercise.all().firstOrNull { it.id.toString() == exerciseChoice }
+            println(ws)
+            println(ex)
+            if (ws != null && ex != null) {
+                // Figure out the order below
+                val wsExerciseList = WorkoutSessionExercise.all().sortedBy { it.workoutSession == ws }.toList()
+                var maxOrder = 1
+                for (x in wsExerciseList) {
+                    if (x.order > maxOrder) {
+                        maxOrder = x.order
+                    }
+                }
+                // Create an instance of a  WorkoutSessionExercise
+                WorkoutSessionExercise.new {
+                    workoutSession = ws
+                    exercise = ex
+                    order = maxOrder
+                }
+                println("Added WorkoutSessionExercise")
+                val exercises = Exercise.all().sortedBy { it.name }.toList()
+                // Create list of WorkoutSessionExerciseObject to pass as a collection
+                val wseo = getListOfWorkoutSessionExercises(ws)
+                respond(
+                    PebbleContent(
+                        "current_workout.peb",
+                        mapOf("currentPage" to "current-workout", "exercises" to exercises, "workoutSessionExerciseObjects" to wseo)
+                    )
+                )
+            }
+            else {
+                println("BAD REQUEST IN addExercise()")
+                respond(HttpStatusCode.BadRequest)
+            }
         }
     }
 }
