@@ -1,26 +1,34 @@
 package com.example
 
+//DB
 import com.example.database.*
+
+//Server
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.http.content.*
 import io.ktor.server.pebble.PebbleContent
+import io.ktor.server.request.receiveParameters
+import io.ktor.server.sessions.*
+
+//jav
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
 
-//Authentication stuff
+//Authentication imports
 import com.example.database.authenticateUser //importing authentication from auth.kt
 import com.example.database.authenticatePT
 import com.example.database.doesCollide //importing collision checker from auth.kt
 import com.example.database.User
 import com.example.database.PT
+import com.example.database.signInHandler
 
+//SQL ( might be unnecessary )
 import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod db
-import io.ktor.server.request.receiveParameters
-import io.ktor.server.sessions.*
+
 
 fun Application.configureRouting() {
     routing {
@@ -174,41 +182,12 @@ fun Application.configureRouting() {
         }
 
         post("/sign-in") { //This whole section will be added to Auth.kt eventually or like modularized
-
             
-            val parameters = call.receiveParameters() //pull website input
-            var isPT = false
-
-            val username = parameters["username"] ?: "Input not received."  // Second case for input check
-            val password = parameters["password"] ?: "Input not received."
-
-            println("Username: $username, Password: $password") // Input check for sign-in
+            signInHandler(call)
             
-            var isValid = authenticateUser(username, password) //check
-            if (!isValid)
-            {
-                isValid = authenticatePT(username, password) //Double check if user is a PT
-                isPT = true
-            }
-            if (isValid) {
-                transaction {
-                    val userID: Int? = if (isPT) {
-                        getPTIdByUsername(username)
-                    } else {
-                        getUserIdByUsername(username)
-                    }
-                    call.sessions.set(UserSession(id=userID.toString(), username=username))
-                }
-                call.respondRedirect("/home")   // Redirects ot the actual home page
-            }
-            else 
-            {
-                call.respondText("Invalid details. Please try again.")  // Error message on failure
-            }
-
         }
 
-         get("/sign-up") {
+        get("/sign-up") {
             call.respond(PebbleContent("sign-up.peb", mapOf("currentPage" to "sign-up")))
         }
 
