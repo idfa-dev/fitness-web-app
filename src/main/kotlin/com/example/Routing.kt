@@ -129,6 +129,11 @@ fun Application.configureRouting() {
             call.respond(PebbleContent("profile.peb", mapOf("currentPage" to "profile")))
         }
 
+        get("/logout") {
+            call.sessions.clear<UserSession>()
+            call.respondRedirect("/sign-in")
+        }
+
         get("/profile/profile_info") {
             val session = call.sessions.get<UserSession>()
 
