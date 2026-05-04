@@ -135,10 +135,10 @@ suspend fun ApplicationCall.searchWorkouts() {
 
         respond(
             PebbleContent(
-                "display_workouts.peb",
+                "view_workouts.peb",
                 mapOf(
                     "workouts" to workoutObjects,
-                    "currentPage" to "display_workouts"
+                    "currentPage" to "view_workouts"
                 )
             )
         )
