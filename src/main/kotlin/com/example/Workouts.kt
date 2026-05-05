@@ -87,34 +87,66 @@ suspend fun ApplicationCall.displayWorkouts() {
 
 suspend fun ApplicationCall.searchWorkouts() {
     suspendTransaction {
+
         val userSession = sessions.get<UserSession>()
-        if (userSession != null) {
-            val workoutObjects = mutableListOf<WorkoutObject>()
-            val search = parameters["search"]
-
-            if (search == null) {
-                respond(HttpStatusCode.BadRequest)
-            }
-            else {
-                val workouts = Workout.all().filter {it.user?.id.toString() == userSession.id || it.user == null}.sortedBy {it.name}.filter {it.name.contains(search, true)}.toList()
-                // Iterate through all found workouts and find what types are within them
-                for (workout in workouts) {
-                    val workoutExercises = WorkoutExercise.all().filter {it.workout==workout}.toList()
-                    val types = mutableSetOf<String>() // We use sets as an easy implementation of no-duplicates
-                    for (workoutExercise in workoutExercises) {
-                        // Append exercise type to list
-                        types.add(exerciseTypes[workoutExercise.exercise.type])
-                    }
-                    workoutObjects.add(WorkoutObject(workout=workout, exercises = workoutExercises, types=types))
-
-                }
-                // After workoutTypes has been fully formed, each workout has a corresponding type
-                respond(PebbleContent("view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to "workouts")))
-            }
-        }
-        else {
+        if (userSession == null) {
             respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+            return@suspendTransaction
         }
+
+        val search = parameters["search"]
+        val selectedTypes = parameters.getAll("type") ?: emptyList()
+
+        val workoutObjects = mutableListOf<WorkoutObject>()
+
+        val workouts = Workout.all()
+            .filter { it.user?.id.toString() == userSession.id || it.user == null }
+            .toList()
+            .filter { workout ->
+
+                val matchesSearch =
+                    search.isNullOrBlank() ||
+                    workout.name.contains(search, ignoreCase = true)
+
+                val workoutTypes = WorkoutExercise.all()
+                    .filter { it.workout == workout }
+                    .map { exerciseTypes[it.exercise.type] }
+
+                val matchesType =
+                    selectedTypes.isEmpty() ||
+                    workoutTypes.any { it in selectedTypes }
+
+                matchesSearch && matchesType
+            }
+
+        for (workout in workouts) {
+
+            val workoutExercises = WorkoutExercise.all()
+                .filter { it.workout == workout }
+                .toList()
+
+            val types = workoutExercises
+                .map { exerciseTypes[it.exercise.type] }
+                .toSet()
+
+            workoutObjects.add(
+                WorkoutObject(
+                    workout = workout,
+                    exercises = workoutExercises,
+                    types = types
+                )
+            )
+        }
+
+        respond(
+            PebbleContent(
+                "view_workouts.peb",
+                mapOf(
+                    "workouts" to workoutObjects,
+                    "currentPage" to "view_workouts"
+                )
+            )
+        )
     }
 }
 

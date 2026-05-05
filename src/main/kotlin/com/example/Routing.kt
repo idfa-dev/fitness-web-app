@@ -194,9 +194,21 @@ fun Application.configureRouting() {
             call.respond(PebbleContent("profile.peb", mapOf("currentPage" to "profile")))
         }
 
+        get("/logout") {
+            call.sessions.clear<UserSession>()
+            call.respondRedirect("/sign-in")
+        }
+
         get("/profile/profile_info") {
+            val session = call.sessions.get<UserSession>()
+
+            if (session == null) {
+                call.respondRedirect("/sign-in")
+                return@get
+            }
+
             val user = transaction {
-                User.find { Users.username eq "regulardude123" }.firstOrNull()
+                session.id.toIntOrNull()?.let { User.findById(it) }
             }
 
             val context = mutableMapOf<String, Any>(
@@ -218,8 +230,15 @@ fun Application.configureRouting() {
 
             println("POST ROUTE HIT")
 
+            val session = call.sessions.get<UserSession>()
+
+            if (session == null) {
+                call.respondRedirect("/sign-in")
+                return@post
+            }
+
             transaction {
-                val user = User.find { Users.username eq "regulardude123" }.firstOrNull()
+                val user = session.id.toIntOrNull()?.let { User.findById(it) }
 
                 if (user != null) {
                     if (!fname.isNullOrBlank()) user.fname = fname
