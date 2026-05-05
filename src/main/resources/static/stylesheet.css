@@ -546,6 +546,7 @@ th.btn,td.btn {
 }
 
 td input {
+    text-align: left;
     font-size: 24px;
     background-color: lightgrey;
 }

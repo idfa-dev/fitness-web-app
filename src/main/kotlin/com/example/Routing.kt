@@ -87,7 +87,14 @@ fun Application.configureRouting() {
                             }
                         }
                         else if (removeExercise != null) {
-                            //call.removeExercise()
+                            // removeExercise contains id of exercise to be removed
+                            val wseid = removeExercise.toIntOrNull()
+                            if (wseid != null) {
+                                call.removeExercise(wseid)
+                            }
+                            else {
+                                println("wseid is null")
+                            }
                         }
                     }
                 }

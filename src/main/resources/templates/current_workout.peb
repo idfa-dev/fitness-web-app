@@ -41,7 +41,7 @@
                         <td class="btn"><input type="hidden" name="wseid" value="{{ wse.wsExercise.id }}"><button class="add-btn" type="submit" name="add-set">ADD</button></td>
                     </tr>
                     <tr>
-                        <td colspan="4"><button class="remove-btn" type="submit" name="remove_exercise" value="{{ set.id }}">REMOVE EXERCISE</button></td>
+                        <td colspan="4"><button class="remove-btn" type="submit" name="remove_exercise" value="{{ wse.wsExercise.id }}">REMOVE EXERCISE</button></td>
                     </tr>
                 </tbody>
             </table>

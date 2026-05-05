@@ -278,7 +278,21 @@ suspend fun ApplicationCall.removeSet(wssid: Int) {
             continueWorkout()
         }
         else {
-            println("set is null")
+            println("WorkoutSessionSet with id=$wssid not found")
+        }
+    }
+}
+
+suspend fun ApplicationCall.removeExercise(wseid: Int) {
+    suspendTransaction {
+        val exercise = WorkoutSessionExercise.all().firstOrNull {it.id.toString() == wseid.toString()}
+        if (exercise != null) {
+            exercise.delete()
+            println("Successfully deleted WorkoutSessionExercise with id=$wseid")
+            continueWorkout()
+        }
+        else {
+            println("WorkoutSessionExercise with id=$wseid not found")
         }
     }
 }
