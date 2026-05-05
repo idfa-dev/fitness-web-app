@@ -2,18 +2,16 @@
 
 {% block title %}Home{% endblock %}
 
-{% block header %}
+{% block content %}
+
 <div style="text-align: center">
     <img src="/static/images/jympal_logo.png" alt="Jympal logo" style="width: 180px; margin-top: -30px;">
     <p style="font-size: 16px; margin: 5px 0;">
         You wanna be fit? Jymit!
     </p>
 </div>
-{% endblock %}
 
-{% block content %}
-
-<p style="text-align: center; margin-top: -50px; font-weight: bold;">
+<p style="text-align: center; margin-top: 25px; font-weight: bold;">
     Your Activity:
 </p>
 
@@ -23,7 +21,7 @@
     <div class="home-box">Last Exercise</div>
 </div>
 
-<p style="text-align: center; margin-top: 30px; font-weight: bold;">
+<p style="text-align: center; margin-top: 20px; font-weight: bold;">
     Suggestions:
 </p>
 
