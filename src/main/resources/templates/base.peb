@@ -18,21 +18,20 @@
     <a href="/profile" class="tab {% if currentPage == 'profile' %}active{% endif %}">Profile</a>
 </div>
 
-<!-- PAGE TITLE -->
-<div class="page-title-container">
-    <div class="page-title">
-        {% block header %}{% endblock %}
-    </div>
-    {% if block("action") is not empty %}
-    <div class="page-action">
-        {% block action %}{% endblock %}
-    </div>
-    {% endif %}
-</div>
 
-<!-- PAGE CONTENT -->
-<div class="content">
-    {% block content %}{% endblock %}
+<!-- BACKGROUND + PAGE CONTENT -->
+<div class="landing-bg">
+
+    <img class="bg-img" src="/static/images/landing_background.png" alt="background">
+
+    <div class="landing-box" style="margin-top: -50px; height: 85%;">
+
+        <!-- PAGE CONTENT -->
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+
+    </div>
 </div>
 
 {% block scripts %}{% endblock %}

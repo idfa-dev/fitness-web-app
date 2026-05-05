@@ -113,7 +113,6 @@ html, body {
     margin:0;
     padding:0;
     height:100%;
-    background-color:#131313;
     font-family:"Agency FB", sans-serif;
     color:white;
 }
