@@ -18,12 +18,11 @@ import io.ktor.server.pebble.PebbleContent
 import io.ktor.server.pebble.respondTemplate
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.response.respond
-import io.ktor.server.sessions.get
-import io.ktor.server.sessions.sessions
-import io.ktor.server.sessions.set
+import io.ktor.server.sessions.*
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import java.time.Instant
 import kotlin.text.toInt
 
 // Class definition for workout object to be passed in the respondTemplate call for display_workout (below)
@@ -293,6 +292,22 @@ suspend fun ApplicationCall.removeExercise(wseid: Int) {
         }
         else {
             println("WorkoutSessionExercise with id=$wseid not found")
+        }
+    }
+}
+
+suspend fun ApplicationCall.endWorkout() {
+    suspendTransaction {
+        val workoutSessionID = sessions.get<CurrentWorkoutSession>()?.workoutSessionID?.toIntOrNull()
+        if (workoutSessionID != null) {
+            val ws = WorkoutSession.findByIdAndUpdate(workoutSessionID) {
+                it.endedAt = Instant.now()
+                it.complete = true
+            }
+            println("Successfully completed WorkoutSession with id=$workoutSessionID")
+            // Unset the current workout session
+            sessions.clear<CurrentWorkoutSession>()
+            startNewWorkout()
         }
     }
 }
