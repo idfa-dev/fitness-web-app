@@ -18,12 +18,8 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 //Authentication imports
-import com.example.database.authenticateUser //importing authentication from auth.kt
-import com.example.database.authenticatePT
-import com.example.database.doesCollide //importing collision checker from auth.kt
 import com.example.database.User
 import com.example.database.PT
-import com.example.database.signInHandler
 
 //SQL ( might be unnecessary )
 import org.jetbrains.exposed.v1.core.*

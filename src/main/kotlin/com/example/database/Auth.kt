@@ -115,7 +115,7 @@ fun doesCollide(username: String, email: String): Boolean {
             (Users.username eq username) or (Users.email eq email)
         }.firstOrNull() != null ) or
         ( PTs.selectAll().where {
-            (PTs.username eq username) and (PTs.email eq email)
+            (PTs.username eq username) or (PTs.email eq email)
         }.firstOrNull() != null )
     }
 }
