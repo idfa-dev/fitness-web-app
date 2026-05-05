@@ -1,5 +1,6 @@
 package com.example.database
 
+import com.example.WorkoutSessionExerciseObject
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -239,4 +240,20 @@ fun getUserIdByUsername(username: String): Int {
 
 fun getPTIdByUsername(username: String): Int {
     return PT.all().single { it.username == username }.id.value // The reason we put .value after id is because .id returns EntityID<Int> (it is wrapped)
+}
+
+fun getListOfWorkoutSessionExercises(ws: WorkoutSession): List<WorkoutSessionExerciseObject> {
+    val list = mutableListOf<WorkoutSessionExerciseObject>()
+    // Search for all WorkoutSessionExercise with workoutSession == workoutSession
+    val workoutSessionExercises = WorkoutSessionExercise.all().filter {it.workoutSession == ws}.toList()
+    for (wse in workoutSessionExercises) {
+        // Search for all sets currently in the database attached to this exercise, then add as an object
+        val wss = WorkoutSessionSet.all().filter {it.workoutSessionExercise == wse}.toList()
+        val wseo = WorkoutSessionExerciseObject (
+            wsExercise = wse,
+            sets = wss
+        )
+        list.add(wseo) // Even if wss is empty, it adds the WorkoutSessionExerciseObject with sets = empty list which is ideal
+    }
+    return list
 }
