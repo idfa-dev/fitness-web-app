@@ -19,6 +19,7 @@ import io.ktor.http.parameters
 
 import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod db
+import org.jetbrains.exposed.v1.jdbc.insert
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.sessions.*
 
@@ -151,6 +152,8 @@ fun Application.configureRouting() {
 
         get("/calendar") {
 
+            val userId = call.sessions.get<UserSession>()?.id?.toIntOrNull()
+
             val now = LocalDate.now()
 
             val monthParam = call.request.queryParameters["month"]?.toIntOrNull()
@@ -164,6 +167,22 @@ fun Application.configureRouting() {
             } else {
                 now
             }
+
+            val competitions = transaction {
+                if (userId == null) return@transaction emptyList()
+
+                Competition.find { Competitions.user eq userId }
+                    .map { c ->
+                        mapOf(
+                            "name" to c.name,
+                            "date" to c.date.toString(),
+                            "time" to c.time,
+                            "distance" to c.distance,
+                            "finishTime" to c.finishTime
+                        )
+                    }
+            }
+
 
 
             val month = date.month.getDisplayName(TextStyle.FULL, Locale.ENGLISH).uppercase()
@@ -197,8 +216,38 @@ fun Application.configureRouting() {
                 weeks.forEach { week ->
                     append("<tr>")
                     week.forEach { day ->
-                        if(day.isEmpty()) append("<td></td>")
-                        else append("<td><span class='day-number'>$day</span></td>")
+                        if(day.isEmpty()) {
+                            append("<td></td>")
+                        }
+                        else {
+                            append("<td><span class='day-number'>$day</span>")
+
+                            competitions.forEach { c: Map<String, Any?> ->
+
+                                val cDate = java.time.LocalDate.parse(c["date"].toString())
+                                val cellDate = java.time.LocalDate.of(year, monthNumber, day.toInt())
+
+                                if (cDate == cellDate) {
+
+                                    val infoJson = """
+                                    {
+                                    "name": "${c["name"]}",
+                                    "date": "${c["date"]}",
+                                    "time": "${c["time"] ?: ""}",
+                                    "distance": "${c["distance"] ?: ""}",
+                                    "finishTime": "${c["finishTime"] ?: ""}",
+                                    "types": []
+                                    }
+                                    """.trimIndent()
+                                        .replace("\n", "")
+                                        .replace("\"", "&quot;")
+
+                                    append("<div class='comp-pill' data-info=\"$infoJson\">${c["name"]}</div>")
+                                }
+                            }
+
+                            append("</td>")
+                        }
                     }
                     append("</tr>")
                 }
@@ -215,6 +264,7 @@ fun Application.configureRouting() {
                 "nextMonth" to nextMonth,
                 "nextYear" to nextYear,
                 "monthNumber" to monthNumber,
+                "competitions" to competitions,
             )))
         }
 
@@ -391,6 +441,46 @@ fun Application.configureRouting() {
             } else {    //error
                 call.respondText("Failed to create user. Please try again.")
             }
+        }
+
+        post("/competitions/add") {
+            val params = call.receiveParameters()
+
+            val session = call.sessions.get<UserSession>()
+            if (session == null) {
+                call.respond(HttpStatusCode.Unauthorized)
+                return@post
+            }
+
+            val uid = session.id.toIntOrNull()
+            if (uid == null) {
+                call.respond(HttpStatusCode.BadRequest)
+                return@post
+            }
+
+            val competitionName = params["name"]
+            val competitionDate = params["date"]
+            val competitionTime = params["time"]
+            val competitionDistance = params["distance"]?.toDoubleOrNull()
+            val competitionFinishTime = params["finishTime"]
+
+            if (competitionName.isNullOrBlank() || competitionDate.isNullOrBlank()) {
+                call.respond(HttpStatusCode.BadRequest)
+                return@post
+            }
+
+            transaction {
+                Competitions.insert {
+                    it[Competitions.user] = uid
+                    it[Competitions.name] = competitionName
+                    it[Competitions.date] = java.time.LocalDate.parse(competitionDate)
+                    it[Competitions.time] = competitionTime
+                    it[Competitions.distance] = competitionDistance
+                    it[Competitions.finishTime] = competitionFinishTime
+                }
+            }
+
+            call.respondRedirect("/calendar")
         }
     }
 }

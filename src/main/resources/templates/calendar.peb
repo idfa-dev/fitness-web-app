@@ -535,59 +535,28 @@ exCircles.forEach(circle => {
     };
 });
 
-submitCompBtn.onclick = () => {
+submitCompBtn.onclick = async () => {
     const name = document.getElementById("comp-name").value;
     const date = document.getElementById("comp-date").value;
     const time = document.getElementById("comp-time").value;
     const distance = document.getElementById("comp-distance").value;
     const finishTime = document.getElementById("comp-finish-time").value;
 
-    const types = [];
-    compCircles.forEach(c => {
-        if(c.classList.contains("selected")) types.push(c.dataset.name);
+    if (!name || !date) return;
+
+    const formData = new URLSearchParams();
+    formData.append("name", name);
+    formData.append("date", date);
+    formData.append("time", time);
+    formData.append("distance", distance);
+    formData.append("finishTime", finishTime);
+
+    await fetch("/competitions/add", {
+        method: "POST",
+        body: formData
     });
 
-    if(!name || !date) return;
-
-    if(currentEventElement){
-        currentEventElement.textContent = name;
-        currentEventElement.dataset.info = JSON.stringify({name,date,time,distance,finishTime,types});
-
-        currentEventElement = null;
-        currentEventData = null;
-
-        document.getElementById("comp-name").value = "";
-        document.getElementById("comp-date").value = "";
-        document.getElementById("comp-time").value = "";
-        document.getElementById("comp-distance").value = "";
-        document.getElementById("comp-finish-time").value = "";
-        compCircles.forEach(c => c.classList.remove("selected"));
-
-        popupOverlay.style.display = "none";
-        return;
-    }
-
-    const day = new Date(date).getDate();
-
-    document.querySelectorAll("table.calendar td").forEach(td => {
-        const dn = td.querySelector(".day-number");
-
-        if(dn && parseInt(dn.textContent) === day){
-            const pill = document.createElement("div");
-            pill.className = "comp-pill";
-            pill.textContent = name;
-            pill.dataset.info = JSON.stringify({name,date,time,distance,types});
-            td.appendChild(pill);
-        }
-    });
-
-    document.getElementById("comp-name").value = "";
-    document.getElementById("comp-date").value = "";
-    document.getElementById("comp-time").value = "";
-    document.getElementById("comp-distance").value = "";
-    compCircles.forEach(c => c.classList.remove("selected"));
-
-    popupOverlay.style.display = "none";
+    window.location.reload();
 };
 
 submitExBtn.onclick = () => {
