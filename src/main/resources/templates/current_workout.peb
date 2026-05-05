@@ -11,35 +11,37 @@
 <div class="center">
     {% for wse in workoutSessionExerciseObjects %}
         <form action="/current-workout" method="post">
-            <table>
+            <table class="current-exercise">
                 <thead>
                     <tr>
                         <th class="exercise-header" colspan="4">{{ wse.wsExercise.exercise.name }}</th>
+                    </tr>
                     <tr>
-                        <th style="padding-left:5px;padding-right:5px;">Set</th>
-                        <th>Weight (kg)</th>
-                        <th>Reps</th>
+                        <th class="set">Set</th>
+                        <th class="weight">Weight (kg)</th>
+                        <th class="reps">Reps</th>
+                        <th class="btn"></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% set i = 1 %}
                     {% for set in wse.sets %}
                         <tr>
-                            <td>{{ i }}</td>
-                            <td>{{ set.weight }}</td>
-                            <td>{{ set.reps }}</td>
-                            <td><button class="remove-btn" type="submit" name="remove_set" value="{{ set.id }}">REMOVE</button></td>
+                            <td class="set">{{ i }}</td>
+                            <td class="weight">{{ set.weight }}</td>
+                            <td class="reps">{{ set.reps }}</td>
+                            <td class="btn"><button class="remove-btn" type="submit" name="remove_set" value="{{ set.id }}">REMOVE</button></td>
                         </tr>
+                    {%  set i = i + 1 %}
                     {% endfor %}
                     <tr>
-                        <input type="hidden" name="wseid" value="{{ wse.wsExercise.id }}">
-                        <td> {{ i }} </td>
-                        <td><input type="number" step="0.25" name="weight" min="0" placeholder="0"></td>
-                        <td><input type="number" name="reps" min="0" placeholder="0"></td>
-                        <td><input type="submit" name="add-set" value="ADD"></td>
+                        <td class="set"> {{ i }} </td>
+                        <td class="weight"><input type="number" step="0.25" name="weight" min="0" placeholder="0"></td>
+                        <td class="reps"><input type="number" name="reps" min="0" placeholder="0"></td>
+                        <td class="btn"><input type="hidden" name="wseid" value="{{ wse.wsExercise.id }}"><button class="add-btn" type="submit" name="add-set">ADD</button></td>
                     </tr>
                     <tr>
-                        <td colspan="4"><input type="submit" name="remove_exercise" value="REMOVE EXERCISE"></td>
+                        <td colspan="4"><button class="remove-btn" type="submit" name="remove_exercise" value="{{ set.id }}">REMOVE EXERCISE</button></td>
                     </tr>
                 </tbody>
             </table>

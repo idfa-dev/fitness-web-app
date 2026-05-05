@@ -118,20 +118,38 @@ body {
 
 /* BUTTONS */
 
+.add-btn {
+    width: 100%;
+    background: transparent;
+    font-size: 24px;
+    color: white;
+    border: none;
+    border-radius: 0;
+    text-align: center;
+    padding: 10px 14px;
+    transition-duration: 0.4s;
+}
+
+.add-btn:hover {
+    cursor: pointer;
+    background-color: #196B24;
+}
+
 .remove-btn {
     width: 100%;
     background: transparent;
     font-size: 24px;
-    color: red;
+    color: white;
     border: none;
-    text-align: left;
+    border-radius: 0;
+    text-align: center;
     padding: 10px 14px;
     transition-duration: 0.4s;
 }
 
 .remove-btn:hover {
     cursor: pointer;
-    background-color: #722891;
+    background-color: #E32141;
 }
 
 .exercise-btn {
@@ -498,6 +516,26 @@ table, th, td {
     border: 1px solid white;
     border-collapse: collapse;
     font-size: 20px;
+}
+
+table.current-exercise {
+    table-layout: fixed;
+}
+
+th.set,td.set {
+    width: 50px;
+}
+
+th.weight,td.weight {
+    width: 200px;
+}
+
+th.reps,td.reps {
+    width: 200px;
+}
+
+th.btn,td.btn {
+    width: 150px;
 }
 
 .exercise-header {
