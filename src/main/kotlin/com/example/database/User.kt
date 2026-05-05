@@ -22,7 +22,7 @@ class User(id: EntityID<Int>) : IntEntity(id) {
                     username = _username
                     password = _password
                     email = _email
-                    fname = _fname              //These values can be defaulted
+                    fname = _fname              //These values can be defaulted ( left empty basically )
                     height = _height            //These values can be defaulted
                     weight = _weight            //These values can be defaulted
                     dob = _dob                  //These values can be defaulted
