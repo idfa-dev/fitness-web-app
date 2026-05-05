@@ -20,6 +20,12 @@ import java.util.Locale
 //Authentication imports
 import com.example.database.User
 import com.example.database.PT
+//Authentication stuff
+import com.example.database.authenticateUser //importing authentication from auth.kt
+import com.example.database.authenticatePT
+import com.example.database.doesCollide //importing collision checker from auth.kt
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.parameters
 
 //SQL ( might be unnecessary )
 import org.jetbrains.exposed.v1.core.*
@@ -44,6 +50,71 @@ fun Application.configureRouting() {
             }
             else {
                 call.respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+            }
+        }
+
+        get("/current-workout") {
+            val currentWorkoutSession = call.sessions.get<CurrentWorkoutSession>()
+            print(currentWorkoutSession?.workoutSessionID)
+            print(currentWorkoutSession?.userID)
+            if (currentWorkoutSession == null) {
+                call.respond(PebbleContent("start_workout.peb", mapOf("currentPage" to "current-workout")))
+            }
+            else {
+                // Make sure this is fixed to contain workout info
+                call.continueWorkout()
+            }
+        }
+
+        post("/current-workout") {
+            val parameters = call.receiveParameters()
+            val useTemplate = parameters["use_template"]
+            val exerciseChoice = parameters["exercise"]
+            val removeExercise = parameters["remove_exercise"]
+            val removeSet = parameters["remove_set"]
+            val workoutSessionExerciseID = parameters["wseid"]?.toIntOrNull()
+            val reps = parameters["reps"]?.toIntOrNull()
+            val weight = parameters["weight"]?.toFloatOrNull()
+            if (useTemplate == null) {
+                if (exerciseChoice == null) {
+                    if (removeExercise == null && removeSet == null) {
+                        if (workoutSessionExerciseID == null || reps == null || weight == null) {
+                            call.respond(HttpStatusCode.BadRequest)
+                        }
+                        else {
+                            call.addSet(workoutSessionExerciseID,reps,weight)
+                        }
+                    }
+                    else {
+                        if (removeSet != null) {
+                            // removeSet contains id of set to be removed
+                            val wssid = removeSet.toIntOrNull()
+                            if (wssid != null) {
+                                call.removeSet(wssid)
+                            }
+                            else {
+                                println("wssid is null")
+                            }
+                        }
+                        else if (removeExercise != null) {
+                            //call.removeExercise()
+                        }
+                    }
+                }
+                else {
+                    // Handle adding an exercise
+                    call.addExercise(exerciseChoice)
+                }
+            }
+            else {
+                if (useTemplate == "yes") {
+                    // User is redirected to a page where a template can be selected (currently not implemented)
+                    call.respond(PebbleContent("current_workout.peb", mapOf("currentPage" to "current-workout")))
+                }
+                else if (useTemplate == "no") {
+                    // User is redirected to the main current-workout page, and a workout can be started
+                    call.startNewWorkout()
+                }
             }
         }
 
@@ -131,6 +202,11 @@ fun Application.configureRouting() {
 
         get("/profile") {
             call.respond(PebbleContent("profile.peb", mapOf("currentPage" to "profile")))
+        }
+
+        get("/logout") {
+            call.sessions.clear<UserSession>()
+            call.respondRedirect("/sign-in")
         }
 
         get("/profile/profile_info") {

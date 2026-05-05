@@ -5,11 +5,23 @@
 {% block header %}
 Profile
 <a href="/profile/profile_info" class="profile-info-button">Edit Profile</a>
+<a href="/sign-in" class="logout-btn">Logout</a>
 {% endblock %}
 
 {% block content %}
 <div class="chart-container">
     <canvas id="workoutChart"></canvas>
+</div>
+<div class="donut-row">
+    <div class="donut-container">
+        <canvas id="caloriesChart"></canvas>
+    </div>
+    <div class="donut-container">
+        <canvas id="distanceChart"></canvas>
+    </div>
+    <div class="donut-container">
+        <canvas id="numWorkoutsChart"></canvas>
+    </div>
 </div>
 {% endblock %}
 
@@ -86,5 +98,57 @@ new Chart(ctx, {
         }
     }
 });
+
+function createDonutChart(canvasId, progress, goal, color, title, measurement) {
+    const ctx = document.getElementById(canvasId);
+
+    if (!ctx) return;
+
+    new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: ["Complete", "Remaining"],
+            datasets: [{
+                data: [progress, goal - progress],
+                backgroundColor: [color, "#000000"],
+                borderWidth: 0,
+            }]
+        },
+        options: {
+            cutout: "70%",
+            plugins: {
+                legend: { display: false }
+            }
+        },
+        plugins: [{
+            id: 'centerText',
+            beforeDraw(chart) {
+                const { width, height, ctx } = chart;
+
+                ctx.restore();
+
+                const centerX = width / 2;
+                const centerY = height / 2;
+
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillStyle = "white";
+
+                ctx.font = "20px Arial";
+                ctx.fillText(`${title} ${measurement}`, centerX, centerY - 10);
+
+                ctx.font = "16px Arial";
+                ctx.fillText(`${progress} / ${goal}`, centerX, centerY + 15);
+
+                ctx.save();
+            }
+        }]
+    });
+}
+
+createDonutChart("caloriesChart", 1800, 2500, "#b73fec", "Calories Burnt", "(kcal)"); // put measurement in brackets
+createDonutChart("distanceChart", 7.5, 15, "red", "Distance", "(km)");
+createDonutChart("numWorkoutsChart", 3, 5, "green", "Workouts", "");
+
 </script>
 {% endblock %}
