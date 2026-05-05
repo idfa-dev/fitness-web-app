@@ -137,7 +137,7 @@ html, body {
 
 .add-event-text {
     position:absolute;
-    top:1.3rem;
+    top:0.6rem;
     right: calc(1rem + 4rem + 10px);
     text-align:center;
     font-size:1.5rem;
@@ -148,7 +148,7 @@ html, body {
 
 #plus-btn {
     position:absolute;
-    top:0.5rem;
+    top:-0.1rem;
     right:1rem;
     width:4rem;
     height:4rem;
@@ -172,9 +172,9 @@ html, body {
 
 table.calendar {
     border-collapse:collapse;
-    width:90vw;
+    width:84vw;
     text-align:center;
-    margin:3.5rem 3rem 0 3rem;
+    margin:2.3rem 3rem 0 -1rem;
 }
 
 table.calendar th, table.calendar td {
@@ -438,8 +438,8 @@ button#submit-competition, button#submit-exercise {
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-left: 3rem;
-    transform: translateY(0.7rem)
+    margin-left: -1rem;
+   margin-top: -1rem;
 }
 
 .month-nav button {
