@@ -35,14 +35,14 @@ suspend fun signInHandler( call: ApplicationCall ) {
     
     println("Username: $username, Password: $password") // Input check for sign-in
     
-    var isValid = authenticateUser(username, password) //check
+    var isValid = authenticateUser(username, password) // Check if login is correct
 
     if (!isValid)
     {
         isValid = authenticatePT(username, password) //Double check if user is a PT
-        isPT = isValid //fixed, used to be 'isPT = true'
+        isPT = isValid     //isValid can only be true now if the account wasn't a valid user but is a valid PT now
     }
-    if (isValid) {
+    if (isValid) {         //If valid now sign-in and begin user session
         transaction {
             val userID: Int? = if (isPT) {
                 getPTIdByUsername(username)
@@ -68,22 +68,23 @@ suspend fun signUpHandler(call: ApplicationCall){
     val password = BCrypt.withDefaults().hashToString(8, rawPassword.toCharArray()) // only using level 8 for performance,
     val type_unconverted = parameters["usertype"] ?: "0"                            // I understand the varying levels of encryption.
     
-    val type = type_unconverted.toInt()
-    println("Username: $username, Email: $email, Password: $password") // for debug
+    val type = type_unconverted.toIntOrNull() ?: 0  //Have to convert type into an integer, if no input received take 0 ( which is an invalid type )
+
+    println("Username: $username, Email: $email, Password: $password") // prints to terminal for debugging
     
     //collision check
-    val userExists = doesCollide(username, email)
-    var success = false
+    val userExists = doesCollide(username, email)   //Checks if username/email have been used before
+    var success = false                             //kinda redundant but I can't be bothered to change it
 
     if ( userExists ) { 
-        call.respondText("User already exists. Please sign in instead.")
+        call.respondText("User already exists. Please sign in instead.")    //returns error if user exists
         return
     }
-    else
+    else    //Creates new user if user doesn't exist ( the only other case)
     {
-        if (type == 3){   PT.create(username, password, email)           }
-        else{               User.create(type, username, password, email)   }
-        success = true
+        if (type == 3){   PT.create(username, password, email)           }      //type 3 accounts are PT's 
+        else{             User.create(type, username, password, email)   }      //type 1-2 are casual/competitor
+        success = true  //technically = !userExists but I'll stick to it for now
     }
 
     redirectHandler( call, success, "/sign-in", "Failed to create user.")
