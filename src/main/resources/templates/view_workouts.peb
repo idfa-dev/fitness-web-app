@@ -9,13 +9,28 @@
 {% endblock %}
 {% block content %}
     <div class="center">
-        <form method="get" class="search-container" action="/workouts/view/search">
-            <input type="text" name="search" class="search" placeholder="Search for a workout...">
-            <button type="submit" class="btn-reset search-btn">
-                <img src="/static/images/magnifying_glass_icon.png" alt="submit">
-            </button>
-        </form>
+        <div class="search-filter-wrapper">
+            <form method="get" class="search-container" action="/workouts/view/search">
+
+                <input type="text" name="search" class="search" placeholder="Search for a workout...">
+
+                <button type="submit" class="btn-reset search-btn">
+                    <img src="/static/images/magnifying_glass_icon.png" alt="submit">
+                </button>
+            </form>
+
+            <form method="get" action="/workouts/view/search" class="filter-form">
+
+                <label><input type="checkbox" name="type" value="C"> Cardio</label>
+                <label><input type="checkbox" name="type" value="B"> Bodyweight</label>
+                <label><input type="checkbox" name="type" value="R"> Resistance</label>
+                <label><input type="checkbox" name="type" value="M"> Mixed</label>
+
+                <button type="submit" class="filter-btn">Apply Filters</button>
+            </form>
+        </div>
     </div>
+
     <div class="center">
         <p> Key: C = Cardio, B = Bodyweight, R = Resistance, M = Mixed
     </div>
@@ -38,4 +53,16 @@
         {% endfor %}
         </table>
     </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const filterBtn = document.getElementById("filterBtn");
+const filterOptions = document.getElementById("filterOptions");
+
+filterBtn.addEventListener("click", () => {
+    filterOptions.style.display =
+        filterOptions.style.display === "none" ? "block" : "none";
+});
+</script>
 {% endblock %}
