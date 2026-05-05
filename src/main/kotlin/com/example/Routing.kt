@@ -192,70 +192,7 @@ fun Application.configureRouting() {
         }
 
         post("/sign-up") {  //This whole section will be added to User/Users eventually.
-            
-            val parameters = call.receiveParameters()
-
-            
-            val _username = parameters["username"] ?: "Input not received."
-            val _email = parameters["email"] ?: "Input not received."
-            val _password = parameters["password"] ?: "Input not received."
-            val _usertype = parameters["usertype"] ?: "Input not received."
-            
-            //Prints the actual like user input for the log in
-            println("Username: $_username, Email: $_email, Password: $_password") // debug
-
-
-            //collision check
-            val userExists = doesCollide(_username, _email)
-
-            var success = false
-
-            if ( userExists ) {
-                call.respondText("User already exists. Please sign in instead.")
-                return@post 
-            }
-            else
-            {
-                if  (_usertype == "3")
-                {
-                    transaction {
-                        PT.new {
-                            username = _username
-                            password = _password
-                            email = _email 
-                            fname = ""
-                            height = 0f
-                            weight = 0f
-                            dob = ""
-                            sex = ""
-                        }
-                    }
-                }
-                else
-                {
-                    transaction {
-                        User.new {
-                            type = 0              // Would love to add type but currenty not sure
-                            username = _username   // how that works iwth this number system, 
-                            password = _password   // have to discuss it first
-                            email = _email
-                            fname = ""
-                            height = 0f
-                            weight = 0f
-                            dob = ""
-                            sex = ""
-                        }
-                    }
-                }
-
-                success = true
-            }
-
-            if (success) {
-                call.respondRedirect("/sign-in") // redirect to sign-in
-            } else {    //error
-                call.respondText("Failed to create user. Please try again.")
-            }
+            signUpHandler(call)
         }
     }
 }

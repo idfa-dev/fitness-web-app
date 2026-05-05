@@ -66,9 +66,9 @@ suspend fun signUpHandler(call: ApplicationCall){
     val rawPassword = parameters["password"] ?: "Input not received."
 
     val password = BCrypt.withDefaults().hashToString(8, rawPassword.toCharArray()) // only using level 8 for performance,
-    val type_unconverted = parameters["usertype"] ?: "0"
-    val type = type_unconverted.toInt()                            // I understand the varying levels of encryption.
+    val type_unconverted = parameters["usertype"] ?: "0"                            // I understand the varying levels of encryption.
     
+    val type = type_unconverted.toInt()
     println("Username: $username, Email: $email, Password: $password") // for debug
     
     //collision check
@@ -93,8 +93,8 @@ suspend fun signUpHandler(call: ApplicationCall){
 fun authenticateUser(username: String, password: String): Boolean {
 
     return transaction {
-        val user = User.find { Users.username eq username }.firstOrNull() ?: return@transaction false //instantly break if no user found
-        val result = BCrypt.verifyer().verify(password.toCharArray(), user.password)
+        val user = User.find { Users.username eq username }.firstOrNull() ?: return@transaction false // break found
+        val result = BCrypt.verifyer().verify(password.toCharArray(), user.password)                  // if user found compare hash
 
         result.verified
     }
@@ -102,7 +102,7 @@ fun authenticateUser(username: String, password: String): Boolean {
 
 fun authenticatePT(username: String, password: String): Boolean {
     return transaction {
-        val user = PT.find { PTs.username eq username }.firstOrNull() ?: return@transaction false
+        val user = PT.find { PTs.username eq username }.firstOrNull() ?: return@transaction false   // same as above
         val result = BCrypt.verifyer().verify(password.toCharArray(), user.password)
 
         result.verified
