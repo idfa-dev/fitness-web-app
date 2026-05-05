@@ -300,14 +300,31 @@ suspend fun ApplicationCall.endWorkout() {
     suspendTransaction {
         val workoutSessionID = sessions.get<CurrentWorkoutSession>()?.workoutSessionID?.toIntOrNull()
         if (workoutSessionID != null) {
-            val ws = WorkoutSession.findByIdAndUpdate(workoutSessionID) {
-                it.endedAt = Instant.now()
-                it.complete = true
+            val workoutSession = WorkoutSession.findById(workoutSessionID)
+            if (workoutSession != null) {
+                // Handle case of empty workout
+                val we = WorkoutSessionExercise.all().firstOrNull {it.workoutSession == workoutSession}
+                if (we != null) {
+                    val ws = WorkoutSession.findByIdAndUpdate(workoutSessionID) {
+                        it.endedAt = Instant.now()
+                        it.complete = true
+                    }
+                    println("Successfully completed WorkoutSession with id=$workoutSessionID")
+                }
+                else {
+                    workoutSession.delete()
+                    println("WorkoutSession with id: $workoutSessionID deleted due to being empty")
+                }
+                // Unset the current workout session
+                sessions.clear<CurrentWorkoutSession>()
+                respond(PebbleContent("start_workout.peb", mapOf("currentPage" to "current-workout")))
             }
-            println("Successfully completed WorkoutSession with id=$workoutSessionID")
-            // Unset the current workout session
-            sessions.clear<CurrentWorkoutSession>()
-            startNewWorkout()
+            else {
+                println("WorkoutSession is null")
+            }
+        }
+        else {
+            println("WorkoutSessionID is null")
         }
     }
 }
