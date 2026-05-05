@@ -52,6 +52,7 @@ class PT(id: EntityID<Int>) : IntEntity(id) {
         }
     }
 
+    var client by PTs.client
     var username by PTs.username
     var password by PTs.password
     var email by PTs.email
