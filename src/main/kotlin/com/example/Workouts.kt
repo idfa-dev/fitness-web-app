@@ -50,7 +50,7 @@ suspend fun ApplicationCall.displayWorkout(id: Int) {
             types = types // Containing the types of exercises within the workout
         )
 
-        respond(PebbleContent("view_workout.peb", mapOf("workout" to wo, "currentPage" to "workouts")))
+        respond(PebbleContent("workouts/view_workout.peb", mapOf("workout" to wo, "currentPage" to "workouts")))
     }
 }
 
@@ -72,7 +72,7 @@ suspend fun ApplicationCall.getListOfWorkoutObjects(): MutableList<WorkoutObject
             }
         }
         else {
-            respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+            respond(PebbleContent("landing/auth/landing.peb", mapOf("currentPage" to "landing")))
         }
     }
     if (workoutObjects.isEmpty()) {
@@ -84,7 +84,7 @@ suspend fun ApplicationCall.getListOfWorkoutObjects(): MutableList<WorkoutObject
 suspend fun ApplicationCall.displayWorkouts() {
     suspendTransaction {
         val workoutObjects  = getListOfWorkoutObjects()
-        respond(PebbleContent("view_workouts.peb", mapOf("currentPage" to "workouts", "workouts" to workoutObjects)))
+        respond(PebbleContent("workouts/view_workouts.peb", mapOf("currentPage" to "workouts", "workouts" to workoutObjects)))
     }
 }
 
@@ -93,7 +93,7 @@ suspend fun ApplicationCall.searchWorkouts() {
 
         val userSession = sessions.get<UserSession>()
         if (userSession == null) {
-            respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+            respond(PebbleContent("landing/auth/landing.peb", mapOf("currentPage" to "landing")))
             return@suspendTransaction
         }
 
@@ -140,16 +140,7 @@ suspend fun ApplicationCall.searchWorkouts() {
                 )
             )
         }
-
-        respond(
-            PebbleContent(
-                "view_workouts.peb",
-                mapOf(
-                    "workouts" to workoutObjects,
-                    "currentPage" to "view_workouts"
-                )
-            )
-        )
+        respond(PebbleContent("workouts/view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to "view_workouts")))
     }
 }
 
@@ -175,10 +166,10 @@ suspend fun ApplicationCall.startNewWorkout() {
             println("CurrentWorkoutSession:")
             println(workoutSessionID)
             println(userSession.id)
-            respond(PebbleContent("current_workout.peb", mapOf("currentPage" to "current-workout", "exercises" to exercises)))
+            respond(PebbleContent("current_workout/current_workout.peb", mapOf("currentPage" to "current-workout", "exercises" to exercises)))
         }
         else {
-            respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+            respond(PebbleContent("landing/auth/landing.peb", mapOf("currentPage" to "landing")))
         }
     }
 }
@@ -193,16 +184,11 @@ suspend fun ApplicationCall.continueWorkout() {
             println(exercises)
             if (ws != null) {
                 val wseo = getListOfWorkoutSessionExercises(ws)
-                respond(
-                    PebbleContent(
-                        "current_workout.peb",
-                        mapOf("currentPage" to "current-workout", "exercises" to exercises, "workoutSessionExerciseObjects" to wseo)
-                    )
-                )
+                respond(PebbleContent("current_workout/current_workout.peb", mapOf("currentPage" to "current-workout", "exercises" to exercises, "workoutSessionExerciseObjects" to wseo)))
             }
             else {
                 println("WorkoutSession is null")
-                respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+                respond(PebbleContent("landing/auth/landing.peb", mapOf("currentPage" to "landing")))
             }
         }
         else {
@@ -212,7 +198,7 @@ suspend fun ApplicationCall.continueWorkout() {
             if (workoutSessionID == null) {
                 println("workoutSessionID is null")
             }
-            respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+            respond(PebbleContent("landing/auth/landing.peb", mapOf("currentPage" to "landing")))
         }
     }
 }
@@ -321,7 +307,7 @@ suspend fun ApplicationCall.endWorkout() {
                 }
                 // Unset the current workout session
                 sessions.clear<CurrentWorkoutSession>()
-                respond(PebbleContent("start_workout.peb", mapOf("currentPage" to "current-workout")))
+                respond(PebbleContent("current_workout/start_workout.peb", mapOf("currentPage" to "current-workout")))
             }
             else {
                 println("WorkoutSession is null")
@@ -336,7 +322,7 @@ suspend fun ApplicationCall.endWorkout() {
 suspend fun ApplicationCall.selectWorkoutTemplate() {
     suspendTransaction {
         val workoutObjects = getListOfWorkoutObjects()
-        respond(PebbleContent("view_workouts.peb", mapOf("currentPage" to "current-workout", "workouts" to workoutObjects)))
+        respond(PebbleContent("workouts/view_workouts.peb", mapOf("currentPage" to "current-workout", "workouts" to workoutObjects)))
     }
 }
 

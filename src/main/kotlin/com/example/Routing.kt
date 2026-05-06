@@ -28,7 +28,7 @@ fun Application.configureRouting() {
         staticResources("/static", "static")
 
         get("/") {
-            call.respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+            call.respond(PebbleContent("landing/auth/landing.peb", mapOf("currentPage" to "landing")))
         }
 
         get("/home") {
@@ -36,10 +36,10 @@ fun Application.configureRouting() {
             print(user?.id)
             print(user?.username)
             if (user != null) {
-                call.respond(PebbleContent("home.peb", mapOf("currentPage" to "home")))
+                call.respond(PebbleContent("home/home.peb", mapOf("currentPage" to "home")))
             }
             else {
-                call.respond(PebbleContent("landing.peb", mapOf("currentPage" to "landing")))
+                call.respond(PebbleContent("landing/auth/landing.peb", mapOf("currentPage" to "landing")))
             }
         }
 
@@ -48,7 +48,7 @@ fun Application.configureRouting() {
             print(currentWorkoutSession?.workoutSessionID)
             print(currentWorkoutSession?.userID)
             if (currentWorkoutSession == null) {
-                call.respond(PebbleContent("start_workout.peb", mapOf("currentPage" to "current-workout")))
+                call.respond(PebbleContent("current_workout/start_workout.peb", mapOf("currentPage" to "current-workout")))
             }
             else {
                 // Make sure this is fixed to contain workout info
@@ -119,7 +119,7 @@ fun Application.configureRouting() {
         }
 
         get("/workouts") {
-            call.respond(PebbleContent("workouts.peb", mapOf("currentPage" to "workouts")))
+            call.respond(PebbleContent("workouts/workouts.peb", mapOf("currentPage" to "workouts")))
         }
 
         get("/workouts/{id}") {
@@ -134,23 +134,7 @@ fun Application.configureRouting() {
         get("/workouts/view/search") {call.searchWorkouts()}
 
         get("/workouts/create") {
-            call.respond(PebbleContent("create_workout.peb", mapOf("currentPage" to "workouts")))
-        }
-
-        get("/workouts/create/cardio") {
-            call.respond(PebbleContent("create_cardio_workout.peb", mapOf("currentPage" to "workouts")))
-        }
-
-        get("/workouts/create/bodyweight") {
-            call.respond(PebbleContent("create_bodyweight_workout.peb", mapOf("currentPage" to "workouts")))
-        }
-
-        get("/workouts/create/resistance") {
-            call.respond(PebbleContent("create_resistance_workout.peb", mapOf("currentPage" to "workouts")))
-        }
-
-        get("/workouts/create/mixed") {
-            call.respond(PebbleContent("create_mixed_workout.peb", mapOf("currentPage" to "workouts")))
+            call.respond(PebbleContent("workouts/create_workout.peb", mapOf("currentPage" to "workouts")))
         }
 
         get("/exercises") {call.exercises()}
@@ -193,7 +177,7 @@ fun Application.configureRouting() {
                 append("</table>")
             }
 
-            call.respond(PebbleContent("calendar.peb", mapOf(
+            call.respond(PebbleContent("calendar/calendar.peb", mapOf(
                 "currentPage" to "calendar",
                 "calendarTable" to calendarTable
             )))
@@ -201,7 +185,7 @@ fun Application.configureRouting() {
 
 
         get("/profile") {
-            call.respond(PebbleContent("profile.peb", mapOf("currentPage" to "profile")))
+            call.respond(PebbleContent("profile/profile.peb", mapOf("currentPage" to "profile")))
         }
 
         get("/logout") {
@@ -226,7 +210,7 @@ fun Application.configureRouting() {
             )
 
             user?.let { context["user"] = it }
-            call.respond(PebbleContent("profile_info.peb", context))
+            call.respond(PebbleContent("profile/profile_info.peb", context))
         }
 
         post("/profile/profile_info") {
@@ -264,7 +248,7 @@ fun Application.configureRouting() {
         }
 
         get("/sign-in") {
-            call.respond(PebbleContent("sign-in.peb", mapOf("currentPage" to "sign-in")))
+            call.respond(PebbleContent("landing/auth/sign-in.peb", mapOf("currentPage" to "sign-in")))
         }
 
         post("/sign-in") { //This whole section will be added to Auth.kt eventually or like modularized
@@ -304,7 +288,7 @@ fun Application.configureRouting() {
         }
 
          get("/sign-up") {
-            call.respond(PebbleContent("sign-up.peb", mapOf("currentPage" to "sign-up")))
+            call.respond(PebbleContent("landing/auth/sign-up.peb", mapOf("currentPage" to "sign-up")))
         }
 
         post("/sign-up") {  //This whole section will be added to User/Users eventually.
