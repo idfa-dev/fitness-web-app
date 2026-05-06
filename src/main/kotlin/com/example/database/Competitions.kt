@@ -11,4 +11,5 @@ object Competitions : IntIdTable() {
     val time = varchar("time", 50).nullable()
     val distance = double("distance").nullable()
     val finishTime = varchar("finish_time", 50).nullable()
+    val types = varchar("types", 255).nullable()
 }

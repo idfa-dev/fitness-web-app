@@ -174,11 +174,13 @@ fun Application.configureRouting() {
                 Competition.find { Competitions.user eq userId }
                     .map { c ->
                         mapOf(
+                            "id" to c.id.value,
                             "name" to c.name,
                             "date" to c.date.toString(),
                             "time" to c.time,
                             "distance" to c.distance,
-                            "finishTime" to c.finishTime
+                            "finishTime" to c.finishTime,
+                            "types" to (c.types?.split(",") ?: emptyList())
                         )
                     }
             }
@@ -231,12 +233,14 @@ fun Application.configureRouting() {
 
                                     val infoJson = """
                                     {
+                                    "id": "${c["id"]}",
                                     "name": "${c["name"]}",
                                     "date": "${c["date"]}",
                                     "time": "${c["time"] ?: ""}",
                                     "distance": "${c["distance"] ?: ""}",
                                     "finishTime": "${c["finishTime"] ?: ""}",
-                                    "types": []
+                                    "types": ${ (c["types"]?.toString()?.split(",") ?: emptyList())
+                                        .joinToString(prefix = "[", postfix = "]") { "\"$it\"" } }
                                     }
                                     """.trimIndent()
                                         .replace("\n", "")
@@ -464,23 +468,61 @@ fun Application.configureRouting() {
             val competitionDistance = params["distance"]?.toDoubleOrNull()
             val competitionFinishTime = params["finishTime"]
 
+            val competitionTypes = params["types"]
+                ?.split(",")
+                ?.map { it.trim() }
+                ?: emptyList()
+
             if (competitionName.isNullOrBlank() || competitionDate.isNullOrBlank()) {
                 call.respond(HttpStatusCode.BadRequest)
                 return@post
             }
 
+            val compId = params["id"]?.toIntOrNull()
+
             transaction {
-                Competitions.insert {
-                    it[Competitions.user] = uid
-                    it[Competitions.name] = competitionName
-                    it[Competitions.date] = java.time.LocalDate.parse(competitionDate)
-                    it[Competitions.time] = competitionTime
-                    it[Competitions.distance] = competitionDistance
-                    it[Competitions.finishTime] = competitionFinishTime
+                if (compId != null) {
+                    val comp = Competition.findById(compId)
+
+                    if (comp != null) {
+                        comp.name = competitionName
+                        comp.date = java.time.LocalDate.parse(competitionDate)
+                        comp.time = competitionTime
+                        comp.distance = competitionDistance
+                        comp.finishTime = competitionFinishTime
+                        comp.types = competitionTypes.joinToString(",")
+                    }
+                } else {
+                    Competitions.insert {
+                        it[Competitions.user] = uid
+                        it[Competitions.name] = competitionName
+                        it[Competitions.date] = java.time.LocalDate.parse(competitionDate)
+                        it[Competitions.time] = competitionTime
+                        it[Competitions.distance] = competitionDistance
+                        it[Competitions.finishTime] = competitionFinishTime
+                        it[Competitions.types] = competitionTypes.joinToString(",")
+                    }
                 }
             }
 
             call.respondRedirect("/calendar")
+        }
+
+        post("/competitions/delete") {
+            val params = call.receiveParameters()
+            val compId = params["id"]?.toIntOrNull()
+
+            if (compId == null) {
+                call.respond(HttpStatusCode.BadRequest)
+                return@post
+            }
+
+            transaction {
+                val comp = Competition.findById(compId)
+                comp?.delete()
+            }
+
+            call.respond(HttpStatusCode.OK)
         }
     }
 }

@@ -13,4 +13,5 @@ class Competition(id: EntityID<Int>) : IntEntity(id) {
     var time by Competitions.time
     var distance by Competitions.distance
     var finishTime by Competitions.finishTime
+    var types by Competitions.types
 }

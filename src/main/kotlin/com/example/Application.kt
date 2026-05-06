@@ -42,7 +42,7 @@ fun Application.module() {
 
         //resetDatabase() // Only uncomment for testing!
 
-        SchemaUtils.create(
+        SchemaUtils.createMissingTablesAndColumns(
             Users, PTs, Exercises,
             Clients, Workouts, UserWorkouts,
             WorkoutExercises, WorkoutSessions, WorkoutSessionExercises,
