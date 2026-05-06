@@ -70,53 +70,64 @@ fun Application.configureRouting() {
 
         post("/current-workout") {
             val parameters = call.receiveParameters()
-            val useTemplate = parameters["use_template"]
-            val exerciseChoice = parameters["exercise"]
-            val removeExercise = parameters["remove_exercise"]
-            val removeSet = parameters["remove_set"]
-            val workoutSessionExerciseID = parameters["wseid"]?.toIntOrNull()
-            val reps = parameters["reps"]?.toIntOrNull()
-            val weight = parameters["weight"]?.toFloatOrNull()
-            if (useTemplate == null) {
-                if (exerciseChoice == null) {
-                    if (removeExercise == null && removeSet == null) {
-                        if (workoutSessionExerciseID == null || reps == null || weight == null) {
-                            call.respond(HttpStatusCode.BadRequest)
-                        }
-                        else {
-                            call.addSet(workoutSessionExerciseID,reps,weight)
-                        }
-                    }
-                    else {
-                        if (removeSet != null) {
-                            // removeSet contains id of set to be removed
-                            val wssid = removeSet.toIntOrNull()
-                            if (wssid != null) {
-                                call.removeSet(wssid)
-                            }
-                            else {
-                                println("wssid is null")
-                            }
-                        }
-                        else if (removeExercise != null) {
-                            //call.removeExercise()
-                        }
-                    }
+
+            when {
+                parameters["workout_template"] != null -> {
+                    val workoutID = parameters["workout_template"]?.toIntOrNull()
+                        ?: return@post call.respond(HttpStatusCode.BadRequest)
+                    // User has a workout created with the workout selected
+                    call.startNewTemplateWorkout(workoutID)
+
                 }
-                else {
-                    // Handle adding an exercise
-                    call.addExercise(exerciseChoice)
+
+                parameters["use_template"] == "yes" -> {
+                    // User is redirected to a page where a template can be selected
+                    call.selectWorkoutTemplate()
                 }
-            }
-            else {
-                if (useTemplate == "yes") {
-                    // User is redirected to a page where a template can be selected (currently not implemented)
-                    call.respond(PebbleContent("current_workout.peb", mapOf("currentPage" to "current-workout")))
-                }
-                else if (useTemplate == "no") {
+
+                parameters["use_template"] == "no" -> {
                     // User is redirected to the main current-workout page, and a workout can be started
                     call.startNewWorkout()
                 }
+
+                parameters["exercise"] != null -> {
+                    // Handle adding an exercise
+                    call.addExercise(parameters["exercise"]!!)
+                }
+
+                parameters["remove_set"] != null -> {
+                    // removeSet contains id of set to be removed
+                    val wssid = parameters["remove_set"]?.toIntOrNull()
+                        ?: return@post call.respond(HttpStatusCode.BadRequest)
+                    call.removeSet(wssid)
+                }
+
+                parameters["remove_exercise"] != null -> {
+                    // removeExercise contains id of exercise to be removed
+                    val wseid = parameters["remove_exercise"]?.toIntOrNull()
+                        ?: return@post call.respond(HttpStatusCode.BadRequest)
+                    call.removeExercise(wseid)
+                }
+
+                parameters["wseid"] != null && parameters["reps"] != null && parameters["weight"] != null -> {
+                    val wseid = parameters["wseid"]?.toIntOrNull()
+                        ?: return@post call.respond(HttpStatusCode.BadRequest)
+                    val reps = parameters["reps"]?.toIntOrNull()
+                        ?: return@post call.respond(HttpStatusCode.BadRequest)
+                    val weight = parameters["weight"]?.toFloatOrNull()
+                        ?: return@post call.respond(HttpStatusCode.BadRequest)
+                    call.addSet(wseid, reps, weight)
+                }
+
+                parameters["end"] == "1" -> {
+                    // User workout session is ended
+                    call.endWorkout()
+                }
+
+                else -> {
+                    call.respond(HttpStatusCode.BadRequest)
+                }
+
             }
         }
 
