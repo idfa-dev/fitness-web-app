@@ -151,7 +151,7 @@ suspend fun ApplicationCall.searchWorkouts() {
                 )
             )
         }
-        respond(PebbleContent("workouts/view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to "view_workouts")))
+        respond(PebbleContent("workouts/view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to "workouts")))
     }
 }
 
