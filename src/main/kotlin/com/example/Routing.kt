@@ -29,14 +29,10 @@ import io.ktor.http.parameters
 
 //SQL ( might be unnecessary )
 import org.jetbrains.exposed.v1.core.*
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod db
-<<<<<<< HEAD
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction // To modify db
 import org.jetbrains.exposed.v1.jdbc.insert
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.sessions.*
-=======
-
->>>>>>> dba9031c9d50ad6b7b3787e107d4149935f82cc8
 
 fun Application.configureRouting() {
     routing {
