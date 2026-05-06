@@ -36,8 +36,18 @@
                     {% endfor %}
                     <tr>
                         <td class="set"> {{ i }} </td>
-                        <td class="weight"><input type="number" step="0.25" name="weight" min="0" placeholder="0"></td>
-                        <td class="reps"><input type="number" name="reps" min="0" placeholder="0"></td>
+                        {% set lastWeight = 0 %}
+                        {% set lastReps = 0 %}
+                        {% if lastWeightObjects != null %}
+                            {% for lwo in lastWeightObjects %}
+                                {% if lwo.exercise == wse.wsExercise.exercise %}
+                                    {% set lastWeight = lwo.weight %}
+                                    {% set lastReps = lwo.reps %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        <td class="weight"><input type="number" step="0.25" name="weight" min="0" placeholder="{{ lastWeight }}"></td>
+                        <td class="reps"><input type="number" name="reps" min="0" placeholder="{{ lastReps }}"></td>
                         <td class="btn"><input type="hidden" name="wseid" value="{{ wse.wsExercise.id }}"><button class="add-btn" type="submit" name="add-set">ADD</button></td>
                     </tr>
                     <tr>

@@ -37,8 +37,7 @@ fun Application.configureRouting() {
             print(user?.username)
             if (user != null) {
                 call.respond(PebbleContent("home/home.peb", mapOf("currentPage" to "home")))
-            }
-            else {
+            } else {
                 call.respond(PebbleContent("landing/auth/landing.peb", mapOf("currentPage" to "landing")))
             }
         }
@@ -48,10 +47,13 @@ fun Application.configureRouting() {
             print(currentWorkoutSession?.workoutSessionID)
             print(currentWorkoutSession?.userID)
             if (currentWorkoutSession == null) {
-                call.respond(PebbleContent("current_workout/start_workout.peb", mapOf("currentPage" to "current-workout")))
-            }
-            else {
-                // Make sure this is fixed to contain workout info
+                call.respond(
+                    PebbleContent(
+                        "current_workout/start_workout.peb",
+                        mapOf("currentPage" to "current-workout")
+                    )
+                )
+            } else {
                 call.continueWorkout()
             }
         }
@@ -67,6 +69,7 @@ fun Application.configureRouting() {
                     call.startNewTemplateWorkout(workoutID)
 
                 }
+
                 parameters["use_template"] == "yes" -> {
                     // User is redirected to a page where a template can be selected
                     call.selectWorkoutTemplate()
@@ -103,7 +106,7 @@ fun Application.configureRouting() {
                         ?: return@post call.respond(HttpStatusCode.BadRequest)
                     val weight = parameters["weight"]?.toFloatOrNull()
                         ?: return@post call.respond(HttpStatusCode.BadRequest)
-                    call.addSet(wseid,reps,weight)
+                    call.addSet(wseid, reps, weight)
                 }
 
                 parameters["end"] == "1" -> {
@@ -129,19 +132,19 @@ fun Application.configureRouting() {
             }
         }
 
-        get("/workouts/view") {call.displayWorkouts()}
+        get("/workouts/view") { call.displayWorkouts() }
 
-        get("/workouts/view/search") {call.searchWorkouts()}
+        get("/workouts/view/search") { call.searchWorkouts() }
 
         get("/workouts/create") {
             call.respond(PebbleContent("workouts/create_workout.peb", mapOf("currentPage" to "workouts")))
         }
 
-        get("/exercises") {call.exercises()}
+        get("/exercises") { call.exercises() }
 
-        get("/exercises/search") {call.searchExercises()}
+        get("/exercises/search") { call.searchExercises() }
 
-        get("/exercises/{id}") {call.exercise()}
+        get("/exercises/{id}") { call.exercise() }
 
         get("/calendar") {
             val now = LocalDate.now()
@@ -164,12 +167,12 @@ fun Application.configureRouting() {
                 append("<div class='month-year'>$month $year</div>")
                 append("<table class='calendar'>")
                 append("<tr>")
-                listOf("MON","TUE","WED","THU","FRI","SAT","SUN").forEach { append("<th>$it</th>") }
+                listOf("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN").forEach { append("<th>$it</th>") }
                 append("</tr>")
                 weeks.forEach { week ->
                     append("<tr>")
                     week.forEach { day ->
-                        if(day.isEmpty()) append("<td></td>")
+                        if (day.isEmpty()) append("<td></td>")
                         else append("<td><span class='day-number'>$day</span></td>")
                     }
                     append("</tr>")
@@ -177,10 +180,14 @@ fun Application.configureRouting() {
                 append("</table>")
             }
 
-            call.respond(PebbleContent("calendar/calendar.peb", mapOf(
-                "currentPage" to "calendar",
-                "calendarTable" to calendarTable
-            )))
+            call.respond(
+                PebbleContent(
+                    "calendar/calendar.peb", mapOf(
+                        "currentPage" to "calendar",
+                        "calendarTable" to calendarTable
+                    )
+                )
+            )
         }
 
 
@@ -252,110 +259,15 @@ fun Application.configureRouting() {
         }
 
         post("/sign-in") { //This whole section will be added to Auth.kt eventually or like modularized
-
-            
-            val parameters = call.receiveParameters() //pull website input
-            var isPT = false
-
-            val username = parameters["username"] ?: "Input not received."  // Second case for input check
-            val password = parameters["password"] ?: "Input not received."
-
-            println("Username: $username, Password: $password") // Input check for sign-in
-            
-            var isValid = authenticateUser(username, password) //check
-            if (!isValid)
-            {
-                isValid = authenticatePT(username, password) //Double check if user is a PT
-                isPT = true
-            }
-            if (isValid) {
-                transaction {
-                    val userID: Int? = if (isPT) {
-                        getPTIdByUsername(username)
-                    } else {
-                        getUserIdByUsername(username)
-                    }
-                    call.sessions.set(UserSession(id=userID.toString(), username=username))
-                    call.sessions.clear<CurrentWorkoutSession>()
-                }
-                call.respondRedirect("/home")   // Redirects ot the actual home page
-            }
-            else 
-            {
-                call.respondText("Invalid details. Please try again.")  // Error message on failure
-            }
-
+            signInHandler(call)
         }
 
-         get("/sign-up") {
+        get("/sign-up") {
             call.respond(PebbleContent("landing/auth/sign-up.peb", mapOf("currentPage" to "sign-up")))
         }
 
         post("/sign-up") {  //This whole section will be added to User/Users eventually.
-            
-            val parameters = call.receiveParameters()
-
-            
-            val _username = parameters["username"] ?: "Input not received."
-            val _email = parameters["email"] ?: "Input not received."
-            val _password = parameters["password"] ?: "Input not received."
-            val _usertype = parameters["usertype"] ?: "Input not received."
-            
-            //Prints the actual like user input for the log in
-            println("Username: $_username, Email: $_email, Password: $_password") // debug
-
-
-            //collision check
-            val userExists = doesCollide(_username, _email)
-
-            var success = false
-
-            if ( userExists ) {
-                call.respondText("User already exists. Please sign in instead.")
-                return@post 
-            }
-            else
-            {
-                if  (_usertype == "3")
-                {
-                    transaction {
-                        PT.new {
-                            username = _username
-                            password = _password
-                            email = _email 
-                            fname = ""
-                            height = 0f
-                            weight = 0f
-                            dob = ""
-                            sex = ""
-                        }
-                    }
-                }
-                else
-                {
-                    transaction {
-                        User.new {
-                            type = 0              // Would love to add type but currenty not sure
-                            username = _username   // how that works iwth this number system, 
-                            password = _password   // have to discuss it first
-                            email = _email
-                            fname = ""
-                            height = 0f
-                            weight = 0f
-                            dob = ""
-                            sex = ""
-                        }
-                    }
-                }
-
-                success = true
-            }
-
-            if (success) {
-                call.respondRedirect("/sign-in") // redirect to sign-in
-            } else {    //error
-                call.respondText("Failed to create user. Please try again.")
-            }
+            signUpHandler(call)
         }
     }
 }

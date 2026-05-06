@@ -150,6 +150,50 @@ data class WorkoutSessionExerciseObject (
     var sets: List<WorkoutSessionSet>,
 )
 
+// Class definition for lastWeightObject (to display last known weight of exercises as placeholders)
+data class LastWeightObject (
+    var exercise: Exercise,
+    var weight: Float,
+    var reps: Int
+)
+
+suspend fun ApplicationCall.getListOfLastWeightObjects(user: User): MutableList<LastWeightObject> {
+    // Assemble list of last weight objects
+    val lastWeightObjects = mutableListOf<LastWeightObject>()
+    suspendTransaction {
+        // Find all WorkoutSessions of user
+        val workoutSessions = WorkoutSession.all().filter {it.user == user}.toList()
+        for (ws in workoutSessions) {
+            val workoutSessionExercises = WorkoutSessionExercise.all().filter {it.workoutSession == ws}.toList()
+            for (wse in workoutSessionExercises) {
+                val lastWorkoutSessionSet = WorkoutSessionSet.all().lastOrNull { it.workoutSessionExercise == wse }
+                if (lastWorkoutSessionSet != null) {
+                    val lastWeight = lastWorkoutSessionSet.weight
+                    val lastReps = lastWorkoutSessionSet.reps
+                    if (lastWeight != null) {
+                        val lwo = LastWeightObject (
+                            exercise = wse.exercise,
+                            weight = lastWeight,
+                            reps = lastReps
+                        )
+                        var replaced = false
+                        for (oldLwo in lastWeightObjects) {
+                            if (oldLwo.exercise == lwo.exercise) {
+                                lastWeightObjects.replaceAll {if (it.exercise == lwo.exercise) lwo else it}
+                                replaced = true
+                            }
+                        }
+                        if (!replaced) {
+                            lastWeightObjects.add(lwo)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return lastWeightObjects
+}
+
 suspend fun ApplicationCall.startNewWorkout() {
     suspendTransaction {
         val userSession = sessions.get<UserSession>()
@@ -166,7 +210,8 @@ suspend fun ApplicationCall.startNewWorkout() {
             println("CurrentWorkoutSession:")
             println(workoutSessionID)
             println(userSession.id)
-            respond(PebbleContent("current_workout/current_workout.peb", mapOf("currentPage" to "current-workout", "exercises" to exercises)))
+            val lastWeightObjects = getListOfLastWeightObjects(userEntity)
+            respond(PebbleContent("current_workout/current_workout.peb", mapOf("currentPage" to "current-workout", "exercises" to exercises, "lastWeightObjects" to lastWeightObjects)))
         }
         else {
             respond(PebbleContent("landing/auth/landing.peb", mapOf("currentPage" to "landing")))
@@ -184,7 +229,19 @@ suspend fun ApplicationCall.continueWorkout() {
             println(exercises)
             if (ws != null) {
                 val wseo = getListOfWorkoutSessionExercises(ws)
-                respond(PebbleContent("current_workout/current_workout.peb", mapOf("currentPage" to "current-workout", "exercises" to exercises, "workoutSessionExerciseObjects" to wseo)))
+                val user = User.all().firstOrNull() {it.id.toString() == userSession.id}
+                if (user != null) {
+                    val lastWeightObjects = getListOfLastWeightObjects(user)
+                    println("LAST WEIGHT OBJECTS COUNT")
+                    println(lastWeightObjects.count())
+                    for (lwo in lastWeightObjects) {
+                        println("lwo exercise: ${lwo.exercise}, lwo exercise weight: ${lwo.weight}, lwo exercise reps: ${lwo.reps}")
+                    }
+                    respond(PebbleContent("current_workout/current_workout.peb", mapOf("currentPage" to "current-workout", "exercises" to exercises, "workoutSessionExerciseObjects" to wseo, "lastWeightObjects" to lastWeightObjects)))
+                }
+                else {
+                    println("User not found")
+                }
             }
             else {
                 println("WorkoutSession is null")
