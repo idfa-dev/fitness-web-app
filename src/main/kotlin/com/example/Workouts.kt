@@ -19,6 +19,7 @@ import io.ktor.server.pebble.respondTemplate
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.response.respond
 import io.ktor.server.sessions.*
+import io.pebbletemplates.pebble.template.PebbleTemplate
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -144,13 +145,13 @@ suspend fun ApplicationCall.searchWorkouts() {
     }
 }
 
-// Class definition for workout session exercises to be passed in the respondTemplate calls for functions linking to current-workout (below)
+// Class definition for WorkoutSessionExerciseObject to be passed in the respondTemplate calls for functions linking to current-workout (below)
 data class WorkoutSessionExerciseObject (
     var wsExercise: WorkoutSessionExercise,
     var sets: List<WorkoutSessionSet>,
 )
 
-// Class definition for lastWeightObject (to display last known weight of exercises as placeholders)
+// Class definition for LastWeightObject (to display last known weight of exercises as placeholders)
 data class LastWeightObject (
     var exercise: Exercise,
     var weight: Float,
@@ -414,6 +415,63 @@ suspend fun ApplicationCall.startNewTemplateWorkout(workoutID: Int) {
             } else {
                 println("Workout with id=$workoutID not found")
             }
+        }
+    }
+}
+
+// Class definition for PastWorkoutObject
+data class PastWorkoutObject (
+    var workoutSession: WorkoutSession,
+    var workoutExercisesObject: List<PastWorkoutExerciseObject>,
+)
+
+// Class definition for PastWorkoutExerciseObject for use in PastWorkoutObject
+data class PastWorkoutExerciseObject (
+    val exercise: WorkoutSessionExercise,
+    val sets: List<WorkoutSessionSet>
+)
+
+suspend fun ApplicationCall.displayPastWorkouts() {
+    // First, get all WorkoutSessions where user == user and completed == true
+    // Next, we must create a PastWorkoutObject for each workout session
+    // To do this we need to also create PastWorkoutExerciseObjects for each exercise in the workoutSession
+    //      Find all exercises part of the workout session
+    //      Find all sets part of the workout session
+    suspendTransaction {
+        val pastWorkouts = mutableListOf<PastWorkoutObject>()
+        val userSession = sessions.get<UserSession>()
+        if (userSession != null) {
+            val userID = userSession.id.toIntOrNull()
+            if (userID != null) {
+                val user = User.findById(userID)
+                val workoutSessions = WorkoutSession.all().filter { it.user == user && it.complete }.toList()
+                for (ws in workoutSessions) {
+                    val workoutExercises = WorkoutSessionExercise.all().filter {it.workoutSession == ws}.toList()
+                    val exercisesList = mutableListOf<PastWorkoutExerciseObject>()
+                    for (we in workoutExercises) {
+                        val workoutSets = WorkoutSessionSet.all().filter {it.workoutSessionExercise == we }.toList()
+                        // Create a PastWorkoutExerciseObject for every exercise in we
+                        val exerciseObject = PastWorkoutExerciseObject (
+                            exercise = we,
+                            sets = workoutSets
+                        )
+                        exercisesList.add(exerciseObject)
+                    }
+                    // Create a PastWorkoutObject for every ws
+                    val workoutObject = PastWorkoutObject (
+                        workoutSession = ws,
+                        workoutExercisesObject = exercisesList
+                    )
+                    pastWorkouts.add(workoutObject)
+                }
+                respond(PebbleContent("workouts/view_past_workouts.peb", mapOf("currentPage" to "workouts", "pastWorkouts" to pastWorkouts)))
+            }
+            else {
+                respond(HttpStatusCode.Unauthorized)
+            }
+        }
+        else {
+            println("UserSession is null")
         }
     }
 }

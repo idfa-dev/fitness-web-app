@@ -136,6 +136,8 @@ fun Application.configureRouting() {
 
         get("/workouts/view/search") { call.searchWorkouts() }
 
+        get("/workouts/past") { call.displayPastWorkouts() }
+
         get("/workouts/create") {
             call.respond(PebbleContent("workouts/create_workout.peb", mapOf("currentPage" to "workouts")))
         }

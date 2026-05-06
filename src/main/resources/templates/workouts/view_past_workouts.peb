@@ -1,0 +1,35 @@
+{% extends "base.peb" %}
+{# Note: 'workout' may seem like an error (underlined in red) but this is just due to the Pebble linter. The code runs fine.  #}
+{% set types = ["C", "B", "R", "M"] %} {# list containing exercise types #}
+{% set colours = ["E32141", "0F95CB", "196B24", "FFC000"] %} {#  list containing exercise type colours #}
+{% block title %} View Past Workouts {% endblock %}
+
+{% block header %}
+
+{% endblock %}
+{% block content %}
+    <div class="center">
+        <table>
+            <tr>
+                <th>Date Completed</th>
+                <th>Exercises</th>
+                <th>Sets</th>
+                <th>Length</th>
+            </tr>
+            {% for workout in pastWorkouts %}
+                <tr>
+                    <td>{{ workout.workoutSession.endedAt }}</td>
+                    <td>{% for exercise in workout.workoutExercisesObject %}
+                            {{ exercise.exercise.name }}<br>
+                        {% endfor %}
+                    </td>
+                    <td>{% for set in workout.workoutExercisesObject.sets %}
+                            Weight: {{ set.weight }}, Reps:{{ set.reps }} <br>
+                        {% endfor %}
+                    </td>
+                    <td>LENGTH PLACEHOLDER</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
