@@ -7,6 +7,7 @@ import com.example.database.Exercise
 import com.example.database.Exercises
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
+import io.ktor.server.pebble.PebbleContent
 import io.ktor.server.pebble.respondTemplate
 import io.ktor.server.response.respond
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
@@ -14,7 +15,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 suspend fun ApplicationCall.exercises() {
     suspendTransaction {
         val exercises = Exercise.all().sortedBy {it.name}.toList()
-        respondTemplate("exercises.peb", mapOf("exercises" to exercises, "currentPage" to "exercises"))
+        respond(PebbleContent("exercises/exercises.peb", mapOf("exercises" to exercises, "currentPage" to "exercises")))
     }
 }
 
@@ -29,7 +30,7 @@ suspend fun ApplicationCall.exercise() {
         when (val exercise = result.getOrNull()) {
             null -> respond(HttpStatusCode.NotFound)
             else -> {
-                respondTemplate("view_exercise.peb", mapOf("exercise" to exercise))
+                respond(PebbleContent("exercises/view_exercise.peb", mapOf("exercise" to exercise)))
             }
         }
     }
@@ -44,7 +45,7 @@ suspend fun ApplicationCall.searchExercises() {
         }
         else {
             val exercises = Exercise.all().filter {it.name.contains(search, true)}.sortedBy {it.name}.toList()
-            respondTemplate("exercises.peb", mapOf("exercises" to exercises))
+            respond(PebbleContent("exercises/exercises.peb", mapOf("exercises" to exercises)))
         }
     }
 }

@@ -1,0 +1,55 @@
+<link rel="stylesheet" href="/static/stylesheet.css">
+
+<title>Sign Up</title>
+
+<div class="landing-bg">
+
+    <img class="bg-img" src="/static/images/landing_background.png" alt="background">
+
+    <div class="landing-box" style="max-width: 400px; margin: auto;">
+
+        <div style="text-align: center;">
+            <img src="/static/images/jympal_logo.png" alt="Jympal logo" style="width: 50%; margin-top: 10px;">
+            <br>
+            <img class="mini-running" src="/static/images/running.png" alt="running">
+            <br>
+            <h1 class="purple-rect">SIGN UP</h1>
+        </div>
+
+        <div class="landing-text">
+
+            <form action="/sign-up" method="post">
+
+                <div class="input-group">
+                    <input type="text" name="email" placeholder="Email" required>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" name="username" placeholder="Username" required>
+                </div>
+
+                <div class="input-group">
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+
+                <div style="margin: 15px 0; text-align: center; font-size: 16px;">
+                    <label><input type="radio" name="usertype" value="1"> Casual</label>
+                    <label style="margin-left: 10px;"><input type="radio" name="usertype" value="2"> Competitor</label>
+                    <label style="margin-left: 10px;"><input type="radio" name="usertype" value="3"> PT</label>
+                </div>
+
+                <button class="pill-btn" type="submit" style="display: block; margin: 30px auto 0;">
+                    SIGN UP
+                </button>
+
+            </form>
+
+            <p style="text-align: center; margin-top: 30px;">
+                Already have an account?
+                <a href="/sign-in" style="color: #9933FF;">Sign In</a>
+            </p>
+
+        </div>
+
+    </div>
+</div>

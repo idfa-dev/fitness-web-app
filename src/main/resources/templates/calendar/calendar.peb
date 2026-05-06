@@ -6,7 +6,14 @@
 
 {% block content %}
 <div class="calendar-container">
-    <div class="month-year">{{ month }} {{ year }}</div>
+    <div class="month-nav">
+        <button id="prev-month">&lt;</button>
+
+        <div class="month-year">{{ month }} {{ year }}</div>
+
+        <button id="next-month">&gt;</button>
+    </div>
+
     <div class="add-event-text">Add<br>Event</div>
     <button id="plus-btn">+</button>
     {{ calendarTable | raw }}
@@ -20,6 +27,7 @@
 
             <div id="competition-form">
                 <div class="form-title">Add Competition</div>
+                <input type="hidden" id="comp-id">
                 <div class ="required-field">
                     <input type="text" id="comp-name" placeholder="Competition Name">
                     <span class="required-star">*</span>
@@ -28,8 +36,14 @@
                     <input type="date" id="comp-date">
                     <span class="required-star">*</span>
                 </div>
-                <input type="time" id="comp-time">
-                <input type="number" id="comp-distance" placeholder="Distance (km)" min="0">
+                <div class ="required-field">
+                    <input type="time" id="comp-time">
+                    <span class="required-star">*</span>
+                </div>
+                <div class ="required-field">
+                    <input type="number" id="comp-distance" placeholder="Distance (km)" min="0">
+                    <span class="required-star">*</span>
+                </div>
                 <input type="text" id="comp-finish-time" placeholder="Finish Time (hh:mm:ss)">
                 <div id="competition-types">
                     <div class="comp-type">
@@ -58,16 +72,22 @@
                     <input type="date" id="ex-date">
                     <span class="required-star">*</span>
                 </div>
+                <div class="required-field">
+                    <input type="text" id="ex-time-taken" placeholder="Time Taken (hh:mm:ss)">
+                    <span class="required-star">*</span>
+                </div>
+
+                <div class="required-field">
+                    <input type="number" id="ex-calories" placeholder="Calories Burnt (kcal)">
+                    <span class="required-star">*</span>
+                </div>
+
                 <div class="side-by-side">
                     <input type="number" id="ex-distance" placeholder="Distance (km)" min="0">
-                    <input type="text" id="ex-time-taken" placeholder="Time Taken (hh:mm:ss)">
-                </div>
-                <div class="side-by-side">
-                    <input type="number" id="ex-weight" placeholder="Weight (kg)" min="0">
                     <input type="text" id="ex-machine" placeholder="Machine">
                 </div>
                 <div class="side-by-side">
-                    <input type="number" id="ex-calories" placeholder="Calories Burnt (kcal)">
+                    <input type="number" id="ex-weight" placeholder="Weight (kg)" min="0">
                     <input type="text" id="ex-sets-reps" placeholder="Sets x Reps (e.g. 3x10)">
                 </div>
                 <div id="exercise-types">
@@ -96,7 +116,10 @@
     <div id="comp-info-overlay">
         <div id="comp-info-popup">
             <div id="comp-info-content"></div>
-            <button id="edit-event-btn">Update</button>
+            <div style="display:flex; gap:10px;">
+                <button id="edit-event-btn">Update</button>
+                <button id="delete-event-btn">Delete</button>
+            </div>
         </div>
     </div>
 </div>
@@ -106,7 +129,6 @@ html, body {
     margin:0;
     padding:0;
     height:100%;
-    background-color:#131313;
     font-family:"Agency FB", sans-serif;
     color:white;
 }
@@ -119,18 +141,19 @@ html, body {
     width:100%;
     position:relative;
     padding-bottom:0.5rem;
+    padding-top:-2rem;
 }
 
 .month-year {
     font-size:6vh;
     font-weight:bold;
-    margin-top:-1rem;
-    margin-left:3rem;
+    margin-top:-0.5;
+    line-height:1;
 }
 
 .add-event-text {
     position:absolute;
-    top:1.3rem;
+    top:0.6rem;
     right: calc(1rem + 4rem + 10px);
     text-align:center;
     font-size:1.5rem;
@@ -141,7 +164,7 @@ html, body {
 
 #plus-btn {
     position:absolute;
-    top:0.5rem;
+    top:-0.1rem;
     right:1rem;
     width:4rem;
     height:4rem;
@@ -165,16 +188,15 @@ html, body {
 
 table.calendar {
     border-collapse:collapse;
-    width:80vw;
-    max-width:1200px;
+    width:84vw;
     text-align:center;
-    margin:0.5rem 0 0 3rem;
+    margin:2.3rem 3rem 0 -1rem;
 }
 
 table.calendar th, table.calendar td {
     border:1px solid white;
     padding:0.5rem;
-    height:3.5rem;
+    height:4.7rem;
     width:calc(80vw / 7);
     position:relative;
 }
@@ -203,7 +225,7 @@ table.calendar td {
     left: 0.2rem;
     background-color: #f33e7a;
     color: white;
-    padding: 3px 8px;
+    padding: 4px 9px;
     border-radius: 12px;
     font-size: 1rem;
     white-space: nowrap;
@@ -318,7 +340,6 @@ table.calendar td {
 .side-by-side {
     display:flex;
     gap:10px;
-    margin-bottom:10px;
 }
 
 #exercise-types, #competition-types {
@@ -343,8 +364,14 @@ table.calendar td {
     transition: all 0.2s;
 }
 
+#competition-types .circle {
+    background: #131313 !important;
+}
+
 #competition-types .circle.selected {
-    background-color: white;
+    background: white !important;
+    border: 2px solid white;
+    transform: none;
 }
 
 .circle {
@@ -410,6 +437,17 @@ button#submit-competition, button#submit-exercise {
     font-size:18px;
 }
 
+#delete-event-btn {
+    margin-top:10px;
+    padding:10px 25px;
+    border:none;
+    border-radius:20px;
+    background:#9933FF;
+    color:white;
+    cursor:pointer;
+    font-size:18px;
+}
+
 .required-field {
     position:relative;
 }
@@ -428,6 +466,36 @@ button#submit-competition, button#submit-exercise {
     pointer-events:none;
 }
 
+.month-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: -1rem;
+   margin-top: -1rem;
+}
+
+.month-nav button {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    border: 2px solid black;
+    background: white;
+    color: black;
+    cursor: pointer;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.month-nav button:hover {
+    background: #131313;
+    color: white;
+    border: 2px solid white;
+}
+
 </style>
 
 <script>
@@ -441,10 +509,14 @@ const popupSelection = document.getElementById("popup-selection");
 const submitCompBtn = document.getElementById("submit-competition");
 const circles = document.querySelectorAll(".circle");
 const submitExBtn = document.getElementById("submit-exercise");
+const prevBtn = document.getElementById("prev-month");
+const nextBtn = document.getElementById("next-month");
 
 let currentEventElement = null;
 let currentEventData = null;
 let currentExerciseData = null;
+let currentMonth = {{ monthNumber }};
+let currentYear = {{ year }};
 
 const exerciseTypeMap = {
     "Cardio": "red",
@@ -454,10 +526,12 @@ const exerciseTypeMap = {
 };
 
 plusBtn.onclick = () => {
+    resetCompForm();
     popupOverlay.style.display = "flex";
     compForm.style.display = "none";
     exForm.style.display = "none";
     popupSelection.classList.remove("top");
+    document.getElementById("comp-id").value = "";
 };
 
 popupOverlay.onclick = (e) => {
@@ -481,6 +555,7 @@ addExBtn.onclick = () => {
 };
 
 const compCircles = document.querySelectorAll("#competition-types .circle");
+
 compCircles.forEach(circle => {
     circle.onclick = () => {
         circle.classList.toggle("selected");
@@ -495,59 +570,59 @@ exCircles.forEach(circle => {
     };
 });
 
-submitCompBtn.onclick = () => {
+function resetCompForm() {
+    document.getElementById("comp-id").value = "";
+    document.getElementById("comp-name").value = "";
+    document.getElementById("comp-date").value = "";
+    document.getElementById("comp-time").value = "";
+    document.getElementById("comp-distance").value = "";
+    document.getElementById("comp-finish-time").value = "";
+
+    document.querySelectorAll("#competition-types .circle").forEach(c => {
+        c.classList.remove("selected");
+        c.style.background = "#131313";
+    });
+
+    currentEventData = null;
+    currentEventElement = null;
+}
+
+submitCompBtn.onclick = async () => {
     const name = document.getElementById("comp-name").value;
     const date = document.getElementById("comp-date").value;
     const time = document.getElementById("comp-time").value;
     const distance = document.getElementById("comp-distance").value;
     const finishTime = document.getElementById("comp-finish-time").value;
 
-    const types = [];
-    compCircles.forEach(c => {
-        if(c.classList.contains("selected")) types.push(c.dataset.name);
-    });
+    if (!name || !date || !time || !distance) return;
 
-    if(!name || !date) return;
-
-    if(currentEventElement){
-        currentEventElement.textContent = name;
-        currentEventElement.dataset.info = JSON.stringify({name,date,time,distance,finishTime,types});
-
-        currentEventElement = null;
-        currentEventData = null;
-
-        document.getElementById("comp-name").value = "";
-        document.getElementById("comp-date").value = "";
-        document.getElementById("comp-time").value = "";
-        document.getElementById("comp-distance").value = "";
-        document.getElementById("comp-finish-time").value = "";
-        compCircles.forEach(c => c.classList.remove("selected"));
-
-        popupOverlay.style.display = "none";
-        return;
+    const formData = new URLSearchParams();
+    const id = document.getElementById("comp-id").value;
+    if (id && id !== "") {
+        formData.append("id", id);
     }
 
-    const day = new Date(date).getDate();
+    formData.append("name", name);
+    formData.append("date", date);
+    formData.append("time", time);
+    formData.append("distance", distance);
+    formData.append("finishTime", finishTime);
 
-    document.querySelectorAll("table.calendar td").forEach(td => {
-        const dn = td.querySelector(".day-number");
+    let selectedTypes = [];
 
-        if(dn && parseInt(dn.textContent) === day){
-            const pill = document.createElement("div");
-            pill.className = "comp-pill";
-            pill.textContent = name;
-            pill.dataset.info = JSON.stringify({name,date,time,distance,types});
-            td.appendChild(pill);
-        }
+    document.querySelectorAll("#competition-types .circle.selected").forEach(c => {
+        selectedTypes.push(c.dataset.name);
     });
 
-    document.getElementById("comp-name").value = "";
-    document.getElementById("comp-date").value = "";
-    document.getElementById("comp-time").value = "";
-    document.getElementById("comp-distance").value = "";
-    compCircles.forEach(c => c.classList.remove("selected"));
+    formData.append("types", selectedTypes.join(","));
 
-    popupOverlay.style.display = "none";
+    await fetch("/competitions/add", {
+        method: "POST",
+        body: formData
+    });
+
+    resetCompForm();
+    window.location.reload();
 };
 
 submitExBtn.onclick = () => {
@@ -568,7 +643,7 @@ submitExBtn.onclick = () => {
         }
     });
 
-    if (!name || !date || !selectedType) return;
+    if (!name || !date || !selectedType || !timeTaken || !calories) return;
 
     const exercise = {
         name,
@@ -657,13 +732,26 @@ document.addEventListener("click", e => {
         const info = JSON.parse(pill.dataset.info);
         currentEventElement = pill;
         currentEventData = info;
+        document.getElementById("comp-id").value = info.id || "";
+        
+        const cleaned = (info.types || "")
+            .toString()
+            .trim()
+            .replace(/^\[|\]$/g, "");
+
+        const formattedTypes = cleaned
+            .split(",")
+            .map(t => t.trim())
+            .filter(t => t)
+            .join(", ");
+
         content.innerHTML = `
             <div><strong>Name:</strong> ${info.name}</div>
             <div><strong>Date:</strong> ${info.date}</div>
             <div><strong>Start Time:</strong> ${info.time}</div>
             <div><strong>Distance (km):</strong> ${info.distance}</div>
             <div><strong>Finish Time:</strong> ${info.finishTime}</div>
-            <div><strong>Type(s):</strong> ${info.types.join(", ")}</div>
+            <div><strong>Type(s):</strong> ${formattedTypes}</div>
         `;
         overlay.style.display = "flex";
     }
@@ -681,6 +769,22 @@ document.getElementById("edit-event-btn").onclick = () => {
         document.getElementById("comp-time").value = currentEventData.time || "";
         document.getElementById("comp-distance").value = currentEventData.distance || "";
         document.getElementById("comp-finish-time").value = currentEventData.finishTime || "";
+
+        document.querySelectorAll("#competition-types .circle").forEach(c => {
+            c.classList.remove("selected");
+        });
+
+        const types = (currentEventData.types || "")
+            .toString()
+            .replace(/[\[\]]/g, "")
+            .split(",")
+            .map(t => t.trim());
+
+        document.querySelectorAll("#competition-types .circle").forEach(c => {
+            if (types.includes(c.dataset.name)) {
+                c.classList.add("selected");
+            }
+        });
 
         popupOverlay.style.display = "flex";
         compForm.style.display = "block";
@@ -717,14 +821,45 @@ document.getElementById("edit-event-btn").onclick = () => {
     }
 };
 
+prevBtn.onclick = () => {
+    currentMonth--;
+    if (currentMonth < 1) {
+        currentMonth = 12;
+        currentYear--;
+    }
+    reloadCalendar();
+};
+
+nextBtn.onclick = () => {
+    currentMonth++;
+    if (currentMonth > 12) {
+        currentMonth = 1;
+        currentYear++;
+    }
+    reloadCalendar();
+};
+
+function reloadCalendar() {
+    window.location.href = `/calendar?month=${currentMonth}&year=${currentYear}`;
+}
+
+const deleteBtn = document.getElementById("delete-event-btn");
+
+deleteBtn.onclick = async () => {
+    if (!currentEventData || !currentEventData.id) return;
+
+    if (!confirm("Delete this competition?")) return;
+
+    const formData = new URLSearchParams();
+    formData.append("id", currentEventData.id);
+
+    await fetch("/competitions/delete", {
+        method: "POST",
+        body: formData
+    });
+
+    window.location.reload();
+};
+
 </script>
 {% endblock %}
-
-
-
-
-
-
-
-
-
