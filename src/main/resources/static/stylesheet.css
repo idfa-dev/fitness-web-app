@@ -519,7 +519,149 @@ a.workout-container:hover { /* Only affects workout buttons, not exercise button
     filter: brightness(85%);
 }
 
-/* TABLES */
+.landing-bg {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bg-img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    z-index: -1;
+}
+
+.landing-box {
+    background: rgba(0, 0, 0, 0.85);
+    border-radius: 25px;
+
+    position: absolute;
+
+    top: 7.5vh;
+    bottom: 7.5vh;
+
+    left: 5vw;
+    right: 5vw;
+
+    padding: 20px 30px;
+
+    color: white;
+    text-align: center;
+
+    overflow-y: auto;
+}
+
+.landing-slogan {
+    font-size: 20px;
+    padding: 5px 0;
+    margin: 5px;
+}
+
+.landing-text {
+    font-size: 18px;
+}
+
+.pill-btn {
+    background-color: #9933FF;
+    color: white;
+    border: none;
+
+    padding: 6px 28px;
+    margin-left: 70px;
+    margin-right: 25px;
+
+    font-size: 18px;
+    border-radius: 999px;
+
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+.purple-rect {
+    display: inline-block;
+    background-color: #9933FF;
+    color: white;
+    padding: 2px 14px;
+    margin: 20px 0 10px 0;
+}
+
+.purple-rect + p {
+    margin-top: 0;
+    margin-bottom: 5px
+}
+
+.purple-rect + ul {
+    margin-top: 0;
+    margin-bottom: 5px
+}
+
+.mini-running {
+    width: 180px;
+    margin-top: 10px;
+    border-radius: 10px;
+}
+
+.input-group {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.input-group input {
+    width: 60%;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid white;
+
+    color: white;
+    font-size: 18px;
+    padding: 8px 5px;
+
+    outline: none;
+}
+
+.input-group input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.input-group input:focus {
+    border-bottom: 2px solid #9933FF;
+}
+
+input[type="radio"] {
+    accent-color: #9933FF;
+}
+
+.home-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.home-box {
+    width: 370px;
+    height: 230px;
+    background: #242425;
+    border-radius: 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    padding-top: 15px;
+}
+
+
+
 .center table {
     margin-left: auto;
     margin-right: auto;
@@ -573,6 +715,12 @@ tr a:link {
 tr a:visited {
     color: lightblue
 }
+<<<<<<< HEAD
+table:not(.calendar) tr:hover {
+    background-color: darkgray;
+}
+
+=======
 
 tr:hover{
     background-color: #3b145a;
@@ -627,3 +775,4 @@ tr:hover input{
     color: white;
     width: 100%;
 }
+>>>>>>> 3bd02d9c5e80e4144443dd4f736357c79932fd36
