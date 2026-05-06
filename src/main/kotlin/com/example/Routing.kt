@@ -27,8 +27,8 @@ import com.example.database.doesCollide //importing collision checker from auth.
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.parameters
 
-//SQL ( might be unnecessary )
 import org.jetbrains.exposed.v1.core.*
+
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction // To modify db
 import org.jetbrains.exposed.v1.jdbc.insert
 import io.ktor.server.request.receiveParameters

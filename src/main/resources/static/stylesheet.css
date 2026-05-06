@@ -583,6 +583,13 @@ a.workout-container:hover { /* Only affects workout buttons, not exercise button
     cursor: pointer;
     transition: 0.3s;
     font-weight: bold;
+
+    display: inline-block;
+    text-decoration: none;
+}
+
+.pill-btn:hover {
+    background-color: #722891;
 }
 
 .purple-rect {
@@ -715,12 +722,11 @@ tr a:link {
 tr a:visited {
     color: lightblue
 }
-<<<<<<< HEAD
+
 table:not(.calendar) tr:hover {
     background-color: darkgray;
 }
 
-=======
 
 tr:hover{
     background-color: #3b145a;
@@ -775,4 +781,4 @@ tr:hover input{
     color: white;
     width: 100%;
 }
->>>>>>> 3bd02d9c5e80e4144443dd4f736357c79932fd36
+
