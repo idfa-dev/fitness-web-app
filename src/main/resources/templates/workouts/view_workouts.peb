@@ -35,23 +35,34 @@
         <p> Key: C = Cardio, B = Bodyweight, R = Resistance, M = Mixed
     </div>
     <div class="center">
-        <table>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Contains</th>
-            <th>Favourited</th>
-        </tr>
-        {% for w in workouts %}
-            {% set contain = [] %}
-            <tr>
-                <td><a href="/workouts/{{ w.workout['id'] }}">{{ w.workout['name'] }}</a></td>
-                <td>{{ w.workout['desc'] }}</td>
-                <td>{{ w.types }}</td>
-                <td>{{ w.workout['favourited'] }}</td>
-            </tr>
-        {% endfor %}
-        </table>
+        {% if currentPage == "current-workout" %}
+        <form method="post" action="/current-workout">
+        {% endif %}
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Contains</th>
+                    <th>Favourited</th>
+                </tr>
+                {% for w in workouts %}
+                    {% set contain = [] %}
+                    <tr>
+                        {% if currentPage == "workouts" %}
+                        <td><a href="/workouts/{{ w.workout['id'] }}"><button class="workout-btn">{{ w.workout['name'] }}</button></a></td>
+                        {% endif %}
+                        {% if currentPage == "current-workout" %}
+                        <td><button class="workout-btn" type="input" name="workout_template" value={{ w.workout['id'] }}>{{ w.workout['name'] }}</button></td>
+                        {% endif %}
+                        <td>{{ w.workout['desc'] }}</td>
+                        <td>{{ w.types }}</td>
+                        <td>{{ w.workout['favourited'] }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% if currentPage == "current-workout" %}
+        </form>
+        {% endif %}
     </div>
 {% endblock %}
 

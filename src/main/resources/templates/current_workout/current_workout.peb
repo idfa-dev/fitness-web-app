@@ -1,0 +1,104 @@
+{% extends "base.peb" %}
+{% block title %} Current Workout {% endblock %}
+
+{% block header %}
+<div class="center">
+    <h1>Current Workout</h1>
+</div>
+
+{% endblock %}
+{% block content %}
+<div class="center">
+    {% for wse in workoutSessionExerciseObjects %}
+        <form action="/current-workout" method="post">
+            <table class="current-exercise">
+                <thead>
+                    <tr>
+                        <th class="exercise-header" colspan="4">{{ wse.wsExercise.exercise.name }}</th>
+                    </tr>
+                    <tr>
+                        <th class="set">Set</th>
+                        <th class="weight">Weight (kg)</th>
+                        <th class="reps">Reps</th>
+                        <th class="btn"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set i = 1 %}
+                    {% for set in wse.sets %}
+                        <tr>
+                            <td class="set">{{ i }}</td>
+                            <td class="weight">{{ set.weight }}</td>
+                            <td class="reps">{{ set.reps }}</td>
+                            <td class="btn"><button class="remove-btn" type="submit" name="remove_set" value="{{ set.id }}">REMOVE</button></td>
+                        </tr>
+                    {%  set i = i + 1 %}
+                    {% endfor %}
+                    <tr>
+                        <td class="set"> {{ i }} </td>
+                        {% set lastWeight = 0 %}
+                        {% set lastReps = 0 %}
+                        {% if lastWeightObjects != null %}
+                            {% for lwo in lastWeightObjects %}
+                                {% if lwo.exercise == wse.wsExercise.exercise %}
+                                    {% set lastWeight = lwo.weight %}
+                                    {% set lastReps = lwo.reps %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        <td class="weight"><input type="number" step="0.25" name="weight" min="0" placeholder="{{ lastWeight }}"></td>
+                        <td class="reps"><input type="number" name="reps" min="0" placeholder="{{ lastReps }}"></td>
+                        <td class="btn"><input type="hidden" name="wseid" value="{{ wse.wsExercise.id }}"><button class="add-btn" type="submit" name="add-set">ADD</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><button class="remove-btn" type="submit" name="remove_exercise" value="{{ wse.wsExercise.id }}">REMOVE EXERCISE</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+        <br>
+    {% endfor %}
+    <br>
+    <div class="button-container">
+        <button onclick="exerciseDropdown()" class="dropdownbtn"> Add Exercise </button>
+    </div>
+    <div id="dropdown" class="dropdown-content">
+        <input type="text" placeholder="Search for an exercise..." id="search" onkeyup="filterExercises()">
+        <form action="/current-workout" method="post">
+        {% for exercise in exercises %}
+            <div id="exercise-item" class="exercise-item">
+                <button class="exercise-btn" type="submit" name="exercise" value="{{ exercise.id }}">
+                    {{ exercise.name }}
+                </button>
+            </div>
+        {% endfor %}
+        </form>
+    </div>
+    <div class="button-container">
+        <form method="post" action="/current-workout">
+            <button type="submit" name="end" value="1"> End Workout </button>
+        </form>
+    </div>
+</div>
+
+<script>
+function exerciseDropdown() {
+    document.getElementById("dropdown").classList.toggle("show")
+}
+
+function filterExercises() {
+    const input = document.getElementById("search");
+    const filter = input.value.toUpperCase();
+    const div = document.getElementById("dropdown");
+    const exercise = div.getElementsByClassName("exercise-item");
+    for (let i = 0; i < exercise.length; i++) {
+        txtValue = exercise[i].textContent || exercise[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            exercise[i].style.display = "";
+        } else {
+            exercise[i].style.display = "none";
+        }
+    }
+}
+</script>
+{% endblock %}
