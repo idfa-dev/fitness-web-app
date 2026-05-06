@@ -60,9 +60,16 @@ fun Application.configureRouting() {
             val parameters = call.receiveParameters()
 
             when {
+                parameters["workout_template"] != null -> {
+                    val workoutID = parameters["workout_template"]?.toIntOrNull()
+                        ?: return@post call.respond(HttpStatusCode.BadRequest)
+                    // User has a workout created with the workout selected
+                    call.startNewTemplateWorkout(workoutID)
+
+                }
                 parameters["use_template"] == "yes" -> {
-                    // User is redirected to a page where a template can be selected (currently not implemented)
-                    call.respond(PebbleContent("current_workout.peb", mapOf("currentPage" to "current-workout")))
+                    // User is redirected to a page where a template can be selected
+                    call.selectWorkoutTemplate()
                 }
 
                 parameters["use_template"] == "no" -> {

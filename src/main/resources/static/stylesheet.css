@@ -118,7 +118,7 @@ body {
 
 /* BUTTONS */
 
-.add-btn {
+.workout-btn, .add-btn, .remove-btn {
     width: 100%;
     background: transparent;
     font-size: 24px;
@@ -128,23 +128,16 @@ body {
     text-align: center;
     padding: 10px 14px;
     transition-duration: 0.4s;
+}
+
+.workout-btn:hover {
+    cursor: pointer;
+    background-color: #b73fec;
 }
 
 .add-btn:hover {
     cursor: pointer;
     background-color: #196B24;
-}
-
-.remove-btn {
-    width: 100%;
-    background: transparent;
-    font-size: 24px;
-    color: white;
-    border: none;
-    border-radius: 0;
-    text-align: center;
-    padding: 10px 14px;
-    transition-duration: 0.4s;
 }
 
 .remove-btn:hover {
