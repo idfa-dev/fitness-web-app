@@ -1,15 +1,25 @@
 package com.example
 
+//DB
 import com.example.database.*
+
+//Server
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.http.content.*
 import io.ktor.server.pebble.PebbleContent
+import io.ktor.server.request.receiveParameters
+import io.ktor.server.sessions.*
+
+//jav
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
 
+//Authentication imports
+import com.example.database.User
+import com.example.database.PT
 //Authentication stuff
 import com.example.database.authenticateUser //importing authentication from auth.kt
 import com.example.database.authenticatePT
@@ -17,11 +27,16 @@ import com.example.database.doesCollide //importing collision checker from auth.
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.parameters
 
+//SQL ( might be unnecessary )
 import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction //to mod db
+<<<<<<< HEAD
 import org.jetbrains.exposed.v1.jdbc.insert
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.sessions.*
+=======
+
+>>>>>>> dba9031c9d50ad6b7b3787e107d4149935f82cc8
 
 fun Application.configureRouting() {
     routing {
@@ -341,110 +356,17 @@ fun Application.configureRouting() {
         }
 
         post("/sign-in") { //This whole section will be added to Auth.kt eventually or like modularized
-
             
-            val parameters = call.receiveParameters() //pull website input
-            var isPT = false
-
-            val username = parameters["username"] ?: "Input not received."  // Second case for input check
-            val password = parameters["password"] ?: "Input not received."
-
-            println("Username: $username, Password: $password") // Input check for sign-in
+            signInHandler(call)
             
-            var isValid = authenticateUser(username, password) //check
-            if (!isValid)
-            {
-                isValid = authenticatePT(username, password) //Double check if user is a PT
-                isPT = true
-            }
-            if (isValid) {
-                transaction {
-                    val userID: Int? = if (isPT) {
-                        getPTIdByUsername(username)
-                    } else {
-                        getUserIdByUsername(username)
-                    }
-                    call.sessions.set(UserSession(id=userID.toString(), username=username))
-                    call.sessions.clear<CurrentWorkoutSession>()
-                }
-                call.respondRedirect("/home")   // Redirects ot the actual home page
-            }
-            else 
-            {
-                call.respondText("Invalid details. Please try again.")  // Error message on failure
-            }
-
         }
 
-         get("/sign-up") {
+        get("/sign-up") {
             call.respond(PebbleContent("sign-up.peb", mapOf("currentPage" to "sign-up")))
         }
 
         post("/sign-up") {  //This whole section will be added to User/Users eventually.
-            
-            val parameters = call.receiveParameters()
-
-            
-            val _username = parameters["username"] ?: "Input not received."
-            val _email = parameters["email"] ?: "Input not received."
-            val _password = parameters["password"] ?: "Input not received."
-            val _usertype = parameters["usertype"] ?: "Input not received."
-            
-            //Prints the actual like user input for the log in
-            println("Username: $_username, Email: $_email, Password: $_password") // debug
-
-
-            //collision check
-            val userExists = doesCollide(_username, _email)
-
-            var success = false
-
-            if ( userExists ) {
-                call.respondText("User already exists. Please sign in instead.")
-                return@post 
-            }
-            else
-            {
-                if  (_usertype == "3")
-                {
-                    transaction {
-                        PT.new {
-                            username = _username
-                            password = _password
-                            email = _email 
-                            fname = ""
-                            height = 0f
-                            weight = 0f
-                            dob = ""
-                            sex = ""
-                        }
-                    }
-                }
-                else
-                {
-                    transaction {
-                        User.new {
-                            type = 0              // Would love to add type but currenty not sure
-                            username = _username   // how that works iwth this number system, 
-                            password = _password   // have to discuss it first
-                            email = _email
-                            fname = ""
-                            height = 0f
-                            weight = 0f
-                            dob = ""
-                            sex = ""
-                        }
-                    }
-                }
-
-                success = true
-            }
-
-            if (success) {
-                call.respondRedirect("/sign-in") // redirect to sign-in
-            } else {    //error
-                call.respondText("Failed to create user. Please try again.")
-            }
+            signUpHandler(call)
         }
 
         post("/competitions/add") {

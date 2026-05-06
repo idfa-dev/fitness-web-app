@@ -44,4 +44,7 @@ dependencies {
 
     // Sessions
     implementation(libs.ktor.server.sessions)
+
+    //Encryption
+    implementation("at.favre.lib:bcrypt:0.10.2") //for password hashing
 }
