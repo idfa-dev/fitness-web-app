@@ -21,10 +21,13 @@
 
             <form method="get" action="/workouts/view/search" class="filter-form">
 
+                <input type="hidden" name="currentPage" value="{{ currentPage }}"
+
                 <label><input type="checkbox" name="type" value="C"> Cardio</label>
                 <label><input type="checkbox" name="type" value="B"> Bodyweight</label>
                 <label><input type="checkbox" name="type" value="R"> Resistance</label>
                 <label><input type="checkbox" name="type" value="M"> Mixed</label>
+                <label><input type="checkbox" name="favourite" value="true"> Favourited</label>
 
                 <button type="submit" class="filter-btn">Apply Filters</button>
             </form>
