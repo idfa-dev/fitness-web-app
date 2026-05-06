@@ -44,8 +44,8 @@ fun Application.module() {
 
         SchemaUtils.create(
             Users, PTs, Exercises,
-            Clients, Workouts, UserWorkouts,
-            WorkoutExercises, WorkoutSessions, WorkoutSessionExercises,
+            Clients, Workouts, WorkoutExercises,
+            WorkoutSessions, WorkoutSessionExercises,
             WorkoutSessionSets, Competitions
         )
 
