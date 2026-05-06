@@ -1,6 +1,11 @@
 package com.example.database
 
+import com.example.UserSession
+import com.example.WorkoutObject
 import com.example.WorkoutSessionExerciseObject
+import com.example.exerciseTypes
+import io.ktor.server.sessions.get
+import io.ktor.server.sessions.sessions
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction

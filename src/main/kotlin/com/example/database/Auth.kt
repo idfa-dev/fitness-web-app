@@ -7,6 +7,7 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 
 //Hashing
 import at.favre.lib.crypto.bcrypt.BCrypt
+import com.example.CurrentWorkoutSession
 
 //Ktor Server stuff
 import io.ktor.server.application.*
@@ -50,6 +51,7 @@ suspend fun signInHandler( call: ApplicationCall ) {
                 getUserIdByUsername(username)
             }
             call.sessions.set(UserSession(id=userID.toString(), username=username))
+            call.sessions.clear<CurrentWorkoutSession>()
         }
         
     }
