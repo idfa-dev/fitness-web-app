@@ -159,26 +159,6 @@ fun Application.configureRouting() {
 
         get("/workouts/past") { call.displayPastWorkouts() }
 
-        get("/workouts/create") {
-            call.respond(PebbleContent("workouts/create_workout.peb", mapOf("currentPage" to "workouts")))
-        }
-
-        get("/workouts/create/cardio") {
-            call.respond(PebbleContent("workouts/create_cardio_workout.peb", mapOf("currentPage" to "workouts")))
-        }
-
-        get("/workouts/create/bodyweight") {
-            call.respond(PebbleContent("workouts/create_bodyweight_workout.peb", mapOf("currentPage" to "workouts")))
-        }
-
-        get("/workouts/create/resistance") {
-            call.respond(PebbleContent("workouts/create_resistance_workout.peb", mapOf("currentPage" to "workouts")))
-        }
-
-        get("/workouts/create/mixed") {
-            call.respond(PebbleContent("workouts/create_mixed_workout.peb", mapOf("currentPage" to "workouts")))
-        }
-
         get("/exercises") {call.exercises()}
 
         get("/exercises/search") {call.searchExercises()}

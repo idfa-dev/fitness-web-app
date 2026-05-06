@@ -493,7 +493,13 @@ suspend fun ApplicationCall.displayPastWorkouts() {
                     )
                     pastWorkouts.add(workoutObject)
                 }
-                respond(PebbleContent("workouts/view_past_workouts.peb", mapOf("currentPage" to "workouts", "pastWorkouts" to pastWorkouts)))
+                if (pastWorkouts.isNotEmpty()) {
+                    respond(PebbleContent("workouts/view_past_workouts.peb", mapOf("currentPage" to "workouts", "pastWorkouts" to pastWorkouts)))
+                }
+                else {
+                    val errMsg = "You have not completed any workouts yet"
+                    respond(PebbleContent("workouts/workouts.peb", mapOf("currentPage" to "workouts", "errMsg" to errMsg)))
+                }
             }
             else {
                 respond(HttpStatusCode.Unauthorized)
