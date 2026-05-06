@@ -14,20 +14,27 @@
                 <th>Date Completed</th>
                 <th>Exercises</th>
                 <th>Sets</th>
-                <th>Length</th>
+                <th>Length (HH:MM:SS)</th>
             </tr>
             {% for workout in pastWorkouts %}
                 <tr>
-                    <td>{{ workout.workoutSession.endedAt }}</td>
-                    <td>{% for exercise in workout.workoutExercisesObject %}
-                            {{ exercise.exercise.name }}<br>
+                    <td>{{ workout.endedAt }}</td>
+                    <td>
+                        {% for weo in workout.workoutExercisesObject %}
+                            {{ weo.exercise.exercise.name }}<br>
                         {% endfor %}
                     </td>
-                    <td>{% for set in workout.workoutExercisesObject.sets %}
-                            Weight: {{ set.weight }}, Reps:{{ set.reps }} <br>
+                    <td>
+                        {% for weo in workout.workoutExercisesObject %}
+                            {{ weo.exercise.exercise.name }}
+                            <br>
+                            {% for set in weo.sets %}
+                                Weight: {{ set.weight }}, Reps: {{ set.reps }} <br>
+                            {% endfor %}
+                            <br>
                         {% endfor %}
                     </td>
-                    <td>LENGTH PLACEHOLDER</td>
+                    <td>{{ workout.length }}</td>
                 </tr>
             {% endfor %}
         </table>

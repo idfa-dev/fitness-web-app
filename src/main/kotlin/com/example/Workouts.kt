@@ -10,6 +10,7 @@ import com.example.database.WorkoutExercise
 import com.example.database.Workout
 import com.example.database.Exercise
 import com.example.database.User
+import com.example.database.WorkoutSessions.endedAt
 import com.example.database.getListOfWorkoutSessionExercises
 import com.example.database.getUserIdByUsername
 import io.ktor.http.HttpStatusCode
@@ -23,7 +24,10 @@ import io.pebbletemplates.pebble.template.PebbleTemplate
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import java.time.Duration
 import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import kotlin.text.toInt
 
 // Class definition for workout object to be passed in the respondTemplate call for display_workout (below)
@@ -423,6 +427,8 @@ suspend fun ApplicationCall.startNewTemplateWorkout(workoutID: Int) {
 data class PastWorkoutObject (
     var workoutSession: WorkoutSession,
     var workoutExercisesObject: List<PastWorkoutExerciseObject>,
+    var length: String,
+    var endedAt: String
 )
 
 // Class definition for PastWorkoutExerciseObject for use in PastWorkoutObject
@@ -437,6 +443,7 @@ suspend fun ApplicationCall.displayPastWorkouts() {
     // To do this we need to also create PastWorkoutExerciseObjects for each exercise in the workoutSession
     //      Find all exercises part of the workout session
     //      Find all sets part of the workout session
+    // Also calculate length of workouts and pass that too
     suspendTransaction {
         val pastWorkouts = mutableListOf<PastWorkoutObject>()
         val userSession = sessions.get<UserSession>()
@@ -457,10 +464,21 @@ suspend fun ApplicationCall.displayPastWorkouts() {
                         )
                         exercisesList.add(exerciseObject)
                     }
+                    // Convert datetime for date completed to a readable format
+                    val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy, HH:mm").withZone(ZoneId.systemDefault())
+                    val endedAt = formatter.format(ws.endedAt)
+                    // Calculate length of workout
+                    val duration = Duration.between(ws.startedAt, ws.endedAt)
+                    val hours = duration.toHours()
+                    val minutes = duration.minusHours(hours).toMinutes()
+                    val seconds = duration.minusMinutes(minutes).toSeconds()
+                    val length = String.format("%02d:%02d:%02d", hours, minutes, seconds)
                     // Create a PastWorkoutObject for every ws
                     val workoutObject = PastWorkoutObject (
                         workoutSession = ws,
-                        workoutExercisesObject = exercisesList
+                        workoutExercisesObject = exercisesList,
+                        length = length,
+                        endedAt = endedAt
                     )
                     pastWorkouts.add(workoutObject)
                 }
