@@ -2,29 +2,33 @@
 
 {% block title %}Home{% endblock %}
 
-{% block header %}
-<div style="text-align: center">
-    <img src="/static/images/jympal_logo.png" alt="Jympal logo" style = "width: 20%;" >
-    <header style="margin:0px"> You wanna be fit, Gymit! </header>
-</div>
-{% endblock %}  
-
 {% block content %}
 
-<p style="text-align: center"> Recent Activity: </p>
-<div style="display: flex; justify-content: center; gap: 20px;">
-    <div class="box" style =" width: 200px; height: auto; border: 2px solid white; background: transparent">
-    workout image box placeholder kinda thing
-    </div>
-    
-    <div class="box" style =" width: 200px; height: auto; order: 2px transparent; background: transparent">
-    
-    <p> Workout/Exercise: [ Name ] </p>
-    <p style = "margin-top: 2%"> Workout Time: </p>
-    <p style = "margin-top: 2%"> Calories Burnt: </p>
-
-    </div>
+<div style="text-align: center">
+    <img src="/static/images/jympal_logo.png" alt="Jympal logo" style="width: 180px; margin-top: -30px;">
+    <p style="font-size: 16px; margin: 5px 0;">
+        You wanna be fit? Jymit!
+    </p>
 </div>
 
+<p style="text-align: center; margin-top: 25px; font-weight: bold;">
+    Your Activity:
+</p>
+
+<div class="home-row">
+    <div class="home-box">Last Workout</div>
+    <div class="home-box">Calories Burnt Today</div>
+    <div class="home-box">Last Exercise</div>
+</div>
+
+<p style="text-align: center; margin-top: 20px; font-weight: bold;">
+    Suggestions:
+</p>
+
+<div class="home-row">
+    <div class="home-box">Start Workout Or Exercise</div>
+    <div class="home-box">Log Activity On Calendar</div>
+    <div class="home-box">View Personal Stats</div>
+</div>
 
 {% endblock %}
