@@ -226,7 +226,7 @@ button:hover {
 /* PROFILE INFO */
 .profile-info-button {
     position: absolute;
-    top: 90px;
+    top: 30px;
     right: 25px;
     background-color: #b73fec;
     font-size: 30px;
@@ -240,7 +240,7 @@ button:hover {
 
 .logout-btn {
     position: absolute;
-    top: 85px;
+    top: 30px;
     left: 25px;
     font-size: 20px;
     padding: 8px 14px;
@@ -715,12 +715,10 @@ tr a:link {
 tr a:visited {
     color: lightblue
 }
-<<<<<<< HEAD
 table:not(.calendar) tr:hover {
     background-color: darkgray;
 }
 
-=======
 
 tr:hover{
     background-color: #3b145a;
@@ -775,4 +773,3 @@ tr:hover input{
     color: white;
     width: 100%;
 }
->>>>>>> 3bd02d9c5e80e4144443dd4f736357c79932fd36

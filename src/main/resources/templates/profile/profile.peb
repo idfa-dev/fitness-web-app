@@ -3,12 +3,14 @@
 {% block title %}Profile{% endblock %}
 
 {% block header %}
-Profile
-<a href="/profile/profile_info" class="profile-info-button">Edit Profile</a>
-<a href="/sign-in" class="logout-btn">Logout</a>
+
 {% endblock %}
 
 {% block content %}
+<h1>Profile</h1>
+<a href="/profile/profile_info" class="profile-info-button">Edit Profile</a>
+<a href="/sign-in" class="logout-btn">Logout</a>
+
 <div class="chart-container">
     <canvas id="workoutChart"></canvas>
 </div>
