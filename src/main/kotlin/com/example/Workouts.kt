@@ -86,8 +86,14 @@ suspend fun ApplicationCall.getListOfWorkoutObjects(): MutableList<WorkoutObject
     return workoutObjects
 }
 
-suspend fun ApplicationCall.displayWorkouts() {
+suspend fun ApplicationCall.displayWorkouts(workoutID: Int = 0) {
     suspendTransaction {
+        if (workoutID != 0) {
+            // Change favourite value of workout
+            Workout.findByIdAndUpdate(workoutID) {
+                it.favourite = !it.favourite
+            }
+        }
         val workoutObjects  = getListOfWorkoutObjects()
         respond(PebbleContent("workouts/view_workouts.peb", mapOf("currentPage" to "workouts", "workouts" to workoutObjects)))
     }

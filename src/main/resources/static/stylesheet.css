@@ -118,7 +118,7 @@ body {
 
 /* BUTTONS */
 
-.workout-btn, .add-btn, .remove-btn {
+.workout-btn, .add-btn, .remove-btn, .icon-btn {
     width: 100%;
     background: transparent;
     font-size: 24px;
@@ -128,6 +128,11 @@ body {
     text-align: center;
     padding: 10px 14px;
     transition-duration: 0.4s;
+}
+
+.icon-btn:hover {
+    cursor:pointer;
+    background-color: #b73fec
 }
 
 .workout-btn:hover {
@@ -715,12 +720,10 @@ tr a:link {
 tr a:visited {
     color: lightblue
 }
-<<<<<<< HEAD
+
 table:not(.calendar) tr:hover {
     background-color: darkgray;
 }
-
-=======
 
 tr:hover{
     background-color: #3b145a;
@@ -775,4 +778,3 @@ tr:hover input{
     color: white;
     width: 100%;
 }
->>>>>>> 3bd02d9c5e80e4144443dd4f736357c79932fd36

@@ -146,6 +146,17 @@ fun Application.configureRouting() {
 
         get("/workouts/view/search") {call.searchWorkouts()}
 
+        post("/workouts/view") {
+            val parameters = call.receiveParameters()
+            when {
+                parameters["favourite"] != null -> {
+                    val favourite = parameters["favourite"]?.toIntOrNull()
+                        ?: return@post call.respond(HttpStatusCode.BadRequest)
+                    call.displayWorkouts(favourite)
+                }
+            }
+        }
+
         get("/workouts/past") { call.displayPastWorkouts() }
 
         get("/workouts/create") {
