@@ -299,7 +299,7 @@ table.calendar td {
     display:flex;
     gap:30px;
     justify-content:center;
-    margin-top:25%;
+    margin-top:32%;
     transition: all 0.3s;
 }
 
