@@ -41,7 +41,7 @@
                     <span class="required-star">*</span>
                 </div>
                 <div class ="required-field">
-                    <input type="number" id="comp-distance" placeholder="Distance (km)" min="0">
+                    <input type="text" id="comp-distance" placeholder="Distance (km)" min="0">
                     <span class="required-star">*</span>
                 </div>
                 <input type="text" id="comp-finish-time" placeholder="Time Taken (hh:mm:ss)">
@@ -78,16 +78,16 @@
                 </div>
 
                 <div class="required-field">
-                    <input type="number" id="ex-calories" placeholder="Calories Burnt (kcal)">
+                    <input type="text" id="ex-calories" placeholder="Calories Burnt (kcal)">
                     <span class="required-star">*</span>
                 </div>
 
                 <div class="side-by-side">
-                    <input type="number" id="ex-distance" placeholder="Distance (km)" min="0">
+                    <input type="text" id="ex-distance" placeholder="Distance (km)" min="0">
                     <input type="text" id="ex-machine" placeholder="Machine">
                 </div>
                 <div class="side-by-side">
-                    <input type="number" id="ex-weight" placeholder="Weight (kg)" min="0">
+                    <input type="text" id="ex-weight" placeholder="Weight (kg)" min="0">
                     <input type="text" id="ex-sets-reps" placeholder="Sets x Reps (e.g. 3x10)">
                 </div>
                 <div id="exercise-types">
@@ -528,6 +528,10 @@ button#submit-competition, button#submit-exercise {
     filter: brightness(85%);
 }
 
+.invalid-input {
+    border: 2px solid #FF3B3B !important;
+}
+
 </style>
 
 <script>
@@ -638,16 +642,45 @@ function resetExForm() {
 }
 
 submitCompBtn.onclick = async () => {
-    const name = document.getElementById("comp-name").value;
-    const date = document.getElementById("comp-date").value;
-    const time = document.getElementById("comp-time").value;
-    const distance = document.getElementById("comp-distance").value;
-    const finishTime = document.getElementById("comp-finish-time").value;
 
-    if (!name || !date || !time || !distance) return;
+    const nameInput = document.getElementById("comp-name");
+    const dateInput = document.getElementById("comp-date");
+    const timeInput = document.getElementById("comp-time");
+    const distanceInput = document.getElementById("comp-distance");
+    const finishTimeInput = document.getElementById("comp-finish-time");
+
+    const name = nameInput.value.trim();
+    const date = dateInput.value;
+    const time = timeInput.value;
+    const distance = distanceInput.value.trim();
+    const finishTime = finishTimeInput.value.trim();
+
+    [nameInput, dateInput, timeInput, distanceInput, finishTimeInput].forEach(el => {
+        el.classList.remove("invalid-input");
+    });
+
+    let valid = true;
+
+    if (!name) { nameInput.classList.add("invalid-input"); valid = false; }
+    if (!date) { dateInput.classList.add("invalid-input"); valid = false; }
+    if (!time) { timeInput.classList.add("invalid-input"); valid = false; }
+    if (!distance) { distanceInput.classList.add("invalid-input"); valid = false; }
+
+    if (distance && !/^\d+(\.\d+)?$/.test(distance)) {
+        distanceInput.classList.add("invalid-input");
+        valid = false;
+    }
+
+    if (finishTime && !/^([0-1]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(finishTime)) {
+        finishTimeInput.classList.add("invalid-input");
+        valid = false;
+    }
+
+    if (!valid) return;
 
     const formData = new URLSearchParams();
     const id = document.getElementById("comp-id").value;
+
     if (id && id !== "") {
         formData.append("id", id);
     }
@@ -659,7 +692,6 @@ submitCompBtn.onclick = async () => {
     formData.append("finishTime", finishTime);
 
     let selectedTypes = [];
-
     document.querySelectorAll("#competition-types .circle.selected").forEach(c => {
         selectedTypes.push(c.dataset.name);
     });
@@ -677,28 +709,79 @@ submitCompBtn.onclick = async () => {
 
 submitExBtn.onclick = async () => {
 
-    if (!document.getElementById("ex-name").value ||
-        !document.getElementById("ex-date").value ||
-        !document.getElementById("ex-time-taken").value ||
-        !document.getElementById("ex-calories").value) {
-        return;
+    const nameInput = document.getElementById("ex-name");
+    const dateInput = document.getElementById("ex-date");
+    const timeInput = document.getElementById("ex-time-taken");
+    const caloriesInput = document.getElementById("ex-calories");
+    const distanceInput = document.getElementById("ex-distance");
+    const machineInput = document.getElementById("ex-machine");
+    const weightInput = document.getElementById("ex-weight");
+    const setsRepsInput = document.getElementById("ex-sets-reps");
+
+    const name = nameInput.value.trim();
+    const date = dateInput.value;
+    const timeTaken = timeInput.value.trim();
+    const calories = caloriesInput.value.trim();
+    const distance = distanceInput.value.trim();
+    const machine = machineInput.value.trim();
+    const weight = weightInput.value.trim();
+    const setsReps = setsRepsInput.value.trim();
+
+    [nameInput, dateInput, timeInput, caloriesInput, distanceInput, machineInput, weightInput, setsRepsInput]
+        .forEach(el => el.classList.remove("invalid-input"));
+
+    let valid = true;
+
+    if (!name) { nameInput.classList.add("invalid-input"); valid = false; }
+    if (!date) { dateInput.classList.add("invalid-input"); valid = false; }
+    if (!timeTaken) { timeInput.classList.add("invalid-input"); valid = false; }
+    if (!calories) { caloriesInput.classList.add("invalid-input"); valid = false; }
+
+    if (distance && !/^\d+(\.\d+)?$/.test(distance)) {
+        distanceInput.classList.add("invalid-input");
+        valid = false;
     }
+
+    if (calories && !/^\d+(\.\d+)?$/.test(calories)) {
+        caloriesInput.classList.add("invalid-input");
+        valid = false;
+    }
+
+    if (weight && !/^\d+(\.\d+)?$/.test(weight)) {
+        weightInput.classList.add("invalid-input");
+        valid = false;
+    }
+
+    if (machine && !/^[A-Za-z ]+$/.test(machine)) {
+        machineInput.classList.add("invalid-input");
+        valid = false;
+    }
+
+    if (timeTaken && !/^([0-1]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(timeTaken)) {
+        timeInput.classList.add("invalid-input");
+        valid = false;
+    }
+
+    if (setsReps && !/^\d+\s*x\s*\d+$/i.test(setsReps)) {
+        setsRepsInput.classList.add("invalid-input");
+        valid = false;
+    }
+
+    if (!valid) return;
 
     const formData = new URLSearchParams();
 
     const id = currentExerciseData?.id;
     if (id) formData.append("id", id);
 
-    formData.append("name", document.getElementById("ex-name").value);
-    const selectedDate = document.getElementById("ex-date").value;
-    formData.append("date", selectedDate);
-    formData.append("day", selectedDate);
-    formData.append("distance", document.getElementById("ex-distance").value);
-    formData.append("timeTaken", document.getElementById("ex-time-taken").value);
-    formData.append("weight", document.getElementById("ex-weight").value);
-    formData.append("machine", document.getElementById("ex-machine").value);
-    formData.append("calories", document.getElementById("ex-calories").value);
-    formData.append("setsReps", document.getElementById("ex-sets-reps").value);
+    formData.append("name", name);
+    formData.append("date", date);
+    formData.append("distance", distance);
+    formData.append("timeTaken", timeTaken);
+    formData.append("weight", weight);
+    formData.append("machine", machine);
+    formData.append("calories", calories);
+    formData.append("setsReps", setsReps);
 
     let selectedType = null;
 
