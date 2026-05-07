@@ -39,6 +39,20 @@ fun Application.configureRouting() {
 
         staticResources("/static", "static")
 
+
+        // Test Routes
+        post("/_test/sign-in") {
+            val parameters = call.receiveParameters()
+            val userID = parameters["userID"]
+            val username = parameters["username"]
+            if (userID != null && username != null) {
+                call.sessions.set(UserSession(userID, username))
+                call.respond(HttpStatusCode.OK)
+            }
+        }
+
+        // Regular Routes
+
         get("/") {
             call.respond(PebbleContent("landing/auth/landing.peb", mapOf("currentPage" to "landing")))
         }
@@ -357,9 +371,7 @@ fun Application.configureRouting() {
         }
 
         post("/sign-in") { //This whole section will be added to Auth.kt eventually or like modularized
-            
             signInHandler(call)
-            
         }
 
         get("/sign-up") {

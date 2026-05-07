@@ -64,7 +64,7 @@ suspend fun ApplicationCall.getListOfWorkoutObjects(): MutableList<WorkoutObject
     suspendTransaction {
         val userSession = sessions.get<UserSession>()
         if (userSession != null) {
-            val workouts = Workout.all().filter { it.user?.id.toString() == userSession.id || it.user == null }.toList()
+            val workouts = Workout.all().filter { it.user?.id?.value.toString() == userSession.id || it.user == null }.toList()
             // Iterate through all found workouts and find what types are within them
             for (workout in workouts) {
                 val workoutExercises = WorkoutExercise.all().filter { it.workout == workout }.toList()

@@ -3,6 +3,7 @@ package com.example
 import io.ktor.server.application.*
 import io.ktor.server.sessions.*
 import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
 fun Application.configureSessions() {
     install(Sessions) {
