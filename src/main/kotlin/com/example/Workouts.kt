@@ -108,8 +108,10 @@ suspend fun ApplicationCall.searchWorkouts() {
             return@suspendTransaction
         }
 
+        val currentPage = parameters["currentPage"] ?: "workouts"
         val search = parameters["search"]
         val selectedTypes = parameters.getAll("type") ?: emptyList()
+        val favouriteOnly = parameters["favourite"] == "true"
 
         val workoutObjects = mutableListOf<WorkoutObject>()
 
@@ -130,7 +132,10 @@ suspend fun ApplicationCall.searchWorkouts() {
                     selectedTypes.isEmpty() ||
                     workoutTypes.any { it in selectedTypes }
 
-                matchesSearch && matchesType
+                val matchesFavourite =
+                    !favouriteOnly || workout.favourite
+
+                matchesSearch && matchesType && matchesFavourite
             }
 
         for (workout in workouts) {
@@ -151,7 +156,7 @@ suspend fun ApplicationCall.searchWorkouts() {
                 )
             )
         }
-        respond(PebbleContent("workouts/view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to "view_workouts")))
+        respond(PebbleContent("workouts/view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to currentPage)))
     }
 }
 
