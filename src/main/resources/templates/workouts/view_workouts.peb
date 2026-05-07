@@ -64,9 +64,9 @@
                         <td>{{ w.types }}</td>
                         <td>
                             {% if w.workout['favourite'] == false %}
-                                <button class="icon-btn" type="submit" name="favourite" value="{{ w.workout['id'] }}" formaction="/workouts/view" formmethod="post"><i class="fa-regular fa-heart"></i></button>
+                                <button class="icon-btn" type="submit" name="favourite" value="{{ w.workout['id'] }}" formaction="/workouts/view?from={{ currentPage }}" formmethod="post"><i class="fa-regular fa-heart"></i></button>
                             {% else %}
-                                <button class="icon-btn" type="submit" name="favourite" value="{{ w.workout['id'] }}" formaction="/workouts/view" formmethod="post"><i class="fa-solid fa-heart"></i></button>
+                                <button class="icon-btn" type="submit" name="favourite" value="{{ w.workout['id'] }}" formaction="/workouts/view?from={{ currentPage }}" formmethod="post"><i class="fa-solid fa-heart"></i></button>
                             {% endif %}
                         </td>
                     </tr>
