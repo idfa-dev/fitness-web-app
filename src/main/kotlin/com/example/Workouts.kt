@@ -27,6 +27,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
+import java.time.DayOfWeek
 import java.time.format.DateTimeFormatter
 import kotlin.text.toInt
 
@@ -446,6 +447,43 @@ data class PastWorkoutExerciseObject (
     val exercise: WorkoutSessionExercise,
     val sets: List<WorkoutSessionSet>
 )
+
+suspend fun calculateWeeklyWorkoutMinutes(sessions: List<WorkoutSession>): Map<String, Int> {
+
+    val result = mutableMapOf(
+        "Mon" to 0,
+        "Tue" to 0,
+        "Wed" to 0,
+        "Thu" to 0,
+        "Fri" to 0,
+        "Sat" to 0,
+        "Sun" to 0
+    )
+
+    for (session in sessions) {
+
+        val start = session.startedAt
+        val end = session.endedAt ?: continue
+
+        val minutes = maxOf(1, Duration.between(start, end).toMinutes().toInt())
+
+        val day = start.atZone(ZoneId.systemDefault()).dayOfWeek
+
+        val key = when (day) {
+            DayOfWeek.MONDAY -> "Mon"
+            DayOfWeek.TUESDAY -> "Tue"
+            DayOfWeek.WEDNESDAY -> "Wed"
+            DayOfWeek.THURSDAY -> "Thu"
+            DayOfWeek.FRIDAY -> "Fri"
+            DayOfWeek.SATURDAY -> "Sat"
+            DayOfWeek.SUNDAY -> "Sun"
+        }
+
+        result[key] = result[key]!! + minutes
+    }
+
+    return result
+}
 
 suspend fun ApplicationCall.displayPastWorkouts() {
     // First, get all WorkoutSessions where user == user and completed == true

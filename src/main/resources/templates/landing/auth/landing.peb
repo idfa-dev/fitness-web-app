@@ -57,13 +57,9 @@
                     </p> 
 
                     <div style="margin-top:15px;">
-                        <a href="/sign-in">
-                            <button class="pill-btn">SIGN IN</button>
-                        </a>
+                        <a href="/sign-in" class="pill-btn">SIGN IN</a>
 
-                        <a href="/sign-up">
-                            <button class="pill-btn">SIGN UP</button>
-                        </a> 
+                        <a href="/sign-up" class="pill-btn">SIGN UP</a>
                     </div>
 
                 </div>
