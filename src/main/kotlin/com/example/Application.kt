@@ -44,9 +44,9 @@ fun Application.module() {
 
         SchemaUtils.create(
             Users, PTs, Exercises,
-            Clients, Workouts, UserWorkouts,
-            WorkoutExercises, WorkoutSessions, WorkoutSessionExercises,
-            WorkoutSessionSets, Competitions, CalendarExercises
+            Clients, Workouts, WorkoutExercises,
+            WorkoutSessions, WorkoutSessionExercises,
+            WorkoutSessionSets, Competitions, CalednarExercises
         )
 
         if (User.all().empty()) {

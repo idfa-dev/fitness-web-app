@@ -3,14 +3,11 @@
 {% set type = workout.workout['type'] %} {#  line to find workout type #}
 {% block title %} Workout: {{ workout.workout['name'] }} {% endblock %}
 
-{% block header %}
+{% block content %}
 <div class="center">
     <h1><span style="color: #{{ colours[type] }}">{{ workout.workout['name'] | upper }}</span></h1>
     <h4>{{ workout.workout['desc'] }}</h4>
 </div>
-
-{% endblock %}
-{% block content %}
 <div class="center">
     {% for exercise in workout.exercises %}
     <div class="workout-container" style="background-color: #{{ colours[type] }};">
@@ -22,9 +19,5 @@
         <br>
     </div>
     {% endfor %}
-    <form action="/workouts" method="POST">
-        <input type="hidden" name="workoutID" value={{ workout.workout['id'] }}>
-        <button type="submit">Save Workout</button>
-    </form>
 </div>
 {% endblock %}

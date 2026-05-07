@@ -146,25 +146,19 @@ fun Application.configureRouting() {
 
         get("/workouts/view/search") {call.searchWorkouts()}
 
-        get("/workouts/create") {
-            call.respond(PebbleContent("workouts/create_workout.peb", mapOf("currentPage" to "workouts")))
+        post("/workouts/view") {
+            val parameters = call.receiveParameters()
+            when {
+                parameters["favourite"] != null -> {
+                    val favourite = parameters["favourite"]?.toIntOrNull()
+                        ?: return@post call.respond(HttpStatusCode.BadRequest)
+                    val from = call.request.queryParameters["from"] ?: "workouts"
+                    call.displayWorkouts(favourite, from)
+                }
+            }
         }
 
-        get("/workouts/create/cardio") {
-            call.respond(PebbleContent("workouts/create_cardio_workout.peb", mapOf("currentPage" to "workouts")))
-        }
-
-        get("/workouts/create/bodyweight") {
-            call.respond(PebbleContent("workouts/create_bodyweight_workout.peb", mapOf("currentPage" to "workouts")))
-        }
-
-        get("/workouts/create/resistance") {
-            call.respond(PebbleContent("workouts/create_resistance_workout.peb", mapOf("currentPage" to "workouts")))
-        }
-
-        get("/workouts/create/mixed") {
-            call.respond(PebbleContent("workouts/create_mixed_workout.peb", mapOf("currentPage" to "workouts")))
-        }
+        get("/workouts/past") { call.displayPastWorkouts() }
 
         get("/exercises") {call.exercises()}
 
