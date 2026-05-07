@@ -33,6 +33,8 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction // To modify db
 import org.jetbrains.exposed.v1.jdbc.insert
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.sessions.*
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
+import java.time.Instant
 
 fun Application.configureRouting() {
     routing {
@@ -48,6 +50,25 @@ fun Application.configureRouting() {
             if (userID != null && username != null) {
                 call.sessions.set(UserSession(userID, username))
                 call.respond(HttpStatusCode.OK)
+            }
+        }
+
+        post("/_test/change-favourite-workouts") {
+            val parameters = call.receiveParameters()
+            suspendTransaction {
+                val workoutName = parameters["workoutName"]
+                // Change favourite to true for given workout
+                val workoutID = Workout.all().firstOrNull {it.name == workoutName}?.id?.value
+                if (workoutID != null) {
+                    Workout.findByIdAndUpdate(workoutID) {
+                        it.favourite = !it.favourite
+                    }
+                    println("Switched the favourite state of workout with name = $workoutName")
+                    call.respond(HttpStatusCode.OK)
+                }
+                else {
+                    call.respond(HttpStatusCode.BadRequest)
+                }
             }
         }
 

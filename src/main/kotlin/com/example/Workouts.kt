@@ -101,7 +101,6 @@ suspend fun ApplicationCall.displayWorkouts(workoutID: Int = 0, from: String = "
 
 suspend fun ApplicationCall.searchWorkouts() {
     suspendTransaction {
-
         val userSession = sessions.get<UserSession>()
         if (userSession == null) {
             respond(PebbleContent("landing/auth/landing.peb", mapOf("currentPage" to "landing")))
