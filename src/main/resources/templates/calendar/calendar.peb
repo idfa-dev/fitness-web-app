@@ -44,7 +44,7 @@
                     <input type="number" id="comp-distance" placeholder="Distance (km)" min="0">
                     <span class="required-star">*</span>
                 </div>
-                <input type="text" id="comp-finish-time" placeholder="Finish Time (hh:mm:ss)">
+                <input type="text" id="comp-finish-time" placeholder="Time Taken (hh:mm:ss)">
                 <div id="competition-types">
                     <div class="comp-type">
                         <div class="circle" data-color="#E32141" data-name="Running"></div>
@@ -115,8 +115,11 @@
 
     <div id="comp-info-overlay">
         <div id="comp-info-popup">
-            <div id="comp-info-content"></div>
-            <div style="display:flex; gap:10px;">
+            <div id="comp-info-content">
+                <div id="exercise-list-view"></div>
+                <div id="exercise-detail-view" style="display:none;"></div>
+            </div>
+            <div id="comp-action-buttons" style="display:flex; gap:10px;">
                 <button id="edit-event-btn">Update</button>
                 <button id="delete-event-btn">Delete</button>
             </div>
@@ -496,6 +499,35 @@ button#submit-competition, button#submit-exercise {
     border: 2px solid white;
 }
 
+.exercise-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(170px, 1fr));
+    gap: 15px;
+    max-height: 35vh;
+    overflow-y: auto;
+    width: 100%;
+    padding: 5px;
+}
+
+.exercise-tile {
+    height: 80px;
+    border-radius: 15px;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+    font-weight: bold;
+    user-select: none;
+}
+
+.exercise-tile:hover {
+    filter: brightness(85%);
+}
+
 </style>
 
 <script>
@@ -527,6 +559,7 @@ const exerciseTypeMap = {
 
 plusBtn.onclick = () => {
     resetCompForm();
+    resetExForm();
     popupOverlay.style.display = "flex";
     compForm.style.display = "none";
     exForm.style.display = "none";
@@ -587,6 +620,23 @@ function resetCompForm() {
     currentEventElement = null;
 }
 
+function resetExForm() {
+    document.getElementById("ex-name").value = "";
+    document.getElementById("ex-date").value = "";
+    document.getElementById("ex-time-taken").value = "";
+    document.getElementById("ex-calories").value = "";
+    document.getElementById("ex-distance").value = "";
+    document.getElementById("ex-machine").value = "";
+    document.getElementById("ex-weight").value = "";
+    document.getElementById("ex-sets-reps").value = "";
+
+    document.querySelectorAll("#exercise-types .circle").forEach(c => {
+        c.style.background = "#131313";
+    });
+
+    currentExerciseData = null;
+}
+
 submitCompBtn.onclick = async () => {
     const name = document.getElementById("comp-name").value;
     const date = document.getElementById("comp-date").value;
@@ -625,101 +675,85 @@ submitCompBtn.onclick = async () => {
     window.location.reload();
 };
 
-submitExBtn.onclick = () => {
-    const name = document.getElementById("ex-name").value.trim();
-    const date = document.getElementById("ex-date").value;
-    const distance = document.getElementById("ex-distance").value;
-    const timeTaken = document.getElementById("ex-time-taken").value;
-    const weight = document.getElementById("ex-weight").value;
-    const machine = document.getElementById("ex-machine").value;
-    const calories = document.getElementById("ex-calories").value;
-    const setsReps = document.getElementById("ex-sets-reps").value;
+submitExBtn.onclick = async () => {
+
+    if (!document.getElementById("ex-name").value ||
+        !document.getElementById("ex-date").value ||
+        !document.getElementById("ex-time-taken").value ||
+        !document.getElementById("ex-calories").value) {
+        return;
+    }
+
+    const formData = new URLSearchParams();
+
+    const id = currentExerciseData?.id;
+    if (id) formData.append("id", id);
+
+    formData.append("name", document.getElementById("ex-name").value);
+    const selectedDate = document.getElementById("ex-date").value;
+    formData.append("date", selectedDate);
+    formData.append("day", selectedDate);
+    formData.append("distance", document.getElementById("ex-distance").value);
+    formData.append("timeTaken", document.getElementById("ex-time-taken").value);
+    formData.append("weight", document.getElementById("ex-weight").value);
+    formData.append("machine", document.getElementById("ex-machine").value);
+    formData.append("calories", document.getElementById("ex-calories").value);
+    formData.append("setsReps", document.getElementById("ex-sets-reps").value);
 
     let selectedType = null;
 
-    document.querySelectorAll("#exercise-types .circle").forEach(circle => {
-        if (circle.style.background !== "" && circle.style.background !== "rgb(19, 19, 19)") {
-            selectedType = circle.nextElementSibling.textContent;
-        }
-    });
-
-    if (!name || !date || !selectedType || !timeTaken || !calories) return;
-
-    const exercise = {
-        name,
-        date,
-        distance,
-        timeTaken,
-        weight,
-        machine,
-        calories,
-        setsReps,
-        type: selectedType
-    };
-
-    const day = new Date(date).getDate();
-    const colourClass = exerciseTypeMap[selectedType];
-
-    document.querySelectorAll("table.calendar td").forEach(td => {
-        const dn = td.querySelector(".day-number");
-
-        if (dn && parseInt(dn.textContent) === day) {
-
-            let dot = td.querySelector(".exercise-dot." + colourClass);
-
-            if (!dot) {
-                dot = document.createElement("div");
-                dot.className = "exercise-dot " + colourClass;
-                dot.dataset.exercises = JSON.stringify([]);
-                td.appendChild(dot);
-            }
-
-            const existing = JSON.parse(dot.dataset.exercises);
-            existing.push(exercise);
-            dot.dataset.exercises = JSON.stringify(existing);
-        }
-    });
-
-    document.getElementById("ex-name").value = "";
-    document.getElementById("ex-date").value = "";
-    document.getElementById("ex-distance").value = "";
-    document.getElementById("ex-time-taken").value = "";
-    document.getElementById("ex-weight").value = "";
-    document.getElementById("ex-machine").value = "";
-    document.getElementById("ex-calories").value = "";
-    document.getElementById("ex-sets-reps").value = "";
-
     document.querySelectorAll("#exercise-types .circle").forEach(c => {
-        c.style.background = "#131313";
+        if (c.style.background !== "" && c.style.background !== "rgb(19, 19, 19)") {
+            selectedType = c.nextElementSibling.textContent.trim();
+        }
     });
 
-    popupOverlay.style.display = "none";
+    formData.append("type", selectedType);
+
+    await fetch("/calendar-exercises/add", {
+        method: "POST",
+        body: formData
+    });
+
+    window.location.reload();
 };
 
 document.addEventListener("click", e => {
     const dot = e.target.closest(".exercise-dot");
-    if(dot){
+    if (dot) {
+
         const overlay = document.getElementById("comp-info-overlay");
-        const content = document.getElementById("comp-info-content");
+        const listView = document.getElementById("exercise-list-view");
+        const detailView = document.getElementById("exercise-detail-view");
 
         const exercises = JSON.parse(dot.dataset.exercises);
 
-        currentExerciseData = exercises[0];
-        currentEventData = null;
+        detailView.style.display = "none";
+        listView.style.display = "grid";
+        listView.className = "exercise-grid";
+        listView.innerHTML = "";
 
-        content.innerHTML = exercises.map(ex => {
-            let html = `<div style="margin-bottom:10px"><strong>${ex.name}</strong></div>`;
+        let color = "#FFC000";
+        if (dot.classList.contains("red")) color = "#E32141";
+        if (dot.classList.contains("blue")) color = "#0F95CB";
+        if (dot.classList.contains("green")) color = "#196B24";
+        if (dot.classList.contains("yellow")) color = "#FFC000";
 
-            if(ex.distance) html += `<div>Distance: ${ex.distance} km</div>`;
-            if(ex.timeTaken) html += `<div>Time: ${ex.timeTaken}</div>`;
-            if(ex.weight) html += `<div>Weight: ${ex.weight} kg</div>`;
-            if(ex.machine) html += `<div>Machine: ${ex.machine}</div>`;
-            if(ex.calories) html += `<div>Calories Burnt: ${ex.calories} kcal</div>`;
-            if(ex.setsReps) html += `<div>Sets & Reps: ${ex.setsReps}</div>`;
+        exercises.forEach(ex => {
+            const tile = document.createElement("div");
+            tile.className = "exercise-tile";
+            tile.style.background = color;
+            tile.textContent = ex.name;
 
-            return html
-        }).join("");
+            tile.onclick = () => {
+                currentExerciseData = ex;
+                showExerciseDetail(ex, color);
+            };
 
+            listView.appendChild(tile);
+        });
+
+        document.getElementById("comp-action-buttons").style.display = "none";
         overlay.style.display = "flex";
         return;
     }
@@ -750,10 +784,11 @@ document.addEventListener("click", e => {
             <div><strong>Date:</strong> ${info.date}</div>
             <div><strong>Start Time:</strong> ${info.time}</div>
             <div><strong>Distance (km):</strong> ${info.distance}</div>
-            <div><strong>Finish Time:</strong> ${info.finishTime}</div>
+            <div><strong>Time Taken (hh:mm:ss):</strong> ${info.finishTime}</div>
             <div><strong>Type(s):</strong> ${formattedTypes}</div>
         `;
         overlay.style.display = "flex";
+        document.getElementById("comp-action-buttons").style.display = "flex";
     }
     const infoOverlay = document.getElementById("comp-info-overlay");
     if(e.target === infoOverlay){
@@ -795,7 +830,8 @@ document.getElementById("edit-event-btn").onclick = () => {
         return;
     }
 
-    if(currentExerciseData){
+    if(currentExerciseData) {
+
         document.getElementById("ex-name").value = currentExerciseData.name || "";
         document.getElementById("ex-date").value = currentExerciseData.date || "";
         document.getElementById("ex-distance").value = currentExerciseData.distance || "";
@@ -805,9 +841,10 @@ document.getElementById("edit-event-btn").onclick = () => {
         document.getElementById("ex-calories").value = currentExerciseData.calories || "";
         document.getElementById("ex-sets-reps").value = currentExerciseData.setsReps || "";
 
-        document.querySelectorAll("#exercise-types .circle").forEach(c=>{
-            c.style.background="#131313";
-            if(c.nextElementSibling.textContent === currentExerciseData.type){
+        document.querySelectorAll("#exercise-types .circle").forEach(c => {
+            c.style.background = "#131313";
+
+            if (c.nextElementSibling.textContent === currentExerciseData.type) {
                 c.style.background = c.dataset.color;
             }
         });
@@ -843,22 +880,78 @@ function reloadCalendar() {
     window.location.href = `/calendar?month=${currentMonth}&year=${currentYear}`;
 }
 
+function showExerciseDetail(ex, color) {
+    const listView = document.getElementById("exercise-list-view");
+    const detailView = document.getElementById("exercise-detail-view");
+    const actionBtns = document.getElementById("comp-action-buttons");
+
+    listView.style.display = "none";
+    detailView.style.display = "block";
+
+    actionBtns.style.display = "flex";
+
+    detailView.innerHTML = `
+        <div style="
+            background:${color};
+            padding:15px;
+            border-radius:15px;
+            text-align:center;
+            margin-bottom:15px;
+            font-size:18px;
+        ">
+            <strong>${ex.name}</strong>
+        </div>
+
+        ${ex.distance ? `<div>Distance (km): ${ex.distance} km</div>` : ""}
+        ${ex.timeTaken ? `<div>Time: ${ex.timeTaken}</div>` : ""}
+        ${ex.weight ? `<div>Weight (kg): ${ex.weight} kg</div>` : ""}
+        ${ex.machine ? `<div>Machine: ${ex.machine}</div>` : ""}
+        ${ex.calories ? `<div>Calories (kcal): ${ex.calories}</div>` : ""}
+        ${ex.setsReps ? `<div>Sets & Reps: ${ex.setsReps}</div>` : ""}
+    `;
+}
+
+document.getElementById("exercise-detail-view").onclick = () => {
+    document.getElementById("exercise-detail-view").style.display = "none";
+    document.getElementById("exercise-list-view").style.display = "grid";
+
+    document.getElementById("comp-action-buttons").style.display = "none";
+};
+
 const deleteBtn = document.getElementById("delete-event-btn");
 
 deleteBtn.onclick = async () => {
-    if (!currentEventData || !currentEventData.id) return;
 
-    if (!confirm("Delete this competition?")) return;
+    if (currentEventData && currentEventData.id) {
 
-    const formData = new URLSearchParams();
-    formData.append("id", currentEventData.id);
+        if (!confirm("Delete this competition?")) return;
 
-    await fetch("/competitions/delete", {
-        method: "POST",
-        body: formData
-    });
+        const formData = new URLSearchParams();
+        formData.append("id", currentEventData.id);
 
-    window.location.reload();
+        await fetch("/competitions/delete", {
+            method: "POST",
+            body: formData
+        });
+
+        window.location.reload();
+        return;
+    }
+
+    if (currentExerciseData && currentExerciseData.id) {
+
+        if (!confirm("Delete this exercise?")) return;
+
+        const formData = new URLSearchParams();
+        formData.append("id", currentExerciseData.id);
+
+        await fetch("/calendar-exercises/delete", {
+            method: "POST",
+            body: formData
+        });
+
+        window.location.reload();
+    }
 };
 
 </script>

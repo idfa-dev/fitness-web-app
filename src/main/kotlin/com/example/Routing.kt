@@ -27,8 +27,8 @@ import com.example.database.doesCollide //importing collision checker from auth.
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.parameters
 
-//SQL ( might be unnecessary )
 import org.jetbrains.exposed.v1.core.*
+
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction // To modify db
 import org.jetbrains.exposed.v1.jdbc.insert
 import io.ktor.server.request.receiveParameters
@@ -205,6 +205,26 @@ fun Application.configureRouting() {
                     }
             }
 
+            val exercises = transaction {
+                if (userId == null) return@transaction emptyList()
+
+                CalendarExercise.find { CalendarExercises.user eq userId }
+                    .map {
+                        mapOf(
+                            "id" to it.id.value,
+                            "name" to it.name,
+                            "date" to it.date.toString(),
+                            "timeTaken" to it.timeTaken,
+                            "calories" to it.calories,
+                            "distance" to it.distance,
+                            "machine" to it.machine,
+                            "weight" to it.weight,
+                            "setsReps" to it.setsReps,
+                            "type" to it.type
+                        )
+                    }
+            }
+
 
 
             val month = date.month.getDisplayName(TextStyle.FULL, Locale.ENGLISH).uppercase()
@@ -270,6 +290,54 @@ fun Application.configureRouting() {
                                 }
                             }
 
+                            val exercisesForDay = exercises.filter {
+                                java.time.LocalDate.parse(it["date"].toString()) ==
+                                        java.time.LocalDate.of(year, monthNumber, day.toInt())
+                            }
+
+                            val groupedExercises = exercisesForDay.groupBy {
+                                it["type"]?.toString() ?: "Mixed"
+                            }
+
+                            groupedExercises.forEach { (type, exList) ->
+
+                                val colourClass = when(type) {
+                                    "Cardio" -> "red"
+                                    "Body Weight" -> "blue"
+                                    "Resistance" -> "green"
+                                    else -> "yellow"
+                                }
+
+                                val exJson = exList.joinToString(
+                                    prefix = "[",
+                                    postfix = "]"
+                                ) { ex ->
+
+                                    """
+                                    {
+                                        "id":"${ex["id"]}",
+                                        "name":"${ex["name"]}",
+                                        "date":"${ex["date"]}",
+                                        "distance":"${ex["distance"] ?: ""}",
+                                        "timeTaken":"${ex["timeTaken"] ?: ""}",
+                                        "weight":"${ex["weight"] ?: ""}",
+                                        "machine":"${ex["machine"] ?: ""}",
+                                        "calories":"${ex["calories"] ?: ""}",
+                                        "setsReps":"${ex["setsReps"] ?: ""}",
+                                        "type":"${ex["type"] ?: ""}"
+                                    }
+                                    """.trimIndent()
+                                }
+                                    .replace("\n", "")
+                                    .replace("\"", "&quot;")
+
+                                append("""
+                                    <div class='exercise-dot $colourClass'
+                                        data-exercises="$exJson">
+                                    </div>
+                                """.trimIndent())
+                            }
+
                             append("</td>")
                         }
                     }
@@ -289,6 +357,7 @@ fun Application.configureRouting() {
                 "nextYear" to nextYear,
                 "monthNumber" to monthNumber,
                 "competitions" to competitions,
+                "exercises" to exercises,
             )))
         }
 
@@ -483,6 +552,73 @@ fun Application.configureRouting() {
             transaction {
                 val comp = Competition.findById(compId)
                 comp?.delete()
+            }
+
+            call.respond(HttpStatusCode.OK)
+        }
+
+        post("/calendar-exercises/add") {
+            val params = call.receiveParameters()
+
+            val session = call.sessions.get<UserSession>()
+                ?: return@post call.respond(HttpStatusCode.Unauthorized)
+
+            val uid = session.id.toIntOrNull()
+                ?: return@post call.respond(HttpStatusCode.BadRequest)
+
+            val id = params["id"]?.toIntOrNull()
+
+            val name = params["name"]
+                ?: return@post call.respond(HttpStatusCode.BadRequest)
+
+            val date = params["date"]
+                ?: return@post call.respond(HttpStatusCode.BadRequest)
+
+            transaction {
+                if (id != null) {
+                    val ex = CalendarExercise.findById(id)
+                    if (ex != null) {
+                        ex.name = name
+                        ex.date = java.time.LocalDate.parse(date)
+                        ex.timeTaken = params["timeTaken"]
+                        ex.calories = params["calories"]?.toIntOrNull()
+                        ex.distance = params["distance"]?.toDoubleOrNull()
+                        ex.machine = params["machine"]
+                        ex.weight = params["weight"]?.toDoubleOrNull()
+                        ex.setsReps = params["setsReps"]
+                        ex.type = params["type"]
+                    }
+                } else {
+                    CalendarExercises.insert {
+                        it[CalendarExercises.user] = uid
+                        it[CalendarExercises.name] = name
+                        it[CalendarExercises.date] = LocalDate.parse(date)
+
+                        it[CalendarExercises.timeTaken] = params["timeTaken"]
+                        it[CalendarExercises.calories] = params["calories"]?.toIntOrNull()
+                        it[CalendarExercises.distance] = params["distance"]?.toDoubleOrNull()
+                        it[CalendarExercises.machine] = params["machine"]
+                        it[CalendarExercises.weight] = params["weight"]?.toDoubleOrNull()
+                        it[CalendarExercises.setsReps] = params["setsReps"]
+                        it[CalendarExercises.type] = params["type"]
+                    }
+                }
+            }
+
+            call.respond(HttpStatusCode.OK)
+        }
+
+        post("/calendar-exercises/delete") {
+            val params = call.receiveParameters()
+            val id = params["id"]?.toIntOrNull()
+
+            if (id == null) {
+                call.respond(HttpStatusCode.BadRequest)
+                return@post
+            }
+
+            transaction {
+                CalendarExercise.findById(id)?.delete()
             }
 
             call.respond(HttpStatusCode.OK)

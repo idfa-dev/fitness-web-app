@@ -16,9 +16,29 @@
 </p>
 
 <div class="home-row">
+
     <div class="home-box">Last Workout</div>
-    <div class="home-box">Calories Burnt Today</div>
+
+    <div class="home-box calorie-box">
+
+        <div class="box-title">
+            Calories Burnt Today
+        </div>
+
+        <div class="box-content">
+            <div class="chart-wrapper">
+                <canvas id="homeCaloriesChart"></canvas>
+            </div>
+
+            <div class="chart-value">
+                1800 / 2500 kcal
+            </div>
+        </div>
+
+    </div>
+
     <div class="home-box">Last Exercise</div>
+
 </div>
 
 <p style="text-align: center; margin-top: 20px; font-weight: bold;">
@@ -30,5 +50,92 @@
     <div class="home-box">Log Activity On Calendar</div>
     <div class="home-box">View Personal Stats</div>
 </div>
+
+<style>
+
+.home-box {
+    min-height: 140px;
+}
+
+.calorie-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px;
+}
+
+.box-title {
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 8px;
+    margin-top: 5px;
+}
+
+.box-content {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding-top: 10px;
+}
+
+.chart-wrapper {
+    width: 145px;
+    height: 145px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-wrapper canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.chart-value {
+    font-size: 14px;
+    text-align: center;
+    width: 100%;
+}
+
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+function createDonutChart(canvasId, progress, goal, color) {
+    const ctx = document.getElementById(canvasId);
+
+    if (!ctx) return;
+
+    new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            datasets: [{
+                data: [progress, Math.max(goal - progress, 0)],
+                backgroundColor: [color, "#222222"],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "70%",
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: false }
+            }
+        }
+    });
+}
+
+createDonutChart("homeCaloriesChart", 1800, 2500, "#DE3163");
+</script>
 
 {% endblock %}
