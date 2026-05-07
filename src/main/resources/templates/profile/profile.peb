@@ -48,22 +48,22 @@ new Chart(ctx, {
             {
                 label: "Cardio",
                 data: cardioData,
-                backgroundColor: "red"
+                backgroundColor: "#E32141"
             },
             {
                 label: "Bodyweight",
                 data: bodyweightData,
-                backgroundColor: "blue"
+                backgroundColor: "#0F95CB"
             },
             {
                 label: "Resistance",
                 data: resistanceData,
-                backgroundColor: "green"
+                backgroundColor: "#196B24"
             },
             {
                 label: "Mixed",
                 data: mixedData,
-                backgroundColor: "yellow"
+                backgroundColor: "#FFC000"
             }
         ]
     },
@@ -148,9 +148,9 @@ function createDonutChart(canvasId, progress, goal, color, title, measurement) {
     });
 }
 
-createDonutChart("caloriesChart", 1800, 2500, "#b73fec", "Calories Burnt", "(kcal)"); // put measurement in brackets
-createDonutChart("distanceChart", 7.5, 15, "red", "Distance", "(km)");
-createDonutChart("numWorkoutsChart", 3, 5, "green", "Workouts", "");
+createDonutChart("caloriesChart", 1800, 2500, "#DE3163", "Calories Burnt", "(kcal)"); // put measurement in brackets
+createDonutChart("distanceChart", 7.5, 15, "#4DD0E1", "Distance", "(km)");
+createDonutChart("numWorkoutsChart", 3, 5, "#FF9F43", "Workouts", "");
 
 </script>
 {% endblock %}

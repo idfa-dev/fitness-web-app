@@ -46,7 +46,7 @@ fun Application.module() {
             Users, PTs, Exercises,
             Clients, Workouts, WorkoutExercises,
             WorkoutSessions, WorkoutSessionExercises,
-            WorkoutSessionSets, Competitions
+            WorkoutSessionSets, Competitions, CalendarExercises
         )
 
         if (User.all().empty()) {

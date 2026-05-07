@@ -137,7 +137,7 @@ body {
 
 .workout-btn:hover {
     cursor: pointer;
-    background-color: #b73fec;
+    background-color: #722891;
 }
 
 .add-btn:hover {
@@ -164,15 +164,15 @@ body {
 .exercise-btn:hover {
     cursor: pointer;
     color: white;
-    background-color: #b73fec;
+    background-color: #722891;
 }
 
 .dropdownbtn {
-    background-color: #b73fec;
+    background-color: #9933FF;
     font-size: 30px;
     color: white;
     padding: 20px;
-    border: 1px solid #b73fec;
+    border: 1px solid #9933FF;
     transition-duration: 0.4s;
 }
 
@@ -194,12 +194,12 @@ body {
 }
 
 button {
-    background-color: #b73fec;
+    background-color: #9933FF;
     font-size: 30px;
     color: white;
     padding: 20px;
     border-radius: 12px;
-    border: 1px solid #b73fec;
+    border: 1px solid #9933FF;
     transition-duration: 0.4s;
 }
 
@@ -233,13 +233,13 @@ button:hover {
     position: absolute;
     top: 30px;
     right: 25px;
-    background-color: #b73fec;
+    background-color: #9933FF;
     font-size: 30px;
     color: white;
     text-decoration: none;
     padding: 20px;
     border-radius: 12px;
-    border: 1px solid #b73fec;
+    border: 1px solid #9933FF;
     transition-duration: 0.4s;
 }
 
@@ -249,11 +249,11 @@ button:hover {
     left: 25px;
     font-size: 20px;
     padding: 8px 14px;
-    background-color: #b73fec;
+    background-color: #9933FF;
     color: white;
     text-decoration: none;
     border-radius: 6px;
-    border: 1px solid #b73fec;
+    border: 1px solid #9933FF;
     transition-duration: 0.4s;
 }
 
@@ -326,9 +326,9 @@ button:hover {
 
 /* SAVE BUTTON */
 .save-btn {
-    background-color: #b73fec;
+    background-color: #9933FF;
     border-radius: 12px;
-    border: 1px solid #b73fec;
+    border: 1px solid #9933FF;
     padding: 15px 50px;
     font-size: 28px;
     color: white;
@@ -588,6 +588,13 @@ a.workout-container:hover { /* Only affects workout buttons, not exercise button
     cursor: pointer;
     transition: 0.3s;
     font-weight: bold;
+
+    display: inline-block;
+    text-decoration: none;
+}
+
+.pill-btn:hover {
+    background-color: #722891;
 }
 
 .purple-rect {
@@ -720,16 +727,17 @@ tr a:link {
 tr a:visited {
     color: lightblue
 }
+
 table:not(.calendar) tr:hover {
     background-color: darkgray;
 }
 
 
-tr:hover{
+table:not(.calendar) tr:hover{
     background-color: #3b145a;
 }
 
-tr:hover input{
+table:not(.calendar) tr:hover input{
     background-color: whitesmoke;
 }
 
@@ -750,7 +758,7 @@ tr:hover input{
 .filter-btn {
     font-size: 16px;
     padding: 8px 12px;
-    background-color: #b73fec;
+    background-color: #9933FF;
     color: white;
     border: none;
     border-radius: 5px;
@@ -777,4 +785,31 @@ tr:hover input{
     margin-top: 10px;
     color: white;
     width: 100%;
+}
+
+#password-requirements {
+    display: none;
+    background: #131313;
+    border: 2px solid #9933FF;
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 8px;
+    font-size: 14px;
+    text-align: left;
+}
+
+.password-title {
+    color: white;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.invalid {
+    color: #FF3333;
+    margin-bottom: 4px;
+}
+
+.valid {
+    color: #39FF14;
+    margin-bottom: 4px;
 }

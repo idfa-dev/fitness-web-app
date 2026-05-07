@@ -18,10 +18,15 @@
 
         <div class="landing-text">
 
-            <form action="/sign-up" method="post">
+            <form id="signup-form" action="/sign-up" method="post">
 
                 <div class="input-group">
-                    <input type="text" name="email" placeholder="Email" required>
+                    <input type="email"
+                    id="email"
+                    placeholder="Email Address"
+                    required
+                    oninvalid="this.setCustomValidity('Please enter a valid email address')"
+                    oninput="this.setCustomValidity('')">
                 </div>
 
                 <div class="input-group">
@@ -29,7 +34,31 @@
                 </div>
 
                 <div class="input-group">
-                    <input type="password" name="password" placeholder="Password" required>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+
+                    <div id="password-requirements">
+
+                        <div class="password-title">
+                            Password Requirements:
+                        </div>
+
+                        <div id="length-check" class="invalid">
+                            • 8 or more characters
+                        </div>
+
+                        <div id="capital-check" class="invalid">
+                            • Includes capital letter
+                        </div>
+
+                        <div id="number-check" class="invalid">
+                            • Includes number
+                        </div>
+
+                        <div id="special-check" class="invalid">
+                            • Includes special character
+                        </div>
+
+                    </div>
                 </div>
 
                 <div style="margin: 15px 0; text-align: center; font-size: 16px;">
@@ -53,3 +82,69 @@
 
     </div>
 </div>
+
+<script>
+
+const passwordInput = document.getElementById("password");
+
+const lengthCheck = document.getElementById("length-check");
+const capitalCheck = document.getElementById("capital-check");
+const numberCheck = document.getElementById("number-check");
+const specialCheck = document.getElementById("special-check");
+
+const signupForm = document.getElementById("signup-form");
+
+passwordInput.addEventListener("focus", () => {
+    document.getElementById("password-requirements").style.display = "block";
+});
+
+passwordInput.addEventListener("input", () => {
+
+    const password = passwordInput.value;
+
+    const hasLength = password.length >= 8;
+    const hasCapital = /[A-Z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecial = /[^A-Za-z0-9]/.test(password);
+
+    updateRequirement(lengthCheck, hasLength);
+    updateRequirement(capitalCheck, hasCapital);
+    updateRequirement(numberCheck, hasNumber);
+    updateRequirement(specialCheck, hasSpecial);
+
+});
+
+function updateRequirement(element, valid) {
+
+    if(valid) {
+        element.classList.remove("invalid");
+        element.classList.add("valid");
+    }
+
+    else {
+        element.classList.remove("valid");
+        element.classList.add("invalid");
+    }
+
+}
+
+signupForm.addEventListener("submit", (e) => {
+
+    const password = passwordInput.value;
+
+    const hasLength = password.length >= 8;
+    const hasCapital = /[A-Z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecial = /[^A-Za-z0-9]/.test(password);
+
+    if(!(hasLength && hasCapital && hasNumber && hasSpecial)) {
+        e.preventDefault();
+    }
+
+});
+
+window.onload = function() {
+    document.querySelector("form").reset();
+};
+
+</script>
