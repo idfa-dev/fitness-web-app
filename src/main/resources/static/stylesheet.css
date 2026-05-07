@@ -132,7 +132,7 @@ body {
 
 .workout-btn:hover {
     cursor: pointer;
-    background-color: #b73fec;
+    background-color: #722891;
 }
 
 .add-btn:hover {
@@ -159,15 +159,15 @@ body {
 .exercise-btn:hover {
     cursor: pointer;
     color: white;
-    background-color: #b73fec;
+    background-color: #722891;
 }
 
 .dropdownbtn {
-    background-color: #b73fec;
+    background-color: #9933FF;
     font-size: 30px;
     color: white;
     padding: 20px;
-    border: 1px solid #b73fec;
+    border: 1px solid #9933FF;
     transition-duration: 0.4s;
 }
 
@@ -189,12 +189,12 @@ body {
 }
 
 button {
-    background-color: #b73fec;
+    background-color: #9933FF;
     font-size: 30px;
     color: white;
     padding: 20px;
     border-radius: 12px;
-    border: 1px solid #b73fec;
+    border: 1px solid #9933FF;
     transition-duration: 0.4s;
 }
 
@@ -228,13 +228,13 @@ button:hover {
     position: absolute;
     top: 90px;
     right: 25px;
-    background-color: #b73fec;
+    background-color: #9933FF;
     font-size: 30px;
     color: white;
     text-decoration: none;
     padding: 20px;
     border-radius: 12px;
-    border: 1px solid #b73fec;
+    border: 1px solid #9933FF;
     transition-duration: 0.4s;
 }
 
@@ -244,11 +244,11 @@ button:hover {
     left: 25px;
     font-size: 20px;
     padding: 8px 14px;
-    background-color: #b73fec;
+    background-color: #9933FF;
     color: white;
     text-decoration: none;
     border-radius: 6px;
-    border: 1px solid #b73fec;
+    border: 1px solid #9933FF;
     transition-duration: 0.4s;
 }
 
@@ -321,9 +321,9 @@ button:hover {
 
 /* SAVE BUTTON */
 .save-btn {
-    background-color: #b73fec;
+    background-color: #9933FF;
     border-radius: 12px;
-    border: 1px solid #b73fec;
+    border: 1px solid #9933FF;
     padding: 15px 50px;
     font-size: 28px;
     color: white;
@@ -728,11 +728,11 @@ table:not(.calendar) tr:hover {
 }
 
 
-tr:hover{
+table:not(.calendar) tr:hover{
     background-color: #3b145a;
 }
 
-tr:hover input{
+table:not(.calendar) tr:hover input{
     background-color: whitesmoke;
 }
 
@@ -753,7 +753,7 @@ tr:hover input{
 .filter-btn {
     font-size: 16px;
     padding: 8px 12px;
-    background-color: #b73fec;
+    background-color: #9933FF;
     color: white;
     border: none;
     border-radius: 5px;
