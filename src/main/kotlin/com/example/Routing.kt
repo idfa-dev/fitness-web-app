@@ -34,6 +34,10 @@ import org.jetbrains.exposed.v1.jdbc.insert
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.sessions.*
 
+//JSON
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
+
 fun Application.configureRouting() {
     routing {
 
@@ -290,7 +294,43 @@ fun Application.configureRouting() {
 
 
         get("/profile") {
-            call.respond(PebbleContent("profile/profile.peb", mapOf("currentPage" to "profile")))
+
+            val userSession = call.sessions.get<UserSession>()
+                ?: return@get call.respondRedirect("/sign-in")
+
+            val sessions = transaction {
+                WorkoutSession.all()
+                    .filter {
+                        it.user.id.toString() == userSession.id &&
+                        it.complete &&
+                        it.endedAt != null
+                    }
+                    .toList()
+            }
+
+            println("PROFILE SESSIONS FOUND = ${sessions.size}")
+
+            sessions.forEach {
+                println("SESSION COMPLETE = ${it.complete}")
+                println("START = ${it.startedAt}")
+                println("END = ${it.endedAt}")
+            }
+
+            val weeklyData = calculateWeeklyWorkoutMinutes(sessions)
+
+            println("WEEKLY DATA = $weeklyData")
+
+            val weeklyDataJson = Json.encodeToString(weeklyData)
+
+            call.respond(
+                PebbleContent(
+                    "profile/profile.peb",
+                    mapOf(
+                        "currentPage" to "profile",
+                        "weeklyData" to weeklyDataJson
+                    )
+                )
+            )
         }
 
         get("/logout") {

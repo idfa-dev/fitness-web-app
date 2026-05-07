@@ -31,12 +31,21 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+
+const weeklyData = {{ weeklyData | raw }};
 const labels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 
-const cardioData = [30, 20, 40, 25, 35, 50, 45];
-const bodyweightData = [15, 25, 20, 30, 10, 20, 15];
-const resistanceData = [20, 30, 25, 35, 40, 30, 20];
-const mixedData = [10, 15, 5, 20, 15, 10, 25];
+const data = [
+    weeklyData.Mon,
+    weeklyData.Tue,
+    weeklyData.Wed,
+    weeklyData.Thu,
+    weeklyData.Fri,
+    weeklyData.Sat,
+    weeklyData.Sun
+];
+
+console.log("chart data:", data)
 
 const ctx = document.getElementById("workoutChart");
 
@@ -44,28 +53,11 @@ new Chart(ctx, {
     type: 'bar',
     data: {
         labels: labels,
-        datasets: [
-            {
-                label: "Cardio",
-                data: cardioData,
-                backgroundColor: "red"
-            },
-            {
-                label: "Bodyweight",
-                data: bodyweightData,
-                backgroundColor: "blue"
-            },
-            {
-                label: "Resistance",
-                data: resistanceData,
-                backgroundColor: "green"
-            },
-            {
-                label: "Mixed",
-                data: mixedData,
-                backgroundColor: "yellow"
-            }
-        ]
+        datasets: [{
+            label: "Exercise Minutes",
+            data: data,
+            backgroundColor: "#b73fec"
+        }]
     },
     options: {
         responsive: true,
