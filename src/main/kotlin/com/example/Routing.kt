@@ -152,7 +152,8 @@ fun Application.configureRouting() {
                 parameters["favourite"] != null -> {
                     val favourite = parameters["favourite"]?.toIntOrNull()
                         ?: return@post call.respond(HttpStatusCode.BadRequest)
-                    call.displayWorkouts(favourite)
+                    val from = call.request.queryParameters["from"] ?: "workouts"
+                    call.displayWorkouts(favourite, from)
                 }
             }
         }
