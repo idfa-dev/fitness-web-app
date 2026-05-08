@@ -17,7 +17,9 @@
 
 <div class="home-row">
 
-    <div class="home-box">Last Workout</div>
+    <div class="home-box">
+        <img src="/static/images/running.png" alt="Running" style="width: 220px; height: auto;">
+    </div>
 
     <div class="home-box calorie-box">
 
@@ -37,7 +39,9 @@
 
     </div>
 
-    <div class="home-box">Last Exercise</div>
+    <div class="home-box">
+        <img src="/static/images/running.png" alt="Running" style="width: 220px; height: auto;">
+    </div>
 
 </div>
 
@@ -102,6 +106,14 @@
     font-size: 14px;
     text-align: center;
     width: 100%;
+}
+
+.home-box {
+    min-height: 140px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 10px;
 }
 
 </style>
