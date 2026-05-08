@@ -34,6 +34,8 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction // To modify db
 import org.jetbrains.exposed.v1.jdbc.insert
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.sessions.*
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
+import java.time.Instant
 
 //JSON
 import kotlinx.serialization.json.Json
@@ -43,6 +45,77 @@ fun Application.configureRouting() {
     routing {
 
         staticResources("/static", "static")
+
+
+        // Test Routes
+        post("/test/sign-in") {
+            val parameters = call.receiveParameters()
+            val userID = parameters["userID"]
+            val username = parameters["username"]
+            if (userID != null && username != null) {
+                call.sessions.set(UserSession(userID, username))
+                println("UserSession set")
+                call.respond(HttpStatusCode.OK)
+            }
+        }
+
+        get("/test/set-all-workouts-as-not-favourited") {
+            suspendTransaction {
+                val workouts = Workout.all().toList()
+                if (workouts.isNotEmpty()) {
+                    for (workout in workouts) {
+                        Workout.findByIdAndUpdate(workout.id.value) {
+                            it.favourite = false
+                        }
+                    }
+                    println("All workouts set to favourited=false")
+                    call.respond(HttpStatusCode.OK)
+                }
+            }
+        }
+
+        post("/test/change-favourite-workouts") {
+            val parameters = call.receiveParameters()
+            suspendTransaction {
+                val workoutName = parameters["workoutName"]
+                // Change favourite to true for given workout
+                val workoutID = Workout.all().firstOrNull {it.name == workoutName}?.id?.value
+                if (workoutID != null) {
+                    Workout.findByIdAndUpdate(workoutID) {
+                        it.favourite = !it.favourite
+                    }
+                    println("Switched the favourite state of workout with name = $workoutName")
+                    call.respond(HttpStatusCode.OK)
+                }
+                else {
+                    call.respond(HttpStatusCode.BadRequest)
+                }
+            }
+        }
+
+        post("/test/create-workout-session") {
+            suspendTransaction {
+                // First, reset workout session and remove all previous workout sessions in db
+                val workoutSessions = WorkoutSession.all().toList()
+                for (ws in workoutSessions) {
+                    ws.delete()
+                }
+                call.sessions.clear<CurrentWorkoutSession>()
+                // Create workout session for use in testing
+                val parameters = call.receiveParameters()
+                val userID = parameters["userID"]
+                val username = parameters["username"]
+                val userEntity = User.all().first {it.id.value == userID?.toInt()}
+                if (userID != null && username != null) {
+                    val ws = WorkoutSession.new { user = userEntity }
+                    call.sessions.set(CurrentWorkoutSession(ws.id.value.toString(), userID))
+                    println("CurrentWorkoutSession set")
+                    call.respond(HttpStatusCode.OK)
+                }
+            }
+        }
+
+        // Regular Routes
 
         get("/") {
             call.respond(PebbleContent("landing/auth/landing.peb", mapOf("currentPage" to "landing")))
@@ -86,7 +159,6 @@ fun Application.configureRouting() {
                 call.respond(PebbleContent("current_workout/start_workout.peb", mapOf("currentPage" to "current-workout")))
             }
             else {
-                // Make sure this is fixed to contain workout info
                 call.continueWorkout()
             }
         }
@@ -167,7 +239,7 @@ fun Application.configureRouting() {
 
         get("/workouts/view") {call.displayWorkouts()}
 
-        get("/workouts/view/search") {call.searchWorkouts()}
+        get("/workouts/view/search") { call.searchWorkouts() }
 
         post("/workouts/view") {
             val parameters = call.receiveParameters()
@@ -185,7 +257,7 @@ fun Application.configureRouting() {
 
         get("/exercises") {call.exercises()}
 
-        get("/exercises/search") {call.searchExercises()}
+        get("/exercises/search") { call.searchExercises()}
 
         get("/exercises/{id}") {call.exercise()}
 
@@ -513,9 +585,7 @@ fun Application.configureRouting() {
         }
 
         post("/sign-in") { //This whole section will be added to Auth.kt eventually or like modularized
-            
             signInHandler(call)
-            
         }
 
         get("/sign-up") {
