@@ -707,6 +707,16 @@ submitCompBtn.onclick = async () => {
     window.location.reload();
 };
 
+function isFutureDate(dateString) {
+    const selectedDate = new Date(dateString);
+    const today = new Date();
+
+    today.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    return selectedDate > today;
+}
+
 submitExBtn.onclick = async () => {
 
     const nameInput = document.getElementById("ex-name");
@@ -734,6 +744,10 @@ submitExBtn.onclick = async () => {
 
     if (!name) { nameInput.classList.add("invalid-input"); valid = false; }
     if (!date) { dateInput.classList.add("invalid-input"); valid = false; }
+    if (date && isFutureDate(date)) {
+        dateInput.classList.add("invalid-input");
+        valid = false;
+    }
     if (!timeTaken) { timeInput.classList.add("invalid-input"); valid = false; }
     if (!calories) { caloriesInput.classList.add("invalid-input"); valid = false; }
 
@@ -1036,6 +1050,10 @@ deleteBtn.onclick = async () => {
         window.location.reload();
     }
 };
+
+const today = new Date().toISOString().split("T")[0];
+
+document.getElementById("ex-date").setAttribute("max", today);
 
 </script>
 {% endblock %}
