@@ -1,22 +1,16 @@
-// Test functionality to do with Workouts.kt
+// Test functionality to do with the workouts tab
 
 import com.example.database.*
 import com.example.*
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.*
 import kotlin.test.*
-import io.ktor.server.sessions.*
-import io.ktor.server.testing.client.*
-import io.ktor.client.plugins.cookies.HttpCookies
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
-class WorkoutsTest {
+class WorkoutsPageTest {
     @Test
     fun `get workouts route`() = testApplication {
         environment {
@@ -29,6 +23,8 @@ class WorkoutsTest {
             module()
         }
 
+        val client = authenticatedClient()
+
         val response = client.get("/workouts")
         println(response.status)
         val body = response.bodyAsText()
@@ -38,7 +34,9 @@ class WorkoutsTest {
         assertTrue(body.contains(text1), "Response body did not contain '$text1'. Body was:\n$body")
         assertTrue(body.contains(text2), "Response body did not contain '$text2'. Body was:\n$body")
     }
+}
 
+class ViewWorkoutsPageTest {
     @Test
     fun `get workouts view route`() = testApplication {
         environment {
@@ -51,26 +49,8 @@ class WorkoutsTest {
             module()
         }
 
-        val client = createClient {
-            install(HttpCookies) {
-            }
-        }
+        val client = authenticatedClient()
 
-        // Set user session
-        client.post("/_test/sign-in") {
-            setBody(
-                listOf(
-                    "userID" to "1",
-                    "username" to "regulardude123"
-                ).formUrlEncode()
-            )
-            headers {
-                append(
-                    HttpHeaders.ContentType,
-                    ContentType.Application.FormUrlEncoded.toString()
-                )
-            }
-        }
         val response = client.get("/workouts/view")
         println(response.status)
         val body = response.bodyAsText()
@@ -86,7 +66,9 @@ class WorkoutsTest {
         assertTrue(body.contains(text4), "Response body did not contain '$text4'. Body was:\n$body")
         assertTrue(body.contains(text5), "Response body did not contain '$text5'. Body was:\n$body")
     }
+}
 
+class ViewWorkoutsPageSearchTests {
     @Test
     fun `get workouts view search route with search=p`() = testApplication {
         environment {
@@ -99,26 +81,7 @@ class WorkoutsTest {
             module()
         }
 
-        val client = createClient {
-            install(HttpCookies) {
-            }
-        }
-
-        // Set user session
-        client.post("/_test/sign-in") {
-            setBody(
-                listOf(
-                    "userID" to "1",
-                    "username" to "regulardude123"
-                ).formUrlEncode()
-            )
-            headers {
-                append(
-                    HttpHeaders.ContentType,
-                    ContentType.Application.FormUrlEncoded.toString()
-                )
-            }
-        }
+        val client = authenticatedClient()
 
         val response = client.get("/workouts/view/search") {
             url {
@@ -153,26 +116,7 @@ class WorkoutsTest {
             module()
         }
 
-        val client = createClient {
-            install(HttpCookies) {
-            }
-        }
-
-        // Set user session
-        client.post("/_test/sign-in") {
-            setBody(
-                listOf(
-                    "userID" to "1",
-                    "username" to "regulardude123"
-                ).formUrlEncode()
-            )
-            headers {
-                append(
-                    HttpHeaders.ContentType,
-                    ContentType.Application.FormUrlEncoded.toString()
-                )
-            }
-        }
+        val client = authenticatedClient()
 
         val response = client.get("/workouts/view/search") {
             url {
@@ -196,6 +140,43 @@ class WorkoutsTest {
     }
 
     @Test
+    fun `get workouts view search route with search=abcdefghijklmnop (nonsense value)`() = testApplication {
+        environment {
+            config = MapApplicationConfig(
+                "test" to "true"
+            )
+        }
+
+        application {
+            module()
+        }
+
+        val client = authenticatedClient()
+
+        val response = client.get("/workouts/view/search") {
+            url {
+                parameters.append("search", "abcdefghijklmnop")
+            }
+        }
+
+        println(response.status)
+        val body = response.bodyAsText()
+        assertEquals(HttpStatusCode.OK, response.status, "Expected 200 but got ${response.status}")
+        val text1 = "Push and pull"
+        val text2 = "Tough day"
+        val text3 = "Simple running on the treadmill"
+        val text4 = "A day out at sea"
+        val text5 = "Pump!"
+        assertFalse(body.contains(text1), "Response body did contain '$text1'. Body was:\n$body")
+        assertFalse(body.contains(text2), "Response body did contain '$text2'. Body was:\n$body")
+        assertFalse(body.contains(text3), "Response body did contain '$text3'. Body was:\n$body")
+        assertFalse(body.contains(text4), "Response body did contain '$text4'. Body was:\n$body")
+        assertFalse(body.contains(text5), "Response body did contain '$text5'. Body was:\n$body")
+    }
+}
+
+class ViewWorkoutsPageFilterTests {
+    @Test
     fun `get workouts view search route with filter=Cardio`() = testApplication {
         environment {
             config = MapApplicationConfig(
@@ -207,26 +188,7 @@ class WorkoutsTest {
             module()
         }
 
-        val client = createClient {
-            install(HttpCookies) {
-            }
-        }
-
-        // Set user session
-        client.post("/_test/sign-in") {
-            setBody(
-                listOf(
-                    "userID" to "1",
-                    "username" to "regulardude123"
-                ).formUrlEncode()
-            )
-            headers {
-                append(
-                    HttpHeaders.ContentType,
-                    ContentType.Application.FormUrlEncoded.toString()
-                )
-            }
-        }
+        val client = authenticatedClient()
 
         val response = client.get("/workouts/view/search") {
             url {
@@ -261,26 +223,7 @@ class WorkoutsTest {
             module()
         }
 
-        val client = createClient {
-            install(HttpCookies) {
-            }
-        }
-
-        // Set user session
-        client.post("/_test/sign-in") {
-            setBody(
-                listOf(
-                    "userID" to "1",
-                    "username" to "regulardude123"
-                ).formUrlEncode()
-            )
-            headers {
-                append(
-                    HttpHeaders.ContentType,
-                    ContentType.Application.FormUrlEncoded.toString()
-                )
-            }
-        }
+        val client = authenticatedClient()
 
         val response = client.get("/workouts/view/search") {
             url {
@@ -316,26 +259,7 @@ class WorkoutsTest {
             module()
         }
 
-        val client = createClient {
-            install(HttpCookies) {
-            }
-        }
-
-        // Set user session
-        client.post("/_test/sign-in") {
-            setBody(
-                listOf(
-                    "userID" to "1",
-                    "username" to "regulardude123"
-                ).formUrlEncode()
-            )
-            headers {
-                append(
-                    HttpHeaders.ContentType,
-                    ContentType.Application.FormUrlEncoded.toString()
-                )
-            }
-        }
+        val client = authenticatedClient()
 
         val response = client.get("/workouts/view/search") {
             url {
@@ -370,26 +294,7 @@ class WorkoutsTest {
             module()
         }
 
-        val client = createClient {
-            install(HttpCookies) {
-            }
-        }
-
-        // Set user session
-        client.post("/_test/sign-in") {
-            setBody(
-                listOf(
-                    "userID" to "1",
-                    "username" to "regulardude123"
-                ).formUrlEncode()
-            )
-            headers {
-                append(
-                    HttpHeaders.ContentType,
-                    ContentType.Application.FormUrlEncoded.toString()
-                )
-            }
-        }
+        val client = authenticatedClient()
 
         // Set favourite to true
         client.post("/_test/change-favourite-workouts") {
@@ -443,8 +348,47 @@ class WorkoutsTest {
     }
 }
 
+class ViewWorkoutPageTest {
+    @Test
+    fun `get workouts view all workout pages`() = testApplication {
+        environment {
+            config = MapApplicationConfig(
+                "test" to "true"
+            )
+        }
+
+        application {
+            module()
+        }
+
+        val client = authenticatedClient()
+
+        val workouts = transaction {Workout.all().toList()}
+        if (workouts.isNotEmpty()) {
+            for (workout in workouts) {
+                val id = workout.id.value.toString()
+                val response = client.get("/workouts/{$id}") {
+                    url {
+                        parameters.append("id", id)
+                    }
+                }
+                println(response.status)
+                val body = response.bodyAsText()
+                assertEquals(HttpStatusCode.OK, response.status, "Expected 200 but got ${response.status}")
+                val name = workout.name
+                val desc = workout.desc
+                assertTrue(body.contains(name), "Response body did not contain correct name: '$name'. Body was:\n$body")
+                assertTrue(body.contains(desc), "Response body did not contain correct description: '$desc'. Body was:\n$body")
+            }
+        }
+        else {
+            println("Workouts table is empty")
+        }
+    }
+}
+
 /*
-TEST LAYOUT WITHOUT SESSIONS
+TEST LAYOUT
 @Test
     fun `test name`() = testApplication {
         environment {
@@ -457,55 +401,11 @@ TEST LAYOUT WITHOUT SESSIONS
             module()
         }
 
-        val response = client.get("/route")
-        println(response.status)
-        val body = response.bodyAsText()
-
-        assertEquals(HttpStatusCode.OK, response.status, "Expected 200 but got ${response.status}")
-        val text1 = "ex text"
-        val text2 = "ex text 2"
-        assertTrue(body.contains(text1), "Response body did not contain '$text1'. Body was:\n$body")
-        assertTrue(body.contains(text2), "Response body did not contain '$text2'. Body was:\n$body")
-    }
-
-TEST LAYOUT WITH SESSIONS
-@Test
-    fun `test name`() = testApplication {
-        environment {
-            config = MapApplicationConfig(
-                "app.test" to "true"
-            )
-        }
-
-        application {
-            module()
-        }
-
-        val client = createClient {
-            install(HttpCookies) {
-            }
-        }
-
-        // Set user session
-        client.post("/_test/sign-in") {
-            setBody(
-                listOf(
-                    "userID" to "1",
-                    "username" to "regulardude123"
-                ).formUrlEncode()
-            )
-            headers {
-                append(
-                    HttpHeaders.ContentType,
-                    ContentType.Application.FormUrlEncoded.toString()
-                )
-            }
-        }
+        val client = authenticatedClient()
 
         val response = client.get("/route")
         println(response.status)
         val body = response.bodyAsText()
-
         assertEquals(HttpStatusCode.OK, response.status, "Expected 200 but got ${response.status}")
         val text1 = "ex text"
         val text2 = "ex text 2"
