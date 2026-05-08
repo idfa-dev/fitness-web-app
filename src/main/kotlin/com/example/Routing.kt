@@ -16,6 +16,7 @@ import io.ktor.server.sessions.*
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
+import java.time.Duration
 
 //Authentication imports
 import com.example.database.User
@@ -391,12 +392,40 @@ fun Application.configureRouting() {
 
             val weeklyDataJson = Json.encodeToString(weeklyData)
 
+            val totalCalories = transaction {
+                CalendarExercise.all()
+                    .filter {
+                        it.user.id.toString() == userSession.id
+                    }
+                    .sumOf {
+                        it.calories ?: 0
+                    }
+            }
+
+            val totalDistance = transaction {
+                CalendarExercise.find {
+                    CalendarExercises.user eq userSession.id.toInt()
+                }.sumOf {
+                    it.distance ?: 0.0
+                }
+            }
+
+            val totalWorkouts = transaction {
+                WorkoutSession.all()
+                    .count {
+                        it.user.id.toString() == userSession.id && it.complete
+                    }
+            }
+
             call.respond(
                 PebbleContent(
                     "profile/profile.peb",
                     mapOf(
                         "currentPage" to "profile",
-                        "weeklyData" to weeklyDataJson
+                        "weeklyData" to weeklyDataJson,
+                        "totalCalories" to totalCalories,
+                        "totalDistance" to totalDistance,
+                        "totalWorkouts" to totalWorkouts
                     )
                 )
             )
