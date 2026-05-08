@@ -53,8 +53,26 @@ fun Application.configureRouting() {
             print(user?.id)
             print(user?.username)
             if (user != null) {
-                call.respond(PebbleContent("home/home.peb", mapOf("currentPage" to "home")))
-            }
+                val todayCalories = transaction {
+                    CalendarExercise.all()
+                        .filter {
+                            it.user.id.toString() == user.id &&
+                            it.date == LocalDate.now()
+                        }
+                        .sumOf {
+                            it.calories ?: 0
+                        }
+                }
+                call.respond(
+                    PebbleContent(
+                        "home/home.peb", 
+                        mapOf(
+                            "currentPage" to "home", 
+                            "todayCalories" to todayCalories,
+                        )
+                    )
+                )
+            } 
             else {
                 call.respond(PebbleContent("landing/auth/landing.peb", mapOf("currentPage" to "landing")))
             }
