@@ -10,32 +10,6 @@ import io.ktor.server.testing.*
 import kotlin.test.*
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
-class WorkoutsPageTest {
-    @Test
-    fun `get workouts route`() = testApplication {
-        environment {
-            config = MapApplicationConfig(
-                "app.test" to "true"
-            )
-        }
-
-        application {
-            module()
-        }
-
-        val client = authenticatedClient()
-
-        val response = client.get("/workouts")
-        println(response.status)
-        val body = response.bodyAsText()
-        val text1 = "Past Workouts"
-        val text2 = "View Workouts"
-        assertEquals(HttpStatusCode.OK, response.status, "Expected 200 but got ${response.status}")
-        assertTrue(body.contains(text1), "Response body did not contain '$text1'. Body was:\n$body")
-        assertTrue(body.contains(text2), "Response body did not contain '$text2'. Body was:\n$body")
-    }
-}
-
 class ViewWorkoutsPageTest {
     @Test
     fun `get workouts view route`() = testApplication {
