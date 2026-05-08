@@ -143,6 +143,7 @@ fun Application.configureRouting() {
             val parameters = call.receiveParameters()
 
             when {
+
                 parameters["workout_template"] != null -> {
                     val workoutID = parameters["workout_template"]?.toIntOrNull()
                         ?: return@post call.respond(HttpStatusCode.BadRequest)
@@ -215,7 +216,7 @@ fun Application.configureRouting() {
 
         get("/workouts/view") {call.displayWorkouts()}
 
-        get("/workouts/view/search") {call.searchWorkouts()}
+        get("/workouts/view/search") { call.searchWorkouts() }
 
         post("/workouts/view") {
             val parameters = call.receiveParameters()
@@ -233,7 +234,7 @@ fun Application.configureRouting() {
 
         get("/exercises") {call.exercises()}
 
-        get("/exercises/search") {call.searchExercises()}
+        get("/exercises/search") { call.searchExercises()}
 
         get("/exercises/{id}") {call.exercise()}
 

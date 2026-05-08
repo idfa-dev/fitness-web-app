@@ -108,7 +108,7 @@ suspend fun ApplicationCall.searchWorkouts() {
             return@suspendTransaction
         }
 
-        val currentPage = parameters["currentPage"] ?: "workouts"
+        val isCurrentWorkout = parameters["isCurrentWorkout"].toBoolean()
         val search = parameters["search"]
         val selectedTypes = parameters.getAll("type") ?: emptyList()
         val favouriteOnly = parameters["favourite"] == "true"
@@ -156,7 +156,12 @@ suspend fun ApplicationCall.searchWorkouts() {
                 )
             )
         }
-        respond(PebbleContent("workouts/view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to currentPage)))
+        if (isCurrentWorkout) {
+            respond(PebbleContent("workouts/view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to "current-workout")))
+        }
+        else {
+            respond(PebbleContent("workouts/view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to "workouts")))
+        }
     }
 }
 
