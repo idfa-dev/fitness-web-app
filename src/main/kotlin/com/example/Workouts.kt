@@ -220,7 +220,7 @@ suspend fun ApplicationCall.startNewWorkout() {
         val userSession = sessions.get<UserSession>()
         if (userSession != null) {
             // First, create the WorkoutSession instance
-            val userEntity = User.all().first() {it.id.toString() == userSession.id}
+            val userEntity = User.all().first {it.id.toString() == userSession.id}
             val workoutSessionID = WorkoutSession.new { user = userEntity }.id.toString() // Only need to pass user as all other attributes have default values
             // Second, set the CurrentWorkoutSession values for use of page generation
             sessions.set(CurrentWorkoutSession(workoutSessionID, userSession.id))

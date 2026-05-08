@@ -143,7 +143,6 @@ fun Application.configureRouting() {
             val parameters = call.receiveParameters()
 
             when {
-
                 parameters["workout_template"] != null -> {
                     val workoutID = parameters["workout_template"]?.toIntOrNull()
                         ?: return@post call.respond(HttpStatusCode.BadRequest)
