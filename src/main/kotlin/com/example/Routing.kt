@@ -94,11 +94,17 @@ fun Application.configureRouting() {
         }
 
         post("/test/create-workout-session") {
-            // Create workout session for use in testing
-            val parameters = call.receiveParameters()
-            val userID = parameters["userID"]
-            val username = parameters["username"]
             suspendTransaction {
+                // First, reset workout session and remove all previous workout sessions in db
+                val workoutSessions = WorkoutSession.all().toList()
+                for (ws in workoutSessions) {
+                    ws.delete()
+                }
+                call.sessions.clear<CurrentWorkoutSession>()
+                // Create workout session for use in testing
+                val parameters = call.receiveParameters()
+                val userID = parameters["userID"]
+                val username = parameters["username"]
                 val userEntity = User.all().first {it.id.value == userID?.toInt()}
                 if (userID != null && username != null) {
                     val ws = WorkoutSession.new { user = userEntity }

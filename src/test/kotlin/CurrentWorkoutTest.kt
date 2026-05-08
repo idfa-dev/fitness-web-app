@@ -6,6 +6,8 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.config.MapApplicationConfig
+import io.ktor.server.request.receiveParameters
+import io.ktor.server.routing.post
 import io.ktor.server.testing.*
 import kotlin.test.*
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -368,6 +370,18 @@ class StartCurrentWorkoutWithNoTemplateTest {
 
         val client = authenticatedClient()
 
+        client.post("/test/create-workout-session") {
+            setBody(
+                listOf(
+                    "userID" to "1",
+                    "username" to "regulardude123"
+                ).formUrlEncode()
+            )
+            headers {
+                append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded.toString())
+            }
+        }
+
         val response = client.post("/current-workout") {
             setBody(
                 listOf(
@@ -412,6 +426,18 @@ class StartCurrentWorkoutWithTemplateTest {
         }
 
         val client = authenticatedClient()
+
+        client.post("/test/create-workout-session") {
+            setBody(
+                listOf(
+                    "userID" to "1",
+                    "username" to "regulardude123"
+                ).formUrlEncode()
+            )
+            headers {
+                append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded.toString())
+            }
+        }
 
         val workouts = transaction { Workout.all().toList() }
         if (workouts.isNotEmpty()) {
@@ -466,6 +492,18 @@ class AddExercisesToCurrentWorkoutTest {
 
         val client = authenticatedClient()
 
+        client.post("/test/create-workout-session") {
+            setBody(
+                listOf(
+                    "userID" to "1",
+                    "username" to "regulardude123"
+                ).formUrlEncode()
+            )
+            headers {
+                append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded.toString())
+            }
+        }
+
         client.post("/current-workout") {
             setBody(
                 listOf(
@@ -518,6 +556,292 @@ class AddExercisesToCurrentWorkoutTest {
                 assertTrue(body.contains(name), "Response body did not contain '$name'. Body was:\n$body")
             }
         }
+    }
+}
+
+class RemoveExerciseFromCurrentWorkoutTest {
+    @Test
+    fun `post current workout route remove exercise from current workout session`() = testApplication {
+        environment {
+            config = MapApplicationConfig(
+                "app.test" to "true"
+            )
+        }
+
+        application {
+            module()
+        }
+
+        val client = authenticatedClient()
+
+        client.post("/test/create-workout-session") {
+            setBody(
+                listOf(
+                    "userID" to "1",
+                    "username" to "regulardude123"
+                ).formUrlEncode()
+            )
+            headers {
+                append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded.toString())
+            }
+        }
+
+        client.post("/current-workout") {
+            setBody(
+                listOf(
+                    "use_template" to "no"
+                ).formUrlEncode()
+            )
+            headers {
+                append(
+                    HttpHeaders.ContentType,
+                    ContentType.Application.FormUrlEncoded.toString()
+                )
+            }
+        }
+        // First, make sure an exercise is added
+        client.post("/current-workout") {
+            setBody(
+                listOf(
+                    "exercise" to "1"
+                ).formUrlEncode()
+            )
+            headers {
+                append(
+                    HttpHeaders.ContentType,
+                    ContentType.Application.FormUrlEncoded.toString()
+                )
+            }
+        }
+        val testWeight  = 105.25
+        val testReps = 10
+        val wseid = transaction { WorkoutSessionExercise.all().first().id.value }
+        val response = client.post("/current-workout") {
+            setBody(
+                listOf(
+                    "remove_exercise" to "$wseid",
+                ).formUrlEncode()
+            )
+            headers {
+                append(
+                    HttpHeaders.ContentType,
+                    ContentType.Application.FormUrlEncoded.toString()
+                )
+            }
+        }
+
+        println(response.status)
+        val body = response.bodyAsText()
+        assertEquals(HttpStatusCode.OK, response.status, "Expected 200 but got ${response.status}")
+        val text1 = "Add Exercise"
+        val text2 = "End Workout"
+        val text3 = "Set"
+        val text4 = "Weight"
+        val text5 = "Reps"
+        assertTrue(body.contains(text1), "Response body did not contain '$text1'. Body was:\n$body")
+        assertTrue(body.contains(text2), "Response body did not contain '$text2'. Body was:\n$body")
+        assertFalse(body.contains(text3), "Response body did contain '$text3'. Body was:\n$body")
+        assertFalse(body.contains(text4), "Response body did contain '$text4'. Body was:\n$body")
+        assertFalse(body.contains(text5), "Response body did contain '$text5'. Body was:\n$body")
+        assertFalse(body.contains(testWeight.toString()), "Response body did contain '$testWeight'. Body was:\n$body")
+        assertFalse(body.contains(testReps.toString()), "Response body did contain '$testReps'. Body was:\n$body")
+    }
+}
+
+class AddSetsToCurrentWorkoutExerciseTest {
+    @Test
+    fun `post current workout route add set with normal weight and reps to an exercise`() = testApplication {
+        environment {
+            config = MapApplicationConfig(
+                "app.test" to "true"
+            )
+        }
+
+        application {
+            module()
+        }
+
+        val client = authenticatedClient()
+
+        client.post("/test/create-workout-session") {
+            setBody(
+                listOf(
+                    "userID" to "1",
+                    "username" to "regulardude123"
+                ).formUrlEncode()
+            )
+            headers {
+                append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded.toString())
+            }
+        }
+
+        client.post("/current-workout") {
+            setBody(
+                listOf(
+                    "use_template" to "no"
+                ).formUrlEncode()
+            )
+            headers {
+                append(
+                    HttpHeaders.ContentType,
+                    ContentType.Application.FormUrlEncoded.toString()
+                )
+            }
+        }
+        // First, make sure an exercise is added
+        client.post("/current-workout") {
+            setBody(
+                listOf(
+                    "exercise" to "1"
+                ).formUrlEncode()
+            )
+            headers {
+                append(
+                    HttpHeaders.ContentType,
+                    ContentType.Application.FormUrlEncoded.toString()
+                )
+            }
+        }
+        val testWeight  = 105.25
+        val testReps = 10
+        val wseid = transaction { WorkoutSessionExercise.all().first().id.value }
+        val response = client.post("/current-workout") {
+            setBody(
+                listOf(
+                    "wseid" to "$wseid",
+                    "weight" to "$testWeight",
+                    "reps" to "$testReps"
+                ).formUrlEncode()
+            )
+            headers {
+                append(
+                    HttpHeaders.ContentType,
+                    ContentType.Application.FormUrlEncoded.toString()
+                )
+            }
+        }
+        println(response.status)
+        val body = response.bodyAsText()
+        assertEquals(HttpStatusCode.OK, response.status, "Expected 200 but got ${response.status}")
+        val text1 = "Add Exercise"
+        val text2 = "End Workout"
+        val text3 = "Set"
+        val text4 = "Weight"
+        val text5 = "Reps"
+        assertTrue(body.contains(text1), "Response body did not contain '$text1'. Body was:\n$body")
+        assertTrue(body.contains(text2), "Response body did not contain '$text2'. Body was:\n$body")
+        assertTrue(body.contains(text3), "Response body did not contain '$text3'. Body was:\n$body")
+        assertTrue(body.contains(text4), "Response body did not contain '$text4'. Body was:\n$body")
+        assertTrue(body.contains(text5), "Response body did not contain '$text5'. Body was:\n$body")
+        assertTrue(body.contains(testWeight.toString()), "Response body did not contain '$testWeight'. Body was:\n$body")
+        assertTrue(body.contains(testReps.toString()), "Response body did not contain '$testReps'. Body was:\n$body")
+    }
+}
+
+class RemoveSetFromCurrentWorkoutExerciseTest {
+    @Test
+    fun `post current workout route remove set from current workout session`() = testApplication {
+        environment {
+            config = MapApplicationConfig(
+                "app.test" to "true"
+            )
+        }
+
+        application {
+            module()
+        }
+
+        val client = authenticatedClient()
+
+        client.post("/test/create-workout-session") {
+            setBody(
+                listOf(
+                    "userID" to "1",
+                    "username" to "regulardude123"
+                ).formUrlEncode()
+            )
+            headers {
+                append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded.toString())
+            }
+        }
+
+        client.post("/current-workout") {
+            setBody(
+                listOf(
+                    "use_template" to "no"
+                ).formUrlEncode()
+            )
+            headers {
+                append(
+                    HttpHeaders.ContentType,
+                    ContentType.Application.FormUrlEncoded.toString()
+                )
+            }
+        }
+        // First, make sure an exercise is added
+        client.post("/current-workout") {
+            setBody(
+                listOf(
+                    "exercise" to "1"
+                ).formUrlEncode()
+            )
+            headers {
+                append(
+                    HttpHeaders.ContentType,
+                    ContentType.Application.FormUrlEncoded.toString()
+                )
+            }
+        }
+        val testWeight  = 105.25
+        val testReps = 10
+        val wseid = transaction { WorkoutSessionExercise.all().first().id.value }
+        client.post("/current-workout") {
+            setBody(
+                listOf(
+                    "wseid" to "$wseid",
+                    "weight" to "$testWeight",
+                    "reps" to "$testReps"
+                ).formUrlEncode()
+            )
+            headers {
+                append(
+                    HttpHeaders.ContentType,
+                    ContentType.Application.FormUrlEncoded.toString()
+                )
+            }
+        }
+
+        val wss = transaction { WorkoutSessionSet.all().first {it.workoutSessionExercise.id.value == wseid} }
+        val wssid = wss.id.value
+        val response = client.post("/current-workout") {
+            setBody(
+                listOf(
+                    "remove_set" to "$wssid",
+                ).formUrlEncode()
+            )
+            headers {
+                append(
+                    HttpHeaders.ContentType,
+                    ContentType.Application.FormUrlEncoded.toString()
+                )
+            }
+        }
+
+        println(response.status)
+        val body = response.bodyAsText()
+        assertEquals(HttpStatusCode.OK, response.status, "Expected 200 but got ${response.status}")
+        val text1 = "Add Exercise"
+        val text2 = "End Workout"
+        val text3 = "Set"
+        val text4 = "Weight"
+        val text5 = "Reps"
+        assertTrue(body.contains(text1), "Response body did not contain '$text1'. Body was:\n$body")
+        assertTrue(body.contains(text2), "Response body did not contain '$text2'. Body was:\n$body")
+        assertTrue(body.contains(text3), "Response body did not contain '$text3'. Body was:\n$body")
+        assertTrue(body.contains(text4), "Response body did not contain '$text4'. Body was:\n$body")
+        assertTrue(body.contains(text5), "Response body did not contain '$text5'. Body was:\n$body")
+        assertFalse(body.contains(testWeight.toString()), "Response body did contain '$testWeight'. Body was:\n$body")
+        assertFalse(body.contains(testReps.toString()), "Response body did contain '$testReps'. Body was:\n$body")
     }
 }
 /*
