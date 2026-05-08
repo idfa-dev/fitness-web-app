@@ -4,7 +4,7 @@ import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
 import org.jetbrains.exposed.v1.core.ReferenceOption
 import org.jetbrains.exposed.v1.javatime.date
 
-object CalendarExercises : IntIdTable() {
+object CalendarExercises : IntIdTable("calendar_exercises") {
     val user = reference("user", Users, onDelete = ReferenceOption.CASCADE)
     val name = varchar("name", 255)
     val date = date("date")
