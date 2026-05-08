@@ -140,9 +140,9 @@ function createDonutChart(canvasId, progress, goal, color, title, measurement) {
     });
 }
 
-createDonutChart("caloriesChart", 1800, 2500, "#DE3163", "Calories Burnt", "(kcal)"); // put measurement in brackets
-createDonutChart("distanceChart", 7.5, 15, "#4DD0E1", "Distance", "(km)");
-createDonutChart("numWorkoutsChart", 3, 5, "#FF9F43", "Workouts", "");
+createDonutChart("caloriesChart", {{ totalCalories }}, 2000, "#DE3163", "Calories Burnt", "(kcal)"); // put measurement in brackets
+createDonutChart("distanceChart", {{ totalDistance }}, 50, "#4DD0E1", "Distance", "(km)");
+createDonutChart("numWorkoutsChart", {{ totalWorkouts }}, 7, "#FF9F43", "Workouts", "");
 
 </script>
 {% endblock %}
