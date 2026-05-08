@@ -233,7 +233,7 @@ fun resetDatabase() {
             Users, PTs, Exercises,
             Clients, Workouts, WorkoutExercises,
             WorkoutSessions, WorkoutSessionExercises,
-            WorkoutSessionSets
+            WorkoutSessionSets, Competitions, CalendarExercises
         )
     }
     println("\nSUCCESSFULLY RESET DATABASE\n")

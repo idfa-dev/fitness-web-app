@@ -65,7 +65,7 @@ suspend fun ApplicationCall.getListOfWorkoutObjects(): MutableList<WorkoutObject
     suspendTransaction {
         val userSession = sessions.get<UserSession>()
         if (userSession != null) {
-            val workouts = Workout.all().filter { it.user?.id.toString() == userSession.id || it.user == null }.toList()
+            val workouts = Workout.all().filter { it.user?.id?.value.toString() == userSession.id || it.user == null }.toList()
             // Iterate through all found workouts and find what types are within them
             for (workout in workouts) {
                 val workoutExercises = WorkoutExercise.all().filter { it.workout == workout }.toList()
@@ -102,14 +102,13 @@ suspend fun ApplicationCall.displayWorkouts(workoutID: Int = 0, from: String = "
 
 suspend fun ApplicationCall.searchWorkouts() {
     suspendTransaction {
-
         val userSession = sessions.get<UserSession>()
         if (userSession == null) {
             respond(PebbleContent("landing/auth/landing.peb", mapOf("currentPage" to "landing")))
             return@suspendTransaction
         }
 
-        val currentPage = parameters["currentPage"] ?: "workouts"
+        val isCurrentWorkout = parameters["isCurrentWorkout"].toBoolean()
         val search = parameters["search"]
         val selectedTypes = parameters.getAll("type") ?: emptyList()
         val favouriteOnly = parameters["favourite"] == "true"
@@ -157,7 +156,12 @@ suspend fun ApplicationCall.searchWorkouts() {
                 )
             )
         }
-        respond(PebbleContent("workouts/view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to currentPage)))
+        if (isCurrentWorkout) {
+            respond(PebbleContent("workouts/view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to "current-workout")))
+        }
+        else {
+            respond(PebbleContent("workouts/view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to "workouts")))
+        }
     }
 }
 
@@ -216,7 +220,7 @@ suspend fun ApplicationCall.startNewWorkout() {
         val userSession = sessions.get<UserSession>()
         if (userSession != null) {
             // First, create the WorkoutSession instance
-            val userEntity = User.all().first() {it.id.toString() == userSession.id}
+            val userEntity = User.all().first {it.id.toString() == userSession.id}
             val workoutSessionID = WorkoutSession.new { user = userEntity }.id.toString() // Only need to pass user as all other attributes have default values
             // Second, set the CurrentWorkoutSession values for use of page generation
             sessions.set(CurrentWorkoutSession(workoutSessionID, userSession.id))

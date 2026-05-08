@@ -17,7 +17,8 @@
 
     <div class="center">
         <div class="search-filter-wrapper">
-            <form method="get" class="search-container" action="/workouts/view/search">
+            <form method="get" action="/workouts/view/search" class="search-container">
+                <input type="hidden" name="isCurrentWorkout" value="{{ currentPage == 'workouts' ? 'false' : 'true' }}">
 
                 <input type="text" name="search" class="search" placeholder="Search for a workout...">
 
@@ -28,7 +29,7 @@
 
             <form method="get" action="/workouts/view/search" class="filter-form">
 
-                <input type="hidden" name="currentPage" value="{{ currentPage }}"
+                <input type="hidden" name="isCurrentWorkout" value="{{ currentPage == 'workouts' ? 'false' : 'true' }}">
 
                 <label><input type="checkbox" name="type" value="C"> Cardio</label>
                 <label><input type="checkbox" name="type" value="B"> Bodyweight</label>

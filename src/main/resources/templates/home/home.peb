@@ -33,7 +33,7 @@
             </div>
 
             <div class="chart-value">
-                1800 / 2500 kcal
+                {{ todayCalories }} / 400 kcal
             </div>
         </div>
 
@@ -181,7 +181,7 @@ function createDonutChart(canvasId, progress, goal, color) {
         data: {
             datasets: [{
                 data: [progress, Math.max(goal - progress, 0)],
-                backgroundColor: [color, "#222222"],
+                backgroundColor: [color, "#000000"],
                 borderWidth: 0
             }]
         },
@@ -197,7 +197,7 @@ function createDonutChart(canvasId, progress, goal, color) {
     });
 }
 
-createDonutChart("homeCaloriesChart", 1800, 2500, "#DE3163");
+createDonutChart("homeCaloriesChart", {{ todayCalories }}, 400, "#DE3163");
 </script>
 
 {% endblock %}

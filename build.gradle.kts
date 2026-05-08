@@ -50,5 +50,15 @@ dependencies {
     // Testing
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
-    testImplementation(libs.kotlin.test)
+    testImplementation(libs.ktor.client.core)
+    implementation(libs.kotlin.test)
+}
+
+// Enables println() calls to register with ./gradlew test
+tasks.test {
+    testLogging {
+        events("passed", "skipped", "failed")
+        showStandardStreams = true
+    }
+    maxParallelForks = 1
 }
