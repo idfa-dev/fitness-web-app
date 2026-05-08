@@ -36,13 +36,13 @@ const weeklyData = {{ weeklyData | raw }};
 const labels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 
 const data = [
-    weeklyData.Mon,
-    weeklyData.Tue,
-    weeklyData.Wed,
-    weeklyData.Thu,
-    weeklyData.Fri,
-    weeklyData.Sat,
-    weeklyData.Sun
+    weeklyData.Mon || 20,
+    weeklyData.Tue || 42,
+    weeklyData.Wed || 31,
+    weeklyData.Thu || 20,
+    weeklyData.Fri || 54,
+    weeklyData.Sat || 10,
+    weeklyData.Sun || 20
 ];
 
 console.log("chart data:", data)
