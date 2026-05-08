@@ -60,4 +60,5 @@ tasks.test {
         events("passed", "skipped", "failed")
         showStandardStreams = true
     }
+    maxParallelForks = 1
 }

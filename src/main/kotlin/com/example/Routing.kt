@@ -47,17 +47,33 @@ fun Application.configureRouting() {
 
 
         // Test Routes
-        post("/_test/sign-in") {
+        post("/test/sign-in") {
             val parameters = call.receiveParameters()
             val userID = parameters["userID"]
             val username = parameters["username"]
             if (userID != null && username != null) {
                 call.sessions.set(UserSession(userID, username))
+                println("UserSession set")
                 call.respond(HttpStatusCode.OK)
             }
         }
 
-        post("/_test/change-favourite-workouts") {
+        get("/test/set-all-workouts-as-not-favourited") {
+            suspendTransaction {
+                val workouts = Workout.all().toList()
+                if (workouts.isNotEmpty()) {
+                    for (workout in workouts) {
+                        Workout.findByIdAndUpdate(workout.id.value) {
+                            it.favourite = false
+                        }
+                    }
+                    println("All workouts set to favourited=false")
+                    call.respond(HttpStatusCode.OK)
+                }
+            }
+        }
+
+        post("/test/change-favourite-workouts") {
             val parameters = call.receiveParameters()
             suspendTransaction {
                 val workoutName = parameters["workoutName"]
@@ -72,6 +88,22 @@ fun Application.configureRouting() {
                 }
                 else {
                     call.respond(HttpStatusCode.BadRequest)
+                }
+            }
+        }
+
+        post("/test/create-workout-session") {
+            // Create workout session for use in testing
+            val parameters = call.receiveParameters()
+            val userID = parameters["userID"]
+            val username = parameters["username"]
+            suspendTransaction {
+                val userEntity = User.all().first {it.id.value == userID?.toInt()}
+                if (userID != null && username != null) {
+                    val ws = WorkoutSession.new { user = userEntity }
+                    call.sessions.set(CurrentWorkoutSession(ws.id.value.toString(), userID))
+                    println("CurrentWorkoutSession set")
+                    call.respond(HttpStatusCode.OK)
                 }
             }
         }
@@ -102,7 +134,6 @@ fun Application.configureRouting() {
                 call.respond(PebbleContent("current_workout/start_workout.peb", mapOf("currentPage" to "current-workout")))
             }
             else {
-                // Make sure this is fixed to contain workout info
                 call.continueWorkout()
             }
         }

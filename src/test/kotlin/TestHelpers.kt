@@ -12,7 +12,7 @@ suspend fun ApplicationTestBuilder.authenticatedClient(): HttpClient {
         install(HttpCookies)
     }
 
-    client.post("/_test/sign-in") {
+    client.post("/test/sign-in") {
         setBody(
             listOf(
                 "userID" to "1",

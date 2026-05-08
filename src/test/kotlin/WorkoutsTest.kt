@@ -15,7 +15,7 @@ class WorkoutsPageTest {
     fun `get workouts route`() = testApplication {
         environment {
             config = MapApplicationConfig(
-                "test" to "true"
+                "app.test" to "true"
             )
         }
 
@@ -73,7 +73,7 @@ class ViewWorkoutsPageSearchTests {
     fun `get workouts view search route with search=p`() = testApplication {
         environment {
             config = MapApplicationConfig(
-                "test" to "true"
+                "app.test" to "true"
             )
         }
 
@@ -108,7 +108,7 @@ class ViewWorkoutsPageSearchTests {
     fun `get workouts view search route with search=empty string`() = testApplication {
         environment {
             config = MapApplicationConfig(
-                "test" to "true"
+                "app.test" to "true"
             )
         }
 
@@ -143,7 +143,7 @@ class ViewWorkoutsPageSearchTests {
     fun `get workouts view search route with search=abcdefghijklmnop (nonsense value)`() = testApplication {
         environment {
             config = MapApplicationConfig(
-                "test" to "true"
+                "app.test" to "true"
             )
         }
 
@@ -180,7 +180,7 @@ class ViewWorkoutsPageFilterTests {
     fun `get workouts view search route with filter=Cardio`() = testApplication {
         environment {
             config = MapApplicationConfig(
-                "test" to "true"
+                "app.test" to "true"
             )
         }
 
@@ -215,7 +215,7 @@ class ViewWorkoutsPageFilterTests {
     fun `get workouts view search route with filter=Cardio+Bodyweight`() = testApplication {
         environment {
             config = MapApplicationConfig(
-                "test" to "true"
+                "app.test" to "true"
             )
         }
 
@@ -251,7 +251,7 @@ class ViewWorkoutsPageFilterTests {
     fun `get workouts view search route with filter=Favourited with no current Favourited workouts`() = testApplication {
         environment {
             config = MapApplicationConfig(
-                "test" to "true"
+                "app.test" to "true"
             )
         }
 
@@ -260,6 +260,8 @@ class ViewWorkoutsPageFilterTests {
         }
 
         val client = authenticatedClient()
+
+        client.get("/test/set-all-workouts-as-not-favourited")
 
         val response = client.get("/workouts/view/search") {
             url {
@@ -286,7 +288,7 @@ class ViewWorkoutsPageFilterTests {
     fun `get workouts view search route with filter=Favourited with favourited workouts`() = testApplication {
         environment {
             config = MapApplicationConfig(
-                "test" to "true"
+                "app.test" to "true"
             )
         }
 
@@ -297,7 +299,7 @@ class ViewWorkoutsPageFilterTests {
         val client = authenticatedClient()
 
         // Set favourite to true
-        client.post("/_test/change-favourite-workouts") {
+        client.post("/test/change-favourite-workouts") {
             setBody(
                 listOf(
                     "workoutName" to "Push and pull"
@@ -330,21 +332,6 @@ class ViewWorkoutsPageFilterTests {
         assertFalse(body.contains(text3), "Response body did contain '$text3'. Body was:\n$body")
         assertFalse(body.contains(text4), "Response body did contain '$text4'. Body was:\n$body")
         assertFalse(body.contains(text5), "Response body did contain '$text5'. Body was:\n$body")
-
-        // Reset favourite to false
-        client.post("/_test/change-favourite-workouts") {
-            setBody(
-                listOf(
-                    "workoutName" to "Push and pull"
-                ).formUrlEncode()
-            )
-            headers {
-                append(
-                    HttpHeaders.ContentType,
-                    ContentType.Application.FormUrlEncoded.toString()
-                )
-            }
-        }
     }
 }
 
@@ -353,7 +340,7 @@ class ViewWorkoutPageTest {
     fun `get workouts view all workout pages`() = testApplication {
         environment {
             config = MapApplicationConfig(
-                "test" to "true"
+                "app.test" to "true"
             )
         }
 
@@ -393,7 +380,7 @@ TEST LAYOUT
     fun `test name`() = testApplication {
         environment {
             config = MapApplicationConfig(
-                "test" to "true"
+                "app.test" to "true"
             )
         }
 

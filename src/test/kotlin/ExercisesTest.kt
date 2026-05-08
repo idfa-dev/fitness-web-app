@@ -15,7 +15,7 @@ class ExercisesPageTest {
     fun `get exercises route`() = testApplication {
         environment {
             config = MapApplicationConfig(
-                "test" to "true"
+                "app.test" to "true"
             )
         }
 
@@ -43,7 +43,7 @@ class ViewExercisePageTest {
     fun `get exercises view all exercise pages`() = testApplication {
         environment {
             config = MapApplicationConfig(
-                "test" to "true"
+                "app.test" to "true"
             )
         }
 
@@ -81,7 +81,7 @@ class ViewExercisesSearchPageTests {
     fun `get exercises search route with search=c`() = testApplication {
         environment {
             config = MapApplicationConfig(
-                "test" to "true"
+                "app.test" to "true"
             )
         }
 
@@ -111,7 +111,7 @@ class ViewExercisesSearchPageTests {
     fun `get exercises search route with search=empty string`() = testApplication {
         environment {
             config = MapApplicationConfig(
-                "test" to "true"
+                "app.test" to "true"
             )
         }
 
@@ -151,7 +151,7 @@ class ViewExercisesSearchPageTests {
     fun `get exercises search route with search=abcdefghijklmnop (nonsense value)`() = testApplication {
         environment {
             config = MapApplicationConfig(
-                "test" to "true"
+                "app.test" to "true"
             )
         }
 
@@ -194,7 +194,7 @@ TEST LAYOUT
     fun `test name`() = testApplication {
         environment {
             config = MapApplicationConfig(
-                "test" to "true"
+                "app.test" to "true"
             )
         }
 
