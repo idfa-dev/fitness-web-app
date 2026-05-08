@@ -9,6 +9,9 @@
 {% endblock %}
 {% block content %}
     <div class="center">
+        <h1> {{ errMsg }} </h1>
+    </div>
+    <div class="center">
         <table>
             <tr>
                 <th>Date Completed</th>

@@ -540,7 +540,7 @@ suspend fun ApplicationCall.displayPastWorkouts() {
                 }
                 else {
                     val errMsg = "You have not completed any workouts yet"
-                    respond(PebbleContent("workouts/view_workouts.peb", mapOf("currentPage" to "workouts", "errMsg" to errMsg)))
+                    respond(PebbleContent("workouts/view_past_workouts.peb", mapOf("currentPage" to "workouts", "errMsg" to errMsg)))
                 }
             }
             else {
