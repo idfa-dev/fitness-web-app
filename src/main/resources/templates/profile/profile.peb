@@ -3,12 +3,14 @@
 {% block title %}Profile{% endblock %}
 
 {% block header %}
-Profile
-<a href="/profile/profile_info" class="profile-info-button">Edit Profile</a>
-<a href="/sign-in" class="logout-btn">Logout</a>
+
 {% endblock %}
 
 {% block content %}
+<h1>Profile</h1>
+<a href="/profile/profile_info" class="profile-info-button">Edit Profile</a>
+<a href="/sign-in" class="logout-btn">Logout</a>
+
 <div class="chart-container">
     <canvas id="workoutChart"></canvas>
 </div>
@@ -29,12 +31,21 @@ Profile
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+
+const weeklyData = {{ weeklyData | raw }};
 const labels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 
-const cardioData = [30, 20, 40, 25, 35, 50, 45];
-const bodyweightData = [15, 25, 20, 30, 10, 20, 15];
-const resistanceData = [20, 30, 25, 35, 40, 30, 20];
-const mixedData = [10, 15, 5, 20, 15, 10, 25];
+const data = [
+    weeklyData.Mon || 20,
+    weeklyData.Tue || 42,
+    weeklyData.Wed || 31,
+    weeklyData.Thu || 20,
+    weeklyData.Fri || 54,
+    weeklyData.Sat || 10,
+    weeklyData.Sun || 20
+];
+
+console.log("chart data:", data)
 
 const ctx = document.getElementById("workoutChart");
 
@@ -42,28 +53,11 @@ new Chart(ctx, {
     type: 'bar',
     data: {
         labels: labels,
-        datasets: [
-            {
-                label: "Cardio",
-                data: cardioData,
-                backgroundColor: "red"
-            },
-            {
-                label: "Bodyweight",
-                data: bodyweightData,
-                backgroundColor: "blue"
-            },
-            {
-                label: "Resistance",
-                data: resistanceData,
-                backgroundColor: "green"
-            },
-            {
-                label: "Mixed",
-                data: mixedData,
-                backgroundColor: "yellow"
-            }
-        ]
+        datasets: [{
+            label: "Exercise Minutes",
+            data: data,
+            backgroundColor: "#b73fec"
+        }]
     },
     options: {
         responsive: true,
@@ -146,9 +140,9 @@ function createDonutChart(canvasId, progress, goal, color, title, measurement) {
     });
 }
 
-createDonutChart("caloriesChart", 1800, 2500, "#b73fec", "Calories Burnt", "(kcal)"); // put measurement in brackets
-createDonutChart("distanceChart", 7.5, 15, "red", "Distance", "(km)");
-createDonutChart("numWorkoutsChart", 3, 5, "green", "Workouts", "");
+createDonutChart("caloriesChart", {{ totalCalories }}, 2000, "#DE3163", "Calories Burnt", "(kcal)"); // put measurement in brackets
+createDonutChart("distanceChart", {{ totalDistance }}, 50, "#4DD0E1", "Distance", "(km)");
+createDonutChart("numWorkoutsChart", {{ totalWorkouts }}, 7, "#FF9F43", "Workouts", "");
 
 </script>
 {% endblock %}

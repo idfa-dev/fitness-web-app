@@ -20,6 +20,7 @@ repositories {
 }
 
 dependencies {
+    // General dependencies
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
     implementation(libs.logback.classic)
@@ -27,8 +28,6 @@ dependencies {
     implementation(libs.ktor.server.config.yaml)
     implementation("io.ktor:ktor-server-pebble:3.4.0")
     implementation("io.pebbletemplates:pebble:3.4.0")
-    testImplementation(libs.ktor.server.test.host)
-    testImplementation(libs.kotlin.test.junit)
 
     // JSON
     implementation("io.ktor:ktor-server-content-negotiation")
@@ -45,6 +44,21 @@ dependencies {
     // Sessions
     implementation(libs.ktor.server.sessions)
 
-    //Encryption
-    implementation("at.favre.lib:bcrypt:0.10.2") //for password hashing
+    // Encryption
+    implementation("at.favre.lib:bcrypt:0.10.2") // For password hashing
+
+    // Testing
+    testImplementation(libs.ktor.server.test.host)
+    testImplementation(libs.kotlin.test.junit)
+    testImplementation(libs.ktor.client.core)
+    implementation(libs.kotlin.test)
+}
+
+// Enables println() calls to register with ./gradlew test
+tasks.test {
+    testLogging {
+        events("passed", "skipped", "failed")
+        showStandardStreams = true
+    }
+    maxParallelForks = 1
 }

@@ -27,6 +27,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
+import java.time.DayOfWeek
 import java.time.format.DateTimeFormatter
 import kotlin.text.toInt
 
@@ -64,7 +65,7 @@ suspend fun ApplicationCall.getListOfWorkoutObjects(): MutableList<WorkoutObject
     suspendTransaction {
         val userSession = sessions.get<UserSession>()
         if (userSession != null) {
-            val workouts = Workout.all().filter { it.user?.id.toString() == userSession.id || it.user == null }.toList()
+            val workouts = Workout.all().filter { it.user?.id?.value.toString() == userSession.id || it.user == null }.toList()
             // Iterate through all found workouts and find what types are within them
             for (workout in workouts) {
                 val workoutExercises = WorkoutExercise.all().filter { it.workout == workout }.toList()
@@ -86,7 +87,7 @@ suspend fun ApplicationCall.getListOfWorkoutObjects(): MutableList<WorkoutObject
     return workoutObjects
 }
 
-suspend fun ApplicationCall.displayWorkouts(workoutID: Int = 0) {
+suspend fun ApplicationCall.displayWorkouts(workoutID: Int = 0, from: String = "workouts") {
     suspendTransaction {
         if (workoutID != 0) {
             // Change favourite value of workout
@@ -95,21 +96,22 @@ suspend fun ApplicationCall.displayWorkouts(workoutID: Int = 0) {
             }
         }
         val workoutObjects  = getListOfWorkoutObjects()
-        respond(PebbleContent("workouts/view_workouts.peb", mapOf("currentPage" to "workouts", "workouts" to workoutObjects)))
+        respond(PebbleContent("workouts/view_workouts.peb", mapOf("currentPage" to from, "workouts" to workoutObjects)))
     }
 }
 
 suspend fun ApplicationCall.searchWorkouts() {
     suspendTransaction {
-
         val userSession = sessions.get<UserSession>()
         if (userSession == null) {
             respond(PebbleContent("landing/auth/landing.peb", mapOf("currentPage" to "landing")))
             return@suspendTransaction
         }
 
+        val isCurrentWorkout = parameters["isCurrentWorkout"].toBoolean()
         val search = parameters["search"]
         val selectedTypes = parameters.getAll("type") ?: emptyList()
+        val favouriteOnly = parameters["favourite"] == "true"
 
         val workoutObjects = mutableListOf<WorkoutObject>()
 
@@ -130,7 +132,10 @@ suspend fun ApplicationCall.searchWorkouts() {
                     selectedTypes.isEmpty() ||
                     workoutTypes.any { it in selectedTypes }
 
-                matchesSearch && matchesType
+                val matchesFavourite =
+                    !favouriteOnly || workout.favourite
+
+                matchesSearch && matchesType && matchesFavourite
             }
 
         for (workout in workouts) {
@@ -151,7 +156,12 @@ suspend fun ApplicationCall.searchWorkouts() {
                 )
             )
         }
-        respond(PebbleContent("workouts/view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to "view_workouts")))
+        if (isCurrentWorkout) {
+            respond(PebbleContent("workouts/view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to "current-workout")))
+        }
+        else {
+            respond(PebbleContent("workouts/view_workouts.peb", mapOf("workouts" to workoutObjects, "currentPage" to "workouts")))
+        }
     }
 }
 
@@ -210,7 +220,7 @@ suspend fun ApplicationCall.startNewWorkout() {
         val userSession = sessions.get<UserSession>()
         if (userSession != null) {
             // First, create the WorkoutSession instance
-            val userEntity = User.all().first() {it.id.toString() == userSession.id}
+            val userEntity = User.all().first {it.id.toString() == userSession.id}
             val workoutSessionID = WorkoutSession.new { user = userEntity }.id.toString() // Only need to pass user as all other attributes have default values
             // Second, set the CurrentWorkoutSession values for use of page generation
             sessions.set(CurrentWorkoutSession(workoutSessionID, userSession.id))
@@ -443,6 +453,43 @@ data class PastWorkoutExerciseObject (
     val sets: List<WorkoutSessionSet>
 )
 
+suspend fun calculateWeeklyWorkoutMinutes(sessions: List<WorkoutSession>): Map<String, Int> {
+
+    val result = mutableMapOf(
+        "Mon" to 0,
+        "Tue" to 0,
+        "Wed" to 0,
+        "Thu" to 0,
+        "Fri" to 0,
+        "Sat" to 0,
+        "Sun" to 0
+    )
+
+    for (session in sessions) {
+
+        val start = session.startedAt
+        val end = session.endedAt ?: continue
+
+        val minutes = maxOf(1, Duration.between(start, end).toMinutes().toInt())
+
+        val day = start.atZone(ZoneId.systemDefault()).dayOfWeek
+
+        val key = when (day) {
+            DayOfWeek.MONDAY -> "Mon"
+            DayOfWeek.TUESDAY -> "Tue"
+            DayOfWeek.WEDNESDAY -> "Wed"
+            DayOfWeek.THURSDAY -> "Thu"
+            DayOfWeek.FRIDAY -> "Fri"
+            DayOfWeek.SATURDAY -> "Sat"
+            DayOfWeek.SUNDAY -> "Sun"
+        }
+
+        result[key] = result[key]!! + minutes
+    }
+
+    return result
+}
+
 suspend fun ApplicationCall.displayPastWorkouts() {
     // First, get all WorkoutSessions where user == user and completed == true
     // Next, we must create a PastWorkoutObject for each workout session
@@ -488,7 +535,13 @@ suspend fun ApplicationCall.displayPastWorkouts() {
                     )
                     pastWorkouts.add(workoutObject)
                 }
-                respond(PebbleContent("workouts/view_past_workouts.peb", mapOf("currentPage" to "workouts", "pastWorkouts" to pastWorkouts)))
+                if (pastWorkouts.isNotEmpty()) {
+                    respond(PebbleContent("workouts/view_past_workouts.peb", mapOf("currentPage" to "workouts", "pastWorkouts" to pastWorkouts)))
+                }
+                else {
+                    val errMsg = "You have not completed any workouts yet"
+                    respond(PebbleContent("workouts/workouts.peb", mapOf("currentPage" to "workouts", "errMsg" to errMsg)))
+                }
             }
             else {
                 respond(HttpStatusCode.Unauthorized)

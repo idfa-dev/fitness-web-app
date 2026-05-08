@@ -16,6 +16,7 @@ import io.ktor.server.sessions.*
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
+import java.time.Duration
 
 //Authentication imports
 import com.example.database.User
@@ -27,17 +28,94 @@ import com.example.database.doesCollide //importing collision checker from auth.
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.parameters
 
-//SQL ( might be unnecessary )
 import org.jetbrains.exposed.v1.core.*
+
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction // To modify db
 import org.jetbrains.exposed.v1.jdbc.insert
 import io.ktor.server.request.receiveParameters
 import io.ktor.server.sessions.*
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
+import java.time.Instant
+
+//JSON
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
 
 fun Application.configureRouting() {
     routing {
 
         staticResources("/static", "static")
+
+
+        // Test Routes
+        post("/test/sign-in") {
+            val parameters = call.receiveParameters()
+            val userID = parameters["userID"]
+            val username = parameters["username"]
+            if (userID != null && username != null) {
+                call.sessions.set(UserSession(userID, username))
+                println("UserSession set")
+                call.respond(HttpStatusCode.OK)
+            }
+        }
+
+        get("/test/set-all-workouts-as-not-favourited") {
+            suspendTransaction {
+                val workouts = Workout.all().toList()
+                if (workouts.isNotEmpty()) {
+                    for (workout in workouts) {
+                        Workout.findByIdAndUpdate(workout.id.value) {
+                            it.favourite = false
+                        }
+                    }
+                    println("All workouts set to favourited=false")
+                    call.respond(HttpStatusCode.OK)
+                }
+            }
+        }
+
+        post("/test/change-favourite-workouts") {
+            val parameters = call.receiveParameters()
+            suspendTransaction {
+                val workoutName = parameters["workoutName"]
+                // Change favourite to true for given workout
+                val workoutID = Workout.all().firstOrNull {it.name == workoutName}?.id?.value
+                if (workoutID != null) {
+                    Workout.findByIdAndUpdate(workoutID) {
+                        it.favourite = !it.favourite
+                    }
+                    println("Switched the favourite state of workout with name = $workoutName")
+                    call.respond(HttpStatusCode.OK)
+                }
+                else {
+                    call.respond(HttpStatusCode.BadRequest)
+                }
+            }
+        }
+
+        post("/test/create-workout-session") {
+            suspendTransaction {
+                // First, reset workout session and remove all previous workout sessions in db
+                val workoutSessions = WorkoutSession.all().toList()
+                for (ws in workoutSessions) {
+                    ws.delete()
+                }
+                call.sessions.clear<CurrentWorkoutSession>()
+                // Create workout session for use in testing
+                val parameters = call.receiveParameters()
+                val userID = parameters["userID"]
+                val username = parameters["username"]
+                val userEntity = User.all().first {it.id.value == userID?.toInt()}
+                if (userID != null && username != null) {
+                    val ws = WorkoutSession.new { user = userEntity }
+                    call.sessions.set(CurrentWorkoutSession(ws.id.value.toString(), userID))
+                    println("CurrentWorkoutSession set")
+                    call.respond(HttpStatusCode.OK)
+                }
+            }
+        }
+
+        // Regular Routes
 
         get("/") {
             call.respond(PebbleContent("landing/auth/landing.peb", mapOf("currentPage" to "landing")))
@@ -48,8 +126,26 @@ fun Application.configureRouting() {
             print(user?.id)
             print(user?.username)
             if (user != null) {
-                call.respond(PebbleContent("home/home.peb", mapOf("currentPage" to "home")))
-            }
+                val todayCalories = transaction {
+                    CalendarExercise.all()
+                        .filter {
+                            it.user.id.toString() == user.id &&
+                            it.date == LocalDate.now()
+                        }
+                        .sumOf {
+                            it.calories ?: 0
+                        }
+                }
+                call.respond(
+                    PebbleContent(
+                        "home/home.peb", 
+                        mapOf(
+                            "currentPage" to "home", 
+                            "todayCalories" to todayCalories,
+                        )
+                    )
+                )
+            } 
             else {
                 call.respond(PebbleContent("landing/auth/landing.peb", mapOf("currentPage" to "landing")))
             }
@@ -63,7 +159,6 @@ fun Application.configureRouting() {
                 call.respond(PebbleContent("current_workout/start_workout.peb", mapOf("currentPage" to "current-workout")))
             }
             else {
-                // Make sure this is fixed to contain workout info
                 call.continueWorkout()
             }
         }
@@ -144,7 +239,7 @@ fun Application.configureRouting() {
 
         get("/workouts/view") {call.displayWorkouts()}
 
-        get("/workouts/view/search") {call.searchWorkouts()}
+        get("/workouts/view/search") { call.searchWorkouts() }
 
         post("/workouts/view") {
             val parameters = call.receiveParameters()
@@ -152,36 +247,17 @@ fun Application.configureRouting() {
                 parameters["favourite"] != null -> {
                     val favourite = parameters["favourite"]?.toIntOrNull()
                         ?: return@post call.respond(HttpStatusCode.BadRequest)
-                    call.displayWorkouts(favourite)
+                    val from = call.request.queryParameters["from"] ?: "workouts"
+                    call.displayWorkouts(favourite, from)
                 }
             }
         }
 
         get("/workouts/past") { call.displayPastWorkouts() }
 
-        get("/workouts/create") {
-            call.respond(PebbleContent("workouts/create_workout.peb", mapOf("currentPage" to "workouts")))
-        }
-
-        get("/workouts/create/cardio") {
-            call.respond(PebbleContent("workouts/create_cardio_workout.peb", mapOf("currentPage" to "workouts")))
-        }
-
-        get("/workouts/create/bodyweight") {
-            call.respond(PebbleContent("workouts/create_bodyweight_workout.peb", mapOf("currentPage" to "workouts")))
-        }
-
-        get("/workouts/create/resistance") {
-            call.respond(PebbleContent("workouts/create_resistance_workout.peb", mapOf("currentPage" to "workouts")))
-        }
-
-        get("/workouts/create/mixed") {
-            call.respond(PebbleContent("workouts/create_mixed_workout.peb", mapOf("currentPage" to "workouts")))
-        }
-
         get("/exercises") {call.exercises()}
 
-        get("/exercises/search") {call.searchExercises()}
+        get("/exercises/search") { call.searchExercises()}
 
         get("/exercises/{id}") {call.exercise()}
 
@@ -216,6 +292,26 @@ fun Application.configureRouting() {
                             "distance" to c.distance,
                             "finishTime" to c.finishTime,
                             "types" to (c.types?.split(",") ?: emptyList())
+                        )
+                    }
+            }
+
+            val exercises = transaction {
+                if (userId == null) return@transaction emptyList()
+
+                CalendarExercise.find { CalendarExercises.user eq userId }
+                    .map {
+                        mapOf(
+                            "id" to it.id.value,
+                            "name" to it.name,
+                            "date" to it.date.toString(),
+                            "timeTaken" to it.timeTaken,
+                            "calories" to it.calories,
+                            "distance" to it.distance,
+                            "machine" to it.machine,
+                            "weight" to it.weight,
+                            "setsReps" to it.setsReps,
+                            "type" to it.type
                         )
                     }
             }
@@ -285,6 +381,54 @@ fun Application.configureRouting() {
                                 }
                             }
 
+                            val exercisesForDay = exercises.filter {
+                                java.time.LocalDate.parse(it["date"].toString()) ==
+                                        java.time.LocalDate.of(year, monthNumber, day.toInt())
+                            }
+
+                            val groupedExercises = exercisesForDay.groupBy {
+                                it["type"]?.toString() ?: "Mixed"
+                            }
+
+                            groupedExercises.forEach { (type, exList) ->
+
+                                val colourClass = when(type) {
+                                    "Cardio" -> "red"
+                                    "Body Weight" -> "blue"
+                                    "Resistance" -> "green"
+                                    else -> "yellow"
+                                }
+
+                                val exJson = exList.joinToString(
+                                    prefix = "[",
+                                    postfix = "]"
+                                ) { ex ->
+
+                                    """
+                                    {
+                                        "id":"${ex["id"]}",
+                                        "name":"${ex["name"]}",
+                                        "date":"${ex["date"]}",
+                                        "distance":"${ex["distance"] ?: ""}",
+                                        "timeTaken":"${ex["timeTaken"] ?: ""}",
+                                        "weight":"${ex["weight"] ?: ""}",
+                                        "machine":"${ex["machine"] ?: ""}",
+                                        "calories":"${ex["calories"] ?: ""}",
+                                        "setsReps":"${ex["setsReps"] ?: ""}",
+                                        "type":"${ex["type"] ?: ""}"
+                                    }
+                                    """.trimIndent()
+                                }
+                                    .replace("\n", "")
+                                    .replace("\"", "&quot;")
+
+                                append("""
+                                    <div class='exercise-dot $colourClass'
+                                        data-exercises="$exJson">
+                                    </div>
+                                """.trimIndent())
+                            }
+
                             append("</td>")
                         }
                     }
@@ -304,12 +448,77 @@ fun Application.configureRouting() {
                 "nextYear" to nextYear,
                 "monthNumber" to monthNumber,
                 "competitions" to competitions,
+                "exercises" to exercises,
             )))
         }
 
 
         get("/profile") {
-            call.respond(PebbleContent("profile/profile.peb", mapOf("currentPage" to "profile")))
+
+            val userSession = call.sessions.get<UserSession>()
+                ?: return@get call.respondRedirect("/sign-in")
+
+            val sessions = transaction {
+                WorkoutSession.all()
+                    .filter {
+                        it.user.id.toString() == userSession.id &&
+                        it.complete &&
+                        it.endedAt != null
+                    }
+                    .toList()
+            }
+
+            println("PROFILE SESSIONS FOUND = ${sessions.size}")
+
+            sessions.forEach {
+                println("SESSION COMPLETE = ${it.complete}")
+                println("START = ${it.startedAt}")
+                println("END = ${it.endedAt}")
+            }
+
+            val weeklyData = calculateWeeklyWorkoutMinutes(sessions)
+
+            println("WEEKLY DATA = $weeklyData")
+
+            val weeklyDataJson = Json.encodeToString(weeklyData)
+
+            val totalCalories = transaction {
+                CalendarExercise.all()
+                    .filter {
+                        it.user.id.toString() == userSession.id
+                    }
+                    .sumOf {
+                        it.calories ?: 0
+                    }
+            }
+
+            val totalDistance = transaction {
+                CalendarExercise.find {
+                    CalendarExercises.user eq userSession.id.toInt()
+                }.sumOf {
+                    it.distance ?: 0.0
+                }
+            }
+
+            val totalWorkouts = transaction {
+                WorkoutSession.all()
+                    .count {
+                        it.user.id.toString() == userSession.id && it.complete
+                    }
+            }
+
+            call.respond(
+                PebbleContent(
+                    "profile/profile.peb",
+                    mapOf(
+                        "currentPage" to "profile",
+                        "weeklyData" to weeklyDataJson,
+                        "totalCalories" to totalCalories,
+                        "totalDistance" to totalDistance,
+                        "totalWorkouts" to totalWorkouts
+                    )
+                )
+            )
         }
 
         get("/logout") {
@@ -376,9 +585,7 @@ fun Application.configureRouting() {
         }
 
         post("/sign-in") { //This whole section will be added to Auth.kt eventually or like modularized
-            
             signInHandler(call)
-            
         }
 
         get("/sign-up") {
@@ -462,6 +669,73 @@ fun Application.configureRouting() {
             transaction {
                 val comp = Competition.findById(compId)
                 comp?.delete()
+            }
+
+            call.respond(HttpStatusCode.OK)
+        }
+
+        post("/calendar-exercises/add") {
+            val params = call.receiveParameters()
+
+            val session = call.sessions.get<UserSession>()
+                ?: return@post call.respond(HttpStatusCode.Unauthorized)
+
+            val uid = session.id.toIntOrNull()
+                ?: return@post call.respond(HttpStatusCode.BadRequest)
+
+            val id = params["id"]?.toIntOrNull()
+
+            val name = params["name"]
+                ?: return@post call.respond(HttpStatusCode.BadRequest)
+
+            val date = params["date"]
+                ?: return@post call.respond(HttpStatusCode.BadRequest)
+
+            transaction {
+                if (id != null) {
+                    val ex = CalendarExercise.findById(id)
+                    if (ex != null) {
+                        ex.name = name
+                        ex.date = java.time.LocalDate.parse(date)
+                        ex.timeTaken = params["timeTaken"]
+                        ex.calories = params["calories"]?.toIntOrNull()
+                        ex.distance = params["distance"]?.toDoubleOrNull()
+                        ex.machine = params["machine"]
+                        ex.weight = params["weight"]?.toDoubleOrNull()
+                        ex.setsReps = params["setsReps"]
+                        ex.type = params["type"]
+                    }
+                } else {
+                    CalendarExercises.insert {
+                        it[CalendarExercises.user] = uid
+                        it[CalendarExercises.name] = name
+                        it[CalendarExercises.date] = LocalDate.parse(date)
+
+                        it[CalendarExercises.timeTaken] = params["timeTaken"]
+                        it[CalendarExercises.calories] = params["calories"]?.toIntOrNull()
+                        it[CalendarExercises.distance] = params["distance"]?.toDoubleOrNull()
+                        it[CalendarExercises.machine] = params["machine"]
+                        it[CalendarExercises.weight] = params["weight"]?.toDoubleOrNull()
+                        it[CalendarExercises.setsReps] = params["setsReps"]
+                        it[CalendarExercises.type] = params["type"]
+                    }
+                }
+            }
+
+            call.respond(HttpStatusCode.OK)
+        }
+
+        post("/calendar-exercises/delete") {
+            val params = call.receiveParameters()
+            val id = params["id"]?.toIntOrNull()
+
+            if (id == null) {
+                call.respond(HttpStatusCode.BadRequest)
+                return@post
+            }
+
+            transaction {
+                CalendarExercise.findById(id)?.delete()
             }
 
             call.respond(HttpStatusCode.OK)

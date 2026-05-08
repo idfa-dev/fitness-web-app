@@ -9,9 +9,11 @@ import com.example.database.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.sessions.*
+import kotlin.test.*
 
 import org.h2.tools.Server // H2 web console
 import org.jetbrains.exposed.v1.jdbc.exists
+import kotlin.io.path.Path
 
 fun Application.module() {
 
@@ -19,7 +21,20 @@ fun Application.module() {
         json()
     }
 
-    Database.connect("jdbc:h2:file:./data/fitness", driver = "org.h2.Driver") // Starts com.example.database connection (fitness = dbname)
+
+    val test = environment.config.propertyOrNull("app.test")?.getString()
+    var dbUrl: String = ""
+    if (test != null) {
+        dbUrl = if (test == "true") {
+            "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"
+        } else {
+            "jdbc:h2:file:./data/fitness"
+        }
+    }
+    else {
+        dbUrl = "jdbc:h2:file:./data/fitness"
+    }
+    val db = Database.connect(dbUrl, driver = "org.h2.Driver") // Starts com.example.database connection (fitness = dbname)
 
     // Starts web server connection to view database
     // To view database, simply go to 127.0.0.1:8082 and follow the instructions below
@@ -29,24 +44,26 @@ fun Application.module() {
     //      4). Do not enter a username or password (leave blank)
     //      5). Press 'Connect' to enter the database viewer
 
-    Server.createWebServer(
-        "-web",
-        "-webPort",
-        "8082",
-        "-webAllowOthers"
-    ).start()
+    if (test == "false") {
+        Server.createWebServer(
+            "-web",
+            "-webPort",
+            "8082",
+            "-webAllowOthers"
+        ).start()
+    }
 
 
-    transaction {
+    transaction(db) {
         addLogger(StdOutSqlLogger)
 
         //resetDatabase() // Only uncomment for testing!
 
         SchemaUtils.create(
             Users, PTs, Exercises,
-            Clients, Workouts, UserWorkouts,
-            WorkoutExercises, WorkoutSessions, WorkoutSessionExercises,
-            WorkoutSessionSets, Competitions
+            Clients, Workouts, WorkoutExercises,
+            WorkoutSessions, WorkoutSessionExercises,
+            WorkoutSessionSets, Competitions, CalendarExercises
         )
 
         if (User.all().empty()) {

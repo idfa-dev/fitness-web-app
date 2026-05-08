@@ -231,9 +231,9 @@ fun resetDatabase() {
         exec("DROP ALL OBJECTS")
         SchemaUtils.create(
             Users, PTs, Exercises,
-            Clients, Workouts, UserWorkouts,
-            WorkoutExercises, WorkoutSessions, WorkoutSessionExercises,
-            WorkoutSessionSets
+            Clients, Workouts, WorkoutExercises,
+            WorkoutSessions, WorkoutSessionExercises,
+            WorkoutSessionSets, Competitions, CalendarExercises
         )
     }
     println("\nSUCCESSFULLY RESET DATABASE\n")

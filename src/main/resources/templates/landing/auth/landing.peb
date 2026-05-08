@@ -35,7 +35,7 @@
                     <h3 class="purple-rect">Features For All Accounts</h3>
                     <ul>
                         <li>Track distance, reps, sets, and calories per exercise</li>
-                        <li>Create workouts, categorised into Cardio, Body Weight, Resistance, and Mixed</li>
+                        <li>Create workouts with as many or as few exercises as you would like</li>
                         <li>Log and view completed exercises on a calendar</li>
                         <li>Options for personal, competitor, or personal trainer accounts</li>
                     </ul>
@@ -57,13 +57,9 @@
                     </p> 
 
                     <div style="margin-top:15px;">
-                        <a href="/sign-in">
-                            <button class="pill-btn">SIGN IN</button>
-                        </a>
+                        <a href="/sign-in" class="pill-btn">SIGN IN</a>
 
-                        <a href="/sign-up">
-                            <button class="pill-btn">SIGN UP</button>
-                        </a> 
+                        <a href="/sign-up" class="pill-btn">SIGN UP</a>
                     </div>
 
                 </div>

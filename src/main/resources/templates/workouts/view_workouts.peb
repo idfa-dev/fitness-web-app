@@ -10,7 +10,8 @@
 {% block content %}
     <div class="center">
         <div class="search-filter-wrapper">
-            <form method="get" class="search-container" action="/workouts/view/search">
+            <form method="get" action="/workouts/view/search" class="search-container">
+                <input type="hidden" name="isCurrentWorkout" value="{{ currentPage == 'workouts' ? 'false' : 'true' }}">
 
                 <input type="text" name="search" class="search" placeholder="Search for a workout...">
 
@@ -21,10 +22,13 @@
 
             <form method="get" action="/workouts/view/search" class="filter-form">
 
+                <input type="hidden" name="isCurrentWorkout" value="{{ currentPage == 'workouts' ? 'false' : 'true' }}">
+
                 <label><input type="checkbox" name="type" value="C"> Cardio</label>
                 <label><input type="checkbox" name="type" value="B"> Bodyweight</label>
                 <label><input type="checkbox" name="type" value="R"> Resistance</label>
                 <label><input type="checkbox" name="type" value="M"> Mixed</label>
+                <label><input type="checkbox" name="favourite" value="true"> Favourited</label>
 
                 <button type="submit" class="filter-btn">Apply Filters</button>
             </form>
@@ -46,36 +50,29 @@
                 {% for w in workouts %}
                     {% set contain = [] %}
                     <tr>
-                        {% if currentPage == "workouts" %}
-                        <td><button class="workout-btn" type="submit" name="favourite" formaction="/workouts/{{ w.workout['id'] }}" formmethod="get">{{ w.workout['name'] }}</button></td>
-                        {% endif %}
-                        {% if currentPage == "current-workout" %}
-                        <td><button class="workout-btn" type="input" name="workout_template" value={{ w.workout['id'] }} formaction="/current-workout" formmethod="post">{{ w.workout['name'] }}</button></td>
-                        {% endif %}
+                        <td>
+                            {% if currentPage == "workouts" %}
+                                <button class="workout-btn" type="submit" name="favourite" formaction="/workouts/{{ w.workout['id'] }}" formmethod="get">{{ w.workout['name'] }}</button>
+                            {% elseif currentPage == "current-workout" %}
+                                <button class="workout-btn" type="input" name="workout_template" value={{ w.workout['id'] }} formaction="/current-workout" formmethod="post">{{ w.workout['name'] }}</button>
+                            {% else %}
+                                <a href="/workouts/{{ w.workout['id'] }}">
+                                    {{ w.workout['name'] }}
+                                </a>
+                            {% endif %}
+                        </td>
                         <td>{{ w.workout['desc'] }}</td>
                         <td>{{ w.types }}</td>
                         <td>
-                        {% if w.workout['favourite'] == false %}
-                        <button class="icon-btn" type="submit" name="favourite" value="{{ w.workout['id'] }}" formaction="/workouts/view" formmethod="post"><i class="fa-regular fa-heart"></i></button>
-                        {% else %}
-                        <button class="icon-btn" type="submit" name="favourite" value="{{ w.workout['id'] }}" formaction="/workouts/view" formmethod="post"><i class="fa-solid fa-heart"></i></button>
-                        {% endif %}
+                            {% if w.workout['favourite'] == false %}
+                                <button class="icon-btn" type="submit" name="favourite" value="{{ w.workout['id'] }}" formaction="/workouts/view?from={{ currentPage }}" formmethod="post"><i class="fa-regular fa-heart"></i></button>
+                            {% else %}
+                                <button class="icon-btn" type="submit" name="favourite" value="{{ w.workout['id'] }}" formaction="/workouts/view?from={{ currentPage }}" formmethod="post"><i class="fa-solid fa-heart"></i></button>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
             </table>
         </form>
     </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-const filterBtn = document.getElementById("filterBtn");
-const filterOptions = document.getElementById("filterOptions");
-
-filterBtn.addEventListener("click", () => {
-    filterOptions.style.display =
-        filterOptions.style.display === "none" ? "block" : "none";
-});
-</script>
 {% endblock %}
