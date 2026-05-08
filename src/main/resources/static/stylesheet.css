@@ -805,11 +805,45 @@ table:not(.calendar) tr:hover input{
 }
 
 .invalid {
-    color: #FF3333;
+    color: #FF1A1A;
     margin-bottom: 4px;
 }
 
 .valid {
     color: #39FF14;
     margin-bottom: 4px;
+}
+
+.top-right-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.top-right-btn button {
+    padding: 8px 12px;
+    border-radius: 14px;
+    border: none;
+    background: #9933FF;
+    color: white;
+    cursor: pointer;
+
+    font-size: 20px;
+    line-height: 1.2;
+
+    width: 120px;
+    height: 70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.top-right-btn button:hover {
+    filter: brightness(85%);
+}
+
+.top-right-btn a {
+    text-decoration: none;
 }

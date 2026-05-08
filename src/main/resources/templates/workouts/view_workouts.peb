@@ -8,6 +8,17 @@
 
 {% endblock %}
 {% block content %}
+    {%  if currentPage == "workouts" %}
+    <div class="top-right-btn">
+        <a href="/workouts/past">
+            <button>Past<br>Workouts</button>
+        </a>
+    </div>
+    {% endif %}
+    <div class="center">
+        <h1> {{ errMsg }} <h1>
+    </div>
+
     <div class="center">
         <div class="search-filter-wrapper">
             <form method="get" action="/workouts/view/search" class="search-container">
