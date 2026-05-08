@@ -8,6 +8,13 @@
 
 {% endblock %}
 {% block content %}
+
+    <div class="top-right-btn">
+        <a href="/workouts/past">
+            <button>Past<br>Workouts</button>
+        </a>
+    </div>
+
     <div class="center">
         <div class="search-filter-wrapper">
             <form method="get" action="/workouts/view/search" class="search-container">

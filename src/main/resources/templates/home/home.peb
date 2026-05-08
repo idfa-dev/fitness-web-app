@@ -17,7 +17,9 @@
 
 <div class="home-row">
 
-    <div class="home-box">Last Workout</div>
+    <div class="home-box">
+        <img src="/static/images/running.png" alt="Running" style="width: 220px; height: auto;">
+    </div>
 
     <div class="home-box calorie-box">
 
@@ -37,7 +39,9 @@
 
     </div>
 
-    <div class="home-box">Last Exercise</div>
+    <div class="home-box">
+        <img src="/static/images/running.png" alt="Running" style="width: 220px; height: auto;">
+    </div>
 
 </div>
 
@@ -46,16 +50,40 @@
 </p>
 
 <div class="home-row">
-    <div class="home-box">Start Workout Or Exercise</div>
-    <div class="home-box">Log Activity On Calendar</div>
-    <div class="home-box">View Personal Stats</div>
+
+    <div class="home-box suggestion-box">
+        <div class="suggestion-title">
+            Start Workout Or Exercise
+        </div>
+
+        <div class="suggestion-text">
+            Start a workout using a ready-made template or fully create your own routine!
+        </div>
+    </div>
+
+    <div class="home-box suggestion-box">
+        <div class="suggestion-title">
+            Log Activity On Calendar
+        </div>
+
+        <div class="suggestion-text">
+            Keep your fitness schedule organised and never miss a session!
+        </div>
+    </div>
+
+    <div class="home-box suggestion-box">
+        <div class="suggestion-title">
+            View Personal Stats
+        </div>
+
+        <div class="suggestion-text">
+            Analyse calories burnt, workout history, and overall performance!
+        </div>
+    </div>
+
 </div>
 
 <style>
-
-.home-box {
-    min-height: 140px;
-}
 
 .calorie-box {
     display: flex;
@@ -102,6 +130,40 @@
     font-size: 14px;
     text-align: center;
     width: 100%;
+}
+
+.home-box {
+    height: 250px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.home-box img {
+    margin-top: -10px;
+}
+
+.suggestion-box {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.suggestion-title {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.suggestion-text {
+    font-size: 14px;
+    color: #cccccc;
+    line-height: 1.4;
 }
 
 </style>
