@@ -1,14 +1,11 @@
 package com.example.database
 
-import com.example.UserSession
-import com.example.WorkoutObject
+import at.favre.lib.crypto.bcrypt.BCrypt
 import com.example.WorkoutSessionExerciseObject
-import com.example.exerciseTypes
-import io.ktor.server.sessions.get
-import io.ktor.server.sessions.sessions
-import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import java.time.Instant
+import java.time.LocalDate
 
 fun seedDummyValues() {
     transaction {
@@ -222,7 +219,418 @@ fun seedDummyValues() {
                         "duration: ${we.duration} mins"
             )
         }
-        println("\nSUCCESSFULLY ADDED DUMMY VALUES TO DATABASE\n")
+
+        println("Seeding demo users....")
+
+        var pw1 = "bartyBoy123A!"
+        pw1 = BCrypt.withDefaults().hashToString(8, pw1.toCharArray())
+        var pw2 = "vinCent4life£"
+        pw2 = BCrypt.withDefaults().hashToString(8, pw2.toCharArray())
+        val experiencedGymgoer = User.create(1, "barto123", pw1, "bartholomew123@gmail.com")
+        val compUser = User.create(2, "vincyWincySpider", pw2, "vincentComp@gmail.com")
+
+        println("Created Experienced Gymgoer with id = ${experiencedGymgoer.id} and username = ${experiencedGymgoer.username}")
+        println("Created Competitive User with id = ${compUser.id} and username = ${compUser.username}")
+
+        println("Seeding demo user data...\n")
+
+        // Bartholomew (Experienced Gymgoer)
+
+        // Needs past workout sessions, exercises and sets
+
+        val exercises = Exercise.all().toList()
+
+
+        // Workout sessions
+
+        val ws1 = WorkoutSession.new {
+            user = experiencedGymgoer
+            startedAt = Instant.parse("2026-04-27T09:15:00Z")
+            endedAt = Instant.parse("2026-04-27T10:10:30Z")
+            complete = true
+        }
+
+        val ws2 = WorkoutSession.new {
+            user = experiencedGymgoer
+            startedAt = Instant.parse("2026-04-30T17:45:00Z")
+            endedAt = Instant.parse("2026-04-30T18:50:15Z")
+            complete = true
+        }
+
+        val ws3 = WorkoutSession.new {
+            user = experiencedGymgoer
+            startedAt = Instant.parse("2026-05-02T11:00:00Z")
+            endedAt = Instant.parse("2026-05-02T12:05:20Z")
+            complete = true
+        }
+
+        val ws4 = WorkoutSession.new {
+            user = experiencedGymgoer
+            startedAt = Instant.parse("2026-05-04T07:30:00Z")
+            endedAt = Instant.parse("2026-05-04T08:35:00Z")
+            complete = true
+        }
+
+        val ws5 = WorkoutSession.new {
+            user = experiencedGymgoer
+            startedAt = Instant.parse("2026-05-06T18:10:00Z")
+            endedAt = Instant.parse("2026-05-06T19:15:35Z")
+            complete = true
+        }
+
+        val ws6 = WorkoutSession.new {
+            user = experiencedGymgoer
+            startedAt = Instant.parse("2026-05-09T16:10:00Z")
+            endedAt = Instant.parse("2026-05-09T17:05:40Z")
+            complete = true
+        }
+
+        // Workout session exercises
+
+        val wse1 = WorkoutSessionExercise.new {
+            workoutSession = ws1
+            exercise = exercises[2]
+            order = 1
+        }
+
+        val wse2 = WorkoutSessionExercise.new {
+            workoutSession = ws1
+            exercise = exercises[4]
+            order = 2
+        }
+
+        val wse3 = WorkoutSessionExercise.new {
+            workoutSession = ws2
+            exercise = exercises[3]
+            order = 1
+        }
+
+        val wse4 = WorkoutSessionExercise.new {
+            workoutSession = ws2
+            exercise = exercises[5]
+            order = 2
+        }
+
+        val wse5 = WorkoutSessionExercise.new {
+            workoutSession = ws2
+            exercise = exercises[6]
+            order = 3
+        }
+
+        val wse6 = WorkoutSessionExercise.new {
+            workoutSession = ws3
+            exercise = exercises[7]
+            order = 1
+        }
+
+        val wse7 = WorkoutSessionExercise.new {
+            workoutSession = ws3
+            exercise = exercises[4]
+            order = 2
+        }
+
+        val wse8 = WorkoutSessionExercise.new {
+            workoutSession = ws4
+            exercise = exercises[7]
+            order = 1
+        }
+
+        val wse9 = WorkoutSessionExercise.new {
+            workoutSession = ws4
+            exercise = exercises[4]
+            order = 2
+        }
+
+        val wse10 = WorkoutSessionExercise.new {
+            workoutSession = ws5
+            exercise = exercises[3]
+            order = 1
+        }
+
+        val wse11 = WorkoutSessionExercise.new {
+            workoutSession = ws5
+            exercise = exercises[6]
+            order = 2
+        }
+
+        val wse12 = WorkoutSessionExercise.new {
+            workoutSession = ws6
+            exercise = exercises[3]
+            order = 1
+        }
+
+        // Workout session sets
+
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse1
+            reps = 15
+            weight = 0.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse1
+            reps = 12
+            weight = 0.0f
+        }
+
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse2
+            reps = 8
+            weight = 90.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse2
+            reps = 7
+            weight = 90.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse2
+            reps = 6
+            weight = 80.0f
+        }
+
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse3
+            reps = 10
+            weight = 60.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse3
+            reps = 9
+            weight = 60.0f
+        }
+
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse4
+            reps = 12
+            weight = 40.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse4
+            reps = 10
+            weight = 40.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse4
+            reps = 8
+            weight = 35.0f
+        }
+
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse5
+            reps = 6
+            weight = 110.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse5
+            reps = 5
+            weight = 110.0f
+        }
+
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse6
+            reps = 5
+            weight = 120.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse6
+            reps = 5
+            weight = 120.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse6
+            reps = 4
+            weight = 115.0f
+        }
+
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse7
+            reps = 8
+            weight = 85.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse7
+            reps = 7
+            weight = 85.0f
+        }
+
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse8
+            reps = 6
+            weight = 120.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse8
+            reps = 5
+            weight = 120.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse8
+            reps = 4
+            weight = 115.0f
+        }
+
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse9
+            reps = 8
+            weight = 85.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse9
+            reps = 7
+            weight = 85.0f
+        }
+
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse10
+            reps = 12
+            weight = 50.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse10
+            reps = 10
+            weight = 50.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse10
+            reps = 8
+            weight = 45.0f
+        }
+
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse11
+            reps = 6
+            weight = 100.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse11
+            reps = 5
+            weight = 100.0f
+        }
+
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse12
+            reps = 12
+            weight = 50.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse12
+            reps = 10
+            weight = 50.0f
+        }
+        WorkoutSessionSet.new {
+            workoutSessionExercise = wse12
+            reps = 8
+            weight = 45.0f
+        }
+
+        // Vincent (Competitive User)
+
+        // Needs calendar exercises and competitions
+
+        // Calendar exercises
+
+
+        val ce1 = CalendarExercise.new {
+            user = compUser
+            name = "Morning Run"
+            date = LocalDate.of(2026, 5, 9)
+            timeTaken = "22:45"
+            calories = 230
+            distance = 3.7
+            machine = "Treadmill"
+            type = "Cardio"
+        }
+
+        val ce2 = CalendarExercise.new {
+            user = compUser
+            name = "Upper Body Strength"
+            date = LocalDate.of(2026, 5, 7)
+            calories = 300
+            weight = 75.0
+            setsReps = "4x8"
+            type = "Resistance"
+        }
+
+        val ce3 = CalendarExercise.new {
+            user = compUser
+            name = "HIIT Circuit"
+            date = LocalDate.of(2026, 5, 5)
+            timeTaken = "25:00"
+            calories = 350
+            type = "Mixed"
+        }
+
+        val ce4 = CalendarExercise.new {
+            user = compUser
+            name = "Bodyweight Core Session"
+            date = LocalDate.of(2026, 5, 3)
+            timeTaken = "20:00"
+            calories = 160
+            setsReps = "3x20"
+            type = "Bodyweight"
+        }
+
+        val ce5 = CalendarExercise.new {
+            user = compUser
+            name = "Cycling Intervals"
+            date = LocalDate.of(2026, 4, 30)
+            timeTaken = "45:00"
+            calories = 450
+            distance = 18.6
+            machine = "Exercise Bike"
+            type = "Cardio"
+        }
+
+        val ce6 = CalendarExercise.new {
+            user = compUser
+            name = "Lower Body Strength"
+            date = LocalDate.of(2026, 4, 28)
+            calories = 300
+            weight = 95.0
+            setsReps = "5x5"
+            type = "Resistance"
+        }
+
+
+        val comp1 = Competition.new {
+            user = compUser
+            name = "Leeds Half Marathon"
+            date = LocalDate.of(2026, 5, 10)
+            time = "09:00"
+            distance = 21.1
+            finishTime = "1:42:18"
+            types = "Running"
+        }
+
+        val comp2 = Competition.new {
+            user = compUser
+            name = "Top of the Rock Gravel-X"
+            date = LocalDate.of(2026, 6, 20)
+            time = "12:30"
+            types = "Cycling"
+        }
+
+        val comp3 = Competition.new {
+            user = compUser
+            name = "Indoor Swim Challenge"
+            date = LocalDate.of(2026, 3, 22)
+            time = "10:00"
+            distance = 1.5
+            finishTime = "29:10"
+            types = "Swimming"
+        }
+
+        val comp4 = Competition.new {
+            user = compUser
+            name = "Winter 10K Road Race"
+            date = LocalDate.of(2026, 2, 16)
+            time = "09:15"
+            distance = 10.0
+            finishTime = "44:05"
+            types = "Running"
+        }
+
+        println("\nSUCCESSFULLY SEEDED DATA\n")
     }
 }
 
