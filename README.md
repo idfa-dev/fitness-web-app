@@ -1,4 +1,7 @@
-# ktor-sample
+# Jympal, Fitness-web-app
+
+This project is a clone of a private repo that I did not have access to on this account. 
+All commits made by user rdpl0740 are mine.
 
 This project was created using the [Ktor Project Generator](https://start.ktor.io).
 
